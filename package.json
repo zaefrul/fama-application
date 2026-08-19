@@ -9,8 +9,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "build": "prisma generate && next build",
-    "start": "next start",
-    "setup": "prisma generate && prisma db push && prisma db seed",
+    "start": "node server.js",
+    "setup": "prisma generate && prisma db push && node --import tsx prisma/seed.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/domain/transitions.test.ts",
@@ -18,7 +18,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "prisma db seed",
+    "db:seed": "node --import tsx prisma/seed.ts",
     "db:studio": "prisma studio"
   },
   "prisma": {
