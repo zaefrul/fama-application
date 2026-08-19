@@ -25,9 +25,10 @@ const companyItems = [
   { href: "/exporter/company/gallery", label: "Galeri" },
 ];
 
-function isActive(pathname: string, href: string, items: { href: string }[]) {
-  if (href === "/exporter" || href === "/fama") return pathname === href;
-  const matches = items.filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`));
+function isActive(pathname: string | null, href: string, items: { href: string }[]) {
+  const path = pathname ?? "";
+  if (href === "/exporter" || href === "/fama") return path === href;
+  const matches = items.filter((item) => path === item.href || path.startsWith(`${item.href}/`));
   const best = [...matches].sort((a, b) => b.href.length - a.href.length)[0];
   return best?.href === href;
 }
