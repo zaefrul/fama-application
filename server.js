@@ -1,23 +1,26 @@
-const { createServer } = require("http");
-const { parse } = require("url");
-const next = require("next");
+process.env.NODE_ENV = "production";
+
+const { existsSync } = require("fs");
+const { join } = require("path");
+
+const dir = __dirname;
+const manifest = join(dir, ".next", "prerender-manifest.json");
+
+if (!existsSync(manifest)) {
+  console.error("Missing .next/prerender-manifest.json. Run npm run build first.");
+  process.exit(1);
+}
 
 const port = Number(process.env.PORT) || 3000;
-const hostname = process.env.HOST || "127.0.0.1";
-const app = next({ dev: false, hostname, port });
-const handle = app.getRequestHandler();
 
-app
-  .prepare()
-  .then(() => {
-    createServer((req, res) => {
-      const parsedUrl = parse(req.url, true);
-      handle(req, res, parsedUrl);
-    }).listen(port, hostname, () => {
-      console.log(`Sistem Jejak GPL ready on http://${hostname}:${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
+try {
+  const { nextStart } = require("next/dist/cli/next-start");
+  nextStart({
+    port,
+    hostname: "0.0.0.0",
+    dir,
   });
+} catch (error) {
+  console.error(error);
+  process.exit(1);
+}
