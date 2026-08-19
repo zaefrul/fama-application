@@ -21,7 +21,16 @@ export async function getSession(): Promise<SessionUser | null> {
   const store = await cookies();
   const userId = store.get(COOKIE)?.value;
   if (!userId) return null;
-  const user = await getRepositories().findUserById(userId);
+  let user;
+  try {
+    user = await getRepositories().findUserById(userId);
+  } catch (error) {
+    throw new Error(
+      `Database lookup failed. Check DATABASE_URL and DATA_SOURCE=prisma. ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
   if (!user) return null;
   return {
     id: user.id,
