@@ -12,7 +12,9 @@ export default async function LoginPage({
       ? "Emel atau kata laluan tidak sah."
       : params.error === "role"
         ? "Peranan yang dipilih tidak sepadan dengan akaun ini."
-        : null;
+        : params.error
+          ? params.error
+          : null;
 
   return (
     <Card className="px-5 py-6">

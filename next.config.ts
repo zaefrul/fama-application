@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typedRoutes: false,
+  serverExternalPackages: ["@prisma/client", "prisma"],
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -10,6 +11,7 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     serverActions: {
       bodySizeLimit: "8mb",
+      allowedOrigins: ["jejakgpl.metadatasystem.my", "localhost:3000"],
     },
   },
 };

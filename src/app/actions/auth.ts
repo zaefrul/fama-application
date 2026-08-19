@@ -12,23 +12,45 @@ async function passwordsMatch(stored: string, incoming: string) {
   return stored === incoming;
 }
 
+function isNextRedirect(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "digest" in error &&
+    String((error as { digest?: string }).digest).startsWith("NEXT_REDIRECT")
+  );
+}
+
 export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const role = String(formData.get("role") ?? "");
-  const repos = getRepositories();
-  const user = await repos.findUserByEmail(email);
 
-  if (!user || !(await passwordsMatch(user.password, password))) {
-    redirect("/auth/login?error=invalid");
-  }
-  if (role && user.role !== role) {
-    redirect("/auth/login?error=role");
-  }
+  try {
+    const repos = getRepositories();
+    const user = await repos.findUserByEmail(email);
 
-  await signIn("credentials", { email, password, redirect: false });
-  await setSessionCookie(user.id);
-  redirect(user.role === "FAMA_OFFICER" ? "/fama" : "/exporter");
+    if (!user || !(await passwordsMatch(user.password, password))) {
+      redirect("/auth/login?error=invalid");
+    }
+    if (role && user.role !== role) {
+      redirect("/auth/login?error=role");
+    }
+
+    try {
+      await signIn("credentials", { email, password, redirect: false });
+    } catch (error) {
+      if (isNextRedirect(error)) throw error;
+      console.error("signIn failed", error);
+    }
+
+    await setSessionCookie(user.id);
+    redirect(user.role === "FAMA_OFFICER" ? "/fama" : "/exporter");
+  } catch (error) {
+    if (isNextRedirect(error)) throw error;
+    const message = error instanceof Error ? error.message : "Login failed";
+    redirect(`/auth/login?error=${encodeURIComponent(message)}`);
+  }
 }
 
 export async function logoutAction() {
