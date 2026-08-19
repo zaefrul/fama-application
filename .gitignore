@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+dist
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+uploads
+public/uploads
+.data
+playwright-report
+test-results
+next-env.d.ts
+.vercel

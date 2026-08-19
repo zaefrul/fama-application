@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  EXPORTER
+  FAMA_OFFICER
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum QrStatus {
+  NOT_GENERATED
+  GENERATED_INACTIVE
+  ACTIVE
+}
+
+model User {
+  id                 String   @id
+  name               String
+  email              String   @unique
+  passwordHash       String
+  role               Role
+  identityReference  String
+  status             String
+  companyId          String?
+  company            Company? @relation(fields: [companyId], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  approvals          Approval[]
+  notifications      Notification[]
+}
+
+model Company {
+  id                String   @id
+  registrationNo    String
+  externalAccountNo String   @unique
+  name              String
+  email             String
+  phone             String
+  address           String
+  state             String
+  district          String
+  postcode          String
+  website           String
+  logoPath          String?
+  externalSource    String
+  externalStatus    String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  users             User[]
+  produce           CompanyProduce[]
+  certificates      Certificate[]
+  gallery           GalleryItem[]
+  applications      ExportApplication[]
+}
+
+model ProduceType {
+  id           String           @id
+  name         String           @unique
+  companyRows  CompanyProduce[]
+  applications ExportApplication[]
+}
+
+model CompanyProduce {
+  id            String      @id
+  companyId     String
+  produceTypeId String
+  variety       String?
+  active        Boolean     @default(true)
+  company       Company     @relation(fields: [companyId], references: [id])
+  produceType   ProduceType @relation(fields: [produceTypeId], references: [id])
+}
+
+model Certificate {
+  id            String   @id
+  companyId     String
+  type          String
+  certificateNo String
+  documentPath  String
+  issueDate     DateTime
+  expiryDate    DateTime?
+  status        String
+  company       Company  @relation(fields: [companyId], references: [id])
+}
+
+model GalleryItem {
+  id          String   @id
+  companyId   String
+  category    String
+  description String
+  filePath    String
+  uploadedBy  String
+  uploadedAt  DateTime
+  company     Company  @relation(fields: [companyId], references: [id])
+}
+
+model ExportApplication {
+  id               String            @id
+  applicationNo    String            @unique
+  companyId        String
+  produceTypeId    String
+  variety          String
+  grade            String
+  size             String
+  quantity         Int
+  quantityUnit     String
+  destinationCountry String
+  cocCertificateId String?
+  cocNumber        String
+  exportDate       DateTime
+  farmName         String
+  importerName     String
+  importerAddress  String
+  status           ApplicationStatus
+  submittedAt      DateTime?
+  reviewedAt       DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  company          Company           @relation(fields: [companyId], references: [id])
+  produceType      ProduceType       @relation(fields: [produceTypeId], references: [id])
+  qrCode           QrCode?
+  approvals        Approval[]
+}
+
+model QrCode {
+  id            String            @id
+  qrCode        String            @unique
+  applicationId String            @unique
+  publicSlug    String            @unique
+  status        QrStatus
+  generatedAt   DateTime
+  activatedAt   DateTime?
+  application   ExportApplication @relation(fields: [applicationId], references: [id])
+}
+
+model Approval {
+  id            String            @id
+  applicationId String
+  officerUserId String
+  decision      String
+  remarks       String
+  decidedAt     DateTime
+  application   ExportApplication @relation(fields: [applicationId], references: [id])
+  officer       User              @relation(fields: [officerUserId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id
+  actorUserId String?
+  actorRole   String
+  action      String
+  objectType  String
+  objectId    String
+  beforeJson  String?
+  afterJson   String?
+  remarks     String?
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id
+  userId    String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}

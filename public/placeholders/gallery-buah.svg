@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect fill="#fff4d6" width="800" height="480"/>
+  <circle cx="400" cy="220" r="90" fill="#c99212"/>
+  <text x="400" y="360" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#345">PLACEHOLDER · BUAH</text>
+</svg>

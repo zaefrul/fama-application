@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fama
+      POSTGRES_PASSWORD: fama
+      POSTGRES_DB: jejak_gpl
+    ports:
+      - "5432:5432"
+    volumes:
+      - jejak_pg:/var/lib/postgresql/data
+
+volumes:
+  jejak_pg:
