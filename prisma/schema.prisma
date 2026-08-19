@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -40,6 +40,8 @@ model User {
   updatedAt          DateTime @updatedAt
   approvals          Approval[]
   notifications      Notification[]
+
+  @@index([companyId])
 }
 
 model Company {
@@ -49,7 +51,7 @@ model Company {
   name              String
   email             String
   phone             String
-  address           String
+  address           String   @db.Text
   state             String
   district          String
   postcode          String
@@ -64,6 +66,8 @@ model Company {
   certificates      Certificate[]
   gallery           GalleryItem[]
   applications      ExportApplication[]
+
+  @@index([registrationNo])
 }
 
 model ProduceType {
@@ -81,6 +85,9 @@ model CompanyProduce {
   active        Boolean     @default(true)
   company       Company     @relation(fields: [companyId], references: [id])
   produceType   ProduceType @relation(fields: [produceTypeId], references: [id])
+
+  @@index([companyId])
+  @@index([produceTypeId])
 }
 
 model Certificate {
@@ -93,6 +100,8 @@ model Certificate {
   expiryDate    DateTime?
   status        String
   company       Company  @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
 }
 
 model GalleryItem {
@@ -104,6 +113,8 @@ model GalleryItem {
   uploadedBy  String
   uploadedAt  DateTime
   company     Company  @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
 }
 
 model ExportApplication {
@@ -122,7 +133,7 @@ model ExportApplication {
   exportDate       DateTime
   farmName         String
   importerName     String
-  importerAddress  String
+  importerAddress  String            @db.Text
   status           ApplicationStatus
   submittedAt      DateTime?
   reviewedAt       DateTime?
@@ -132,6 +143,9 @@ model ExportApplication {
   produceType      ProduceType       @relation(fields: [produceTypeId], references: [id])
   qrCode           QrCode?
   approvals        Approval[]
+
+  @@index([companyId])
+  @@index([status])
 }
 
 model QrCode {
@@ -154,6 +168,9 @@ model Approval {
   decidedAt     DateTime
   application   ExportApplication @relation(fields: [applicationId], references: [id])
   officer       User              @relation(fields: [officerUserId], references: [id])
+
+  @@index([applicationId])
+  @@index([officerUserId])
 }
 
 model AuditLog {
@@ -163,10 +180,13 @@ model AuditLog {
   action      String
   objectType  String
   objectId    String
-  beforeJson  String?
-  afterJson   String?
+  beforeJson  String?  @db.Text
+  afterJson   String?  @db.Text
   remarks     String?
   createdAt   DateTime @default(now())
+
+  @@index([objectType, objectId])
+  @@index([actorUserId])
 }
 
 model Notification {
@@ -177,4 +197,6 @@ model Notification {
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
