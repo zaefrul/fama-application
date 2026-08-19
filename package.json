@@ -9,6 +9,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "build": "prisma generate && next build",
+    "build:host": "prisma generate && NEXT_CPU_COUNT=1 next build",
     "start": "node server.js",
     "setup": "prisma generate && prisma db push && node --import tsx prisma/seed.ts",
     "lint": "eslint",

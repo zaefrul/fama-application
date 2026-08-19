@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
+    cpus: 1,
+    workerThreads: false,
     serverActions: {
       bodySizeLimit: "8mb",
     },
