@@ -14,7 +14,7 @@
     "setup": "prisma generate && prisma db push && node --import tsx prisma/seed.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/domain/transitions.test.ts",
+    "test": "tsx --test src/domain/transitions.test.ts src/lib/ids.test.ts src/repositories/fama-managed.test.ts",
     "test:e2e": "playwright test",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

@@ -12,12 +12,16 @@ import { createId, nextApplicationNo, nextQrCode } from "@/lib/ids";
 import { getStore, persistStore, nutritionByProduce, produceTypes } from "@/fixtures/store";
 import type { Repositories } from "./contracts";
 
+function famaAccountNo(registrationNo: string) {
+  return `FAMA-${registrationNo.trim()}`;
+}
+
 function now() {
   return new Date().toISOString();
 }
 
 export function createFixtureRepository(): Repositories {
-  return {
+  const repos: Repositories = {
     async findUserByEmail(email) {
       return getStore().users.find((user) => user.email.toLowerCase() === email.toLowerCase()) ?? null;
     },
@@ -65,6 +69,38 @@ export function createFixtureRepository(): Repositories {
     async getCompany(id) {
       return getStore().companies.find((company) => company.id === id) ?? null;
     },
+    async createCompany(input, actor) {
+      const store = getStore();
+      const registrationNo = input.registrationNo.trim();
+      const name = input.name.trim();
+      if (!registrationNo || !name) throw new Error("Nama dan no. pendaftaran diperlukan");
+      const externalAccountNo = famaAccountNo(registrationNo);
+      const duplicate = store.companies.find(
+        (row) => row.registrationNo === registrationNo || row.externalAccountNo === externalAccountNo,
+      );
+      if (duplicate) throw new Error("No. pendaftaran atau akaun luaran telah wujud");
+      const company: Company = {
+        id: createId("co"),
+        registrationNo,
+        externalAccountNo,
+        name,
+        email: input.email,
+        phone: input.phone,
+        address: input.address,
+        state: input.state,
+        district: input.district,
+        postcode: input.postcode,
+        website: input.website,
+        logoPath: null,
+        externalSource: "FAMA",
+        externalStatus: "Aktif",
+        createdAt: now(),
+      };
+      store.companies.push(company);
+      writeAudit(store, actor, "COMPANY_CREATED", "Company", company.id, null, { name, registrationNo });
+      persistStore(store);
+      return company;
+    },
     async updateCompany(id, patch) {
       const store = getStore();
       const company = store.companies.find((row) => row.id === id);
@@ -75,6 +111,42 @@ export function createFixtureRepository(): Repositories {
           (company as unknown as Record<string, unknown>)[key] = value;
         }
       });
+      persistStore(store);
+      return company;
+    },
+    async updateManagedCompany(id, patch, actor) {
+      const store = getStore();
+      const company = store.companies.find((row) => row.id === id);
+      if (!company) throw new Error("Syarikat tidak dijumpai");
+      const isFama = company.externalSource === "FAMA";
+      const nextRegistration = isFama && patch.registrationNo !== undefined ? patch.registrationNo.trim() : company.registrationNo;
+      const nextName = isFama && patch.name !== undefined ? patch.name.trim() : company.name;
+      if (!nextRegistration || !nextName) throw new Error("Nama dan no. pendaftaran diperlukan");
+      const nextAccount = isFama ? famaAccountNo(nextRegistration) : company.externalAccountNo;
+      if (isFama && (nextRegistration !== company.registrationNo || nextAccount !== company.externalAccountNo)) {
+        const duplicate = store.companies.find(
+          (row) =>
+            row.id !== id && (row.registrationNo === nextRegistration || row.externalAccountNo === nextAccount),
+        );
+        if (duplicate) throw new Error("No. pendaftaran atau akaun luaran telah wujud");
+      }
+      const locked = new Set(["id", "externalSource", "externalStatus", "createdAt"]);
+      if (!isFama) {
+        locked.add("name");
+        locked.add("registrationNo");
+        locked.add("externalAccountNo");
+      }
+      Object.entries(patch).forEach(([key, value]) => {
+        if (!locked.has(key) && value !== undefined) {
+          (company as unknown as Record<string, unknown>)[key] = value;
+        }
+      });
+      if (isFama) {
+        company.name = nextName;
+        company.registrationNo = nextRegistration;
+        company.externalAccountNo = nextAccount;
+      }
+      writeAudit(store, actor, "COMPANY_UPDATED", "Company", id, null, { name: company.name, registrationNo: company.registrationNo });
       persistStore(store);
       return company;
     },
@@ -173,6 +245,17 @@ export function createFixtureRepository(): Repositories {
       persistStore(store);
       return application;
     },
+    async createAndActivateQr(companyId, input, actor) {
+      const application = await repos.createApplication({ ...input, companyId });
+      await repos.addCompanyProduce(companyId, input.produceTypeId);
+      const generated = await repos.generateQr(application.id, actor);
+      await repos.submitApplication(application.id, actor);
+      await repos.startReview(application.id, actor);
+      const approved = await repos.approveApplication(application.id, actor, "Dicipta dan diaktifkan oleh FAMA");
+      const qr = await repos.getQrById(generated.id);
+      if (!qr) throw new Error("QR tidak dijana");
+      return { application: approved, qr };
+    },
     async updateApplication(id, patch) {
       const store = getStore();
       const application = store.applications.find((row) => row.id === id);
@@ -181,6 +264,26 @@ export function createFixtureRepository(): Repositories {
         throw new Error("Hanya draf boleh dikemaskini");
       }
       Object.assign(application, patch, { updatedAt: now() });
+      persistStore(store);
+      return application;
+    },
+    async updateManagedApplication(id, patch, actor) {
+      const store = getStore();
+      const application = store.applications.find((row) => row.id === id);
+      if (!application) throw new Error("Permohonan tidak dijumpai");
+      if (application.status !== "APPROVED") {
+        throw new Error("Hanya permohonan diluluskan boleh dikemaskini oleh FAMA");
+      }
+      const beforeQr = store.qrCodes.find((row) => row.applicationId === id);
+      const qrIdentity = beforeQr ? { qrCode: beforeQr.qrCode, publicSlug: beforeQr.publicSlug, status: beforeQr.status } : null;
+      Object.assign(application, patch, { updatedAt: now() });
+      const afterQr = store.qrCodes.find((row) => row.applicationId === id);
+      if (qrIdentity && afterQr) {
+        afterQr.qrCode = qrIdentity.qrCode;
+        afterQr.publicSlug = qrIdentity.publicSlug;
+        afterQr.status = qrIdentity.status;
+      }
+      writeAudit(store, actor, "APPLICATION_UPDATED", "ExportApplication", id, null, { variety: application.variety });
       persistStore(store);
       return application;
     },
@@ -342,6 +445,7 @@ export function createFixtureRepository(): Repositories {
       };
     },
   };
+  return repos;
 }
 
 function mustApplication(store: ReturnType<typeof getStore>, id: string) {

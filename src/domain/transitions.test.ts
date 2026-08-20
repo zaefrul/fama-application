@@ -9,6 +9,7 @@ test("application transitions", () => {
   assert.equal(canTransitionApplication("UNDER_REVIEW", "REJECTED"), true);
   assert.equal(canTransitionApplication("APPROVED", "REJECTED"), false);
   assert.equal(canTransitionApplication("REJECTED", "DRAFT"), false);
+  assert.equal(canTransitionApplication("DRAFT", "APPROVED"), false);
 });
 
 test("qr transitions", () => {

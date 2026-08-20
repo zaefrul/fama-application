@@ -6,13 +6,19 @@ export function ApplicationForm({
   application,
   produceTypes,
   certificates,
+  editable = false,
+  primaryLabel = "Seterusnya",
+  hideSecondary = false,
 }: {
   action: (formData: FormData) => void | Promise<void>;
   application?: ExportApplication;
   produceTypes: ProduceType[];
   certificates: Certificate[];
+  editable?: boolean;
+  primaryLabel?: string;
+  hideSecondary?: boolean;
 }) {
-  const readOnly = application ? application.status !== "DRAFT" : false;
+  const readOnly = editable ? false : application ? application.status !== "DRAFT" : false;
 
   return (
     <div className="space-y-4">
@@ -81,11 +87,13 @@ export function ApplicationForm({
 
           {!readOnly ? (
             <div className="sticky bottom-20 flex gap-2 bg-white/90 py-2 md:bottom-0">
-              <Button type="submit" variant="secondary" className="flex-1">
-                Simpan
-              </Button>
+              {hideSecondary ? null : (
+                <Button type="submit" variant="secondary" className="flex-1">
+                  Simpan
+                </Button>
+              )}
               <Button type="submit" className="flex-1">
-                Seterusnya
+                {primaryLabel}
               </Button>
             </div>
           ) : (

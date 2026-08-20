@@ -32,6 +32,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Which fields can exporter edit?
 - What defines an active company?
 - Can one company have multiple users?
+- Can a FAMA-created company later bind to DagangNet and/or an exporter login?
 
 ## iFAMA
 

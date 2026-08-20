@@ -47,9 +47,10 @@ export async function requireSession(): Promise<SessionUser> {
   return session;
 }
 
-export async function requireRole(role: Role): Promise<SessionUser> {
+export async function requireRole(role: Role | Role[]): Promise<SessionUser> {
   const session = await requireSession();
-  if (session.role !== role) {
+  const allowed = Array.isArray(role) ? role : [role];
+  if (!allowed.includes(session.role)) {
     redirect(session.role === "FAMA_OFFICER" ? "/fama" : "/exporter");
   }
   return session;

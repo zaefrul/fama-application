@@ -61,6 +61,25 @@ export interface ApplicationInput {
   importerAddress: string;
 }
 
+export interface CreateCompanyInput {
+  name: string;
+  registrationNo: string;
+  email: string;
+  phone: string;
+  address: string;
+  state: string;
+  district: string;
+  postcode: string;
+  website: string;
+}
+
+export type ManagedCompanyPatch = Partial<
+  Pick<
+    Company,
+    "name" | "registrationNo" | "address" | "state" | "district" | "postcode" | "phone" | "email" | "website" | "logoPath"
+  >
+>;
+
 export interface Repositories {
   findUserByEmail(email: string): Promise<User | null>;
   findUserById(id: string): Promise<User | null>;
@@ -80,7 +99,9 @@ export interface Repositories {
 
   listCompanies(): Promise<Company[]>;
   getCompany(id: string): Promise<Company | null>;
+  createCompany(input: CreateCompanyInput, actor: SessionUser): Promise<Company>;
   updateCompany(id: string, patch: Partial<Company>): Promise<Company>;
+  updateManagedCompany(id: string, patch: ManagedCompanyPatch, actor: SessionUser): Promise<Company>;
 
   listProduceTypes(): Promise<ProduceType[]>;
   listCompanyProduce(companyId: string): Promise<CompanyProduce[]>;
@@ -101,7 +122,17 @@ export interface Repositories {
   }): Promise<ExportApplication[]>;
   getApplication(id: string): Promise<ExportApplication | null>;
   createApplication(input: ApplicationInput): Promise<ExportApplication>;
+  createAndActivateQr(
+    companyId: string,
+    input: ApplicationInput,
+    actor: SessionUser,
+  ): Promise<{ application: ExportApplication; qr: QrCodeRecord }>;
   updateApplication(id: string, patch: Partial<ApplicationInput>): Promise<ExportApplication>;
+  updateManagedApplication(
+    id: string,
+    patch: Partial<ApplicationInput>,
+    actor: SessionUser,
+  ): Promise<ExportApplication>;
   submitApplication(id: string, actor: SessionUser): Promise<ExportApplication>;
   startReview(id: string, actor: SessionUser): Promise<ExportApplication>;
   approveApplication(id: string, actor: SessionUser, remarks: string): Promise<ExportApplication>;

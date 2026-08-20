@@ -15,6 +15,10 @@ import { getPrisma } from "@/lib/prisma";
 import { nutritionByProduce } from "@/fixtures/store";
 import type { Repositories } from "./contracts";
 
+function famaAccountNo(registrationNo: string) {
+  return `FAMA-${registrationNo.trim()}`;
+}
+
 function iso(value: Date | null | undefined) {
   return value ? value.toISOString() : null;
 }
@@ -62,7 +66,7 @@ function toCompany(row: {
 }): Company {
   return {
     ...row,
-    externalSource: "DAGANGNET",
+    externalSource: row.externalSource === "FAMA" ? "FAMA" : "DAGANGNET",
     externalStatus: row.externalStatus === "Tidak Aktif" ? "Tidak Aktif" : "Aktif",
     createdAt: row.createdAt.toISOString(),
   };
@@ -122,7 +126,7 @@ export function createPrismaRepository(): Repositories {
     });
   }
 
-  return {
+  const repos: Repositories = {
     async findUserByEmail(email) {
       const row = await prisma.user.findUnique({ where: { email } });
       return row ? toUser(row) : null;
@@ -167,6 +171,38 @@ export function createPrismaRepository(): Repositories {
       const row = await prisma.company.findUnique({ where: { id } });
       return row ? toCompany(row) : null;
     },
+    async createCompany(input, actor) {
+      const registrationNo = input.registrationNo.trim();
+      const name = input.name.trim();
+      if (!registrationNo || !name) throw new Error("Nama dan no. pendaftaran diperlukan");
+      const externalAccountNo = famaAccountNo(registrationNo);
+      const duplicate = await prisma.company.findFirst({
+        where: {
+          OR: [{ registrationNo }, { externalAccountNo }],
+        },
+      });
+      if (duplicate) throw new Error("No. pendaftaran atau akaun luaran telah wujud");
+      const row = await prisma.company.create({
+        data: {
+          id: createId("co"),
+          registrationNo,
+          externalAccountNo,
+          name,
+          email: input.email,
+          phone: input.phone,
+          address: input.address,
+          state: input.state,
+          district: input.district,
+          postcode: input.postcode,
+          website: input.website,
+          logoPath: null,
+          externalSource: "FAMA",
+          externalStatus: "Aktif",
+        },
+      });
+      await writeAudit(actor, "COMPANY_CREATED", "Company", row.id);
+      return toCompany(row);
+    },
     async updateCompany(id, patch) {
       const safe = patch;
       const row = await prisma.company.update({
@@ -182,6 +218,48 @@ export function createPrismaRepository(): Repositories {
           logoPath: safe.logoPath,
         },
       });
+      return toCompany(row);
+    },
+    async updateManagedCompany(id, patch, actor) {
+      const current = await prisma.company.findUnique({ where: { id } });
+      if (!current) throw new Error("Syarikat tidak dijumpai");
+      const isFama = current.externalSource === "FAMA";
+      const nextRegistration = isFama && patch.registrationNo !== undefined ? patch.registrationNo.trim() : current.registrationNo;
+      const nextName = isFama && patch.name !== undefined ? patch.name.trim() : current.name;
+      if (!nextRegistration || !nextName) throw new Error("Nama dan no. pendaftaran diperlukan");
+      const nextAccount = isFama ? famaAccountNo(nextRegistration) : current.externalAccountNo;
+      if (isFama && (nextRegistration !== current.registrationNo || nextAccount !== current.externalAccountNo)) {
+        const duplicate = await prisma.company.findFirst({
+          where: {
+            AND: [
+              { id: { not: id } },
+              { OR: [{ registrationNo: nextRegistration }, { externalAccountNo: nextAccount }] },
+            ],
+          },
+        });
+        if (duplicate) throw new Error("No. pendaftaran atau akaun luaran telah wujud");
+      }
+      const row = await prisma.company.update({
+        where: { id },
+        data: {
+          address: patch.address ?? current.address,
+          state: patch.state ?? current.state,
+          district: patch.district ?? current.district,
+          postcode: patch.postcode ?? current.postcode,
+          phone: patch.phone ?? current.phone,
+          email: patch.email ?? current.email,
+          website: patch.website ?? current.website,
+          logoPath: patch.logoPath ?? current.logoPath,
+          ...(isFama
+            ? {
+                name: nextName,
+                registrationNo: nextRegistration,
+                externalAccountNo: nextAccount,
+              }
+            : {}),
+        },
+      });
+      await writeAudit(actor, "COMPANY_UPDATED", "Company", id);
       return toCompany(row);
     },
     async listProduceTypes() {
@@ -272,6 +350,24 @@ export function createPrismaRepository(): Repositories {
       });
       return toApp(row);
     },
+    async createAndActivateQr(companyId, input, actor) {
+      const application = await repos.createApplication({ ...input, companyId });
+      const produce = await prisma.companyProduce.findFirst({
+        where: { companyId, produceTypeId: input.produceTypeId },
+      });
+      if (!produce) {
+        await prisma.companyProduce.create({
+          data: { id: createId("cp"), companyId, produceTypeId: input.produceTypeId, active: true },
+        });
+      }
+      const generated = await repos.generateQr(application.id, actor);
+      await repos.submitApplication(application.id, actor);
+      await repos.startReview(application.id, actor);
+      const approved = await repos.approveApplication(application.id, actor, "Dicipta dan diaktifkan oleh FAMA");
+      const qr = await repos.getQrById(generated.id);
+      if (!qr) throw new Error("QR tidak dijana");
+      return { application: approved, qr };
+    },
     async updateApplication(id, patch) {
       const current = await prisma.exportApplication.findUnique({ where: { id } });
       if (!current || current.status !== "DRAFT") throw new Error("Hanya draf boleh dikemaskini");
@@ -282,6 +378,33 @@ export function createPrismaRepository(): Repositories {
           exportDate: patch.exportDate ? new Date(patch.exportDate) : undefined,
         },
       });
+      return toApp(row);
+    },
+    async updateManagedApplication(id, patch, actor) {
+      const current = await prisma.exportApplication.findUnique({ where: { id } });
+      if (!current) throw new Error("Permohonan tidak dijumpai");
+      if (current.status !== "APPROVED") {
+        throw new Error("Hanya permohonan diluluskan boleh dikemaskini oleh FAMA");
+      }
+      const row = await prisma.exportApplication.update({
+        where: { id },
+        data: {
+          produceTypeId: patch.produceTypeId,
+          variety: patch.variety,
+          grade: patch.grade,
+          size: patch.size,
+          quantity: patch.quantity,
+          quantityUnit: patch.quantityUnit,
+          destinationCountry: patch.destinationCountry,
+          cocCertificateId: patch.cocCertificateId,
+          cocNumber: patch.cocNumber,
+          exportDate: patch.exportDate ? new Date(patch.exportDate) : undefined,
+          farmName: patch.farmName,
+          importerName: patch.importerName,
+          importerAddress: patch.importerAddress,
+        },
+      });
+      await writeAudit(actor, "APPLICATION_UPDATED", "ExportApplication", id);
       return toApp(row);
     },
     async submitApplication(id, actor) {
@@ -507,4 +630,5 @@ export function createPrismaRepository(): Repositories {
       };
     },
   };
+  return repos;
 }

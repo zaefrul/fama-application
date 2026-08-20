@@ -98,6 +98,25 @@ Rejected applications cannot be edited or resubmitted until stakeholders confirm
 
 Authenticated UI is BM. Public `/trace/:qrCode` supports BM/EN and a 中文 stub. The public page shows the fields visible on MockFlow page 21, including addresses and certificate thumbnails, as a display assumption pending privacy confirmation. Nutrition is shown only when data exists.
 
+## ADR-014 — FAMA-managed vendor and QR
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-08-21
+
+Pegawai FAMA may register a vendor as a company-only record (`externalSource = FAMA`, no exporter login) and create an active QR in one flow.
+
+Reason: MAHA/ops needs FAMA to prepare a small vendor cohort without booth-side exporter self-service.
+
+Rules:
+
+- Create + activate walks existing transitions: `DRAFT` → `SUBMITTED` → `UNDER_REVIEW` → `APPROVED` + QR `ACTIVE`.
+- Approval remarks for this path: `Dicipta dan diaktifkan oleh FAMA`.
+- FAMA may edit FAMA-sourced company fields (including name and registration no.) and APPROVED public application fields after activation.
+- DagangNet-seeded companies keep name and registration no. read-only.
+- QR identity (`qrCode`, `publicSlug`) does not change on edit.
+- Exporter self-service and DRAFT-only exporter edits stay unchanged.
+- Binding a FAMA-created company to DagangNet or an exporter login remains an open question.
+
 ## Adding a decision
 
 ```text

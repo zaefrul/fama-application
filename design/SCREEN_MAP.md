@@ -60,7 +60,10 @@ These must not introduce banking/finance content into Jejak GPL.
 | `/exporter/qr/:id/download` | Exporter | QR download options | 19 | 12 |
 | `/fama` | FAMA | Monitoring dashboard | 16 | 12 |
 | `/fama/companies` | FAMA | Company list | 18 / 23 | — |
-| `/fama/companies/:id` | FAMA | Company detail | 18 / 23 | 10 |
+| `/fama/companies/new` | FAMA | Daftar vendor | no MockFlow — FAMA ops reuse | 18 / 23 |
+| `/fama/companies/:id` | FAMA | Company detail / edit | 18 / 23 | 10 |
+| `/fama/companies/:id/qr/new` | FAMA | Cipta QR | no MockFlow — FAMA ops reuse | 19 / 20 / 26 |
+| `/fama/companies/:id/qr/:applicationId` | FAMA | Edit public QR fields | no MockFlow — FAMA ops reuse | 19 / 20 / 26 |
 | `/fama/applications` | FAMA | Review queue | 28 adapted for FAMA | 7 |
 | `/fama/applications/:id` | FAMA | Review + approve/reject | 20 | 6, 7 |
 | `/fama/qr` | FAMA | QR monitoring | 16 / 26 | 7 |

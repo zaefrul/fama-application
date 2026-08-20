@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Input, PageTitle } from "@/components/ui";
+import { Button, Card, Input, PageTitle } from "@/components/ui";
 import { requireRole } from "@/lib/session";
 import { getRepositories } from "@/repositories";
 
@@ -9,7 +9,12 @@ export default async function FamaCompaniesPage() {
 
   return (
     <div className="space-y-4">
-      <PageTitle title="Senarai Syarikat" />
+      <div className="flex items-start justify-between gap-3">
+        <PageTitle title="Senarai Syarikat" />
+        <Link href="/fama/companies/new">
+          <Button type="button">Daftar Vendor</Button>
+        </Link>
+      </div>
       <Input placeholder="Carian" name="q" readOnly />
       <ul className="space-y-2">
         {companies.map((company) => (

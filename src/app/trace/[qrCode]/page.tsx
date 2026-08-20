@@ -1,3 +1,5 @@
+import { unstable_noStore as noStore } from "next/cache";
+import { connection } from "next/server";
 import Image from "next/image";
 import Link from "next/link";
 import { DocumentPreview } from "@/components/document-preview";
@@ -7,6 +9,9 @@ import { Card, DataRow } from "@/components/ui";
 import { hydrateApplication } from "@/lib/lookups";
 import { traceUrl } from "@/lib/app-url";
 import { getRepositories } from "@/repositories";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const copy = {
   bm: {
@@ -46,10 +51,13 @@ export default async function TracePage({
   searchParams,
 }: {
   params: Promise<{ qrCode: string }>;
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; t?: string }>;
 }) {
+  noStore();
+  await connection();
   const { qrCode } = await params;
-  const { lang: rawLang } = await searchParams;
+  const { lang: rawLang, t: cacheBust } = await searchParams;
+  void cacheBust;
   const lang = rawLang === "en" || rawLang === "zh" ? rawLang : "bm";
   const t = copy[lang];
   const repos = getRepositories();
@@ -111,6 +119,8 @@ async function ActiveTrace({
   lang: "bm" | "en" | "zh";
   t: (typeof copy)["bm"];
 }) {
+  noStore();
+  await connection();
   const repos = getRepositories();
   const qr = await repos.getQrByCode(qrCode);
   if (!qr) return null;

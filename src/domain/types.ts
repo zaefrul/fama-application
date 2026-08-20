@@ -29,7 +29,7 @@ export interface Company {
   postcode: string;
   website: string;
   logoPath: string | null;
-  externalSource: "DAGANGNET";
+  externalSource: "DAGANGNET" | "FAMA";
   externalStatus: "Aktif" | "Tidak Aktif";
   createdAt: string;
 }

@@ -73,15 +73,15 @@ export function persistStore(store: FixtureStore) {
 }
 
 export function getStore(): FixtureStore {
-  if (memoryStore) return memoryStore;
   try {
     if (existsSync(STORE_PATH)) {
       memoryStore = JSON.parse(readFileSync(STORE_PATH, "utf8")) as FixtureStore;
       return memoryStore;
     }
   } catch {
-    // Fall through to seed data.
+    if (memoryStore) return memoryStore;
   }
+  if (memoryStore) return memoryStore;
   memoryStore = seedStore();
   persistStore(memoryStore);
   return memoryStore;

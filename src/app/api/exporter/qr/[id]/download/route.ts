@@ -9,12 +9,13 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await requireRole("EXPORTER");
+  const session = await requireRole(["EXPORTER", "FAMA_OFFICER"]);
   const { id } = await params;
   const qr = await getRepositories().getQrById(id);
   if (!qr) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const application = await getRepositories().getApplication(qr.applicationId);
-  if (!application || application.companyId !== session.companyId) {
+  if (!application) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (session.role === "EXPORTER" && application.companyId !== session.companyId) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

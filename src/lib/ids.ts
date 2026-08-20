@@ -1,17 +1,21 @@
-export function nextApplicationNo(existing: string[]): string {
+function nextSerial(existing: string[], prefix: string) {
   const numbers = existing
-    .map((value) => Number(value.replace(/\D/g, "")))
+    .map((value) => {
+      const suffix = value.split("-").pop() ?? "";
+      if (!/^\d{1,6}$/.test(suffix)) return Number.NaN;
+      return Number(suffix);
+    })
     .filter((value) => Number.isFinite(value));
   const next = (numbers.length ? Math.max(...numbers) : 0) + 1;
-  return `FAMA-2026-${String(next).padStart(6, "0")}`;
+  return `${prefix}${String(next).padStart(6, "0")}`;
+}
+
+export function nextApplicationNo(existing: string[]): string {
+  return nextSerial(existing, "FAMA-2026-");
 }
 
 export function nextQrCode(existing: string[]): string {
-  const numbers = existing
-    .map((value) => Number(value.replace(/\D/g, "")))
-    .filter((value) => Number.isFinite(value));
-  const next = (numbers.length ? Math.max(...numbers) : 0) + 1;
-  return `GPL-QR-${String(next).padStart(6, "0")}`;
+  return nextSerial(existing, "GPL-QR-");
 }
 
 export function createId(prefix: string) {
