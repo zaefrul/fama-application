@@ -2,7 +2,7 @@
 <div class="flex w-full flex-col items-center justify-center">
     <div class="rounded-3xl border border-border bg-white p-4 shadow-sm">
         <img
-            src="{{ url('/api/qr') }}?data={{ urlencode($value) }}&size={{ max($size * 2, 360) }}&v=2"
+            src="{{ url('/api/qr') }}?data={{ urlencode($value) }}&size={{ max($size * 2, 360) }}&v=3"
             alt="QR {{ $value }}"
             width="{{ $size }}"
             height="{{ $size }}"
