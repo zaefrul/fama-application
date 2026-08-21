@@ -124,13 +124,33 @@ Final or placeholder: placeholder
 
 ### Certificate examples
 
-- HACCP
-- MyGAP
-- CoC
-- Fitosanitasi
-- ISO 22000 appears in an earlier concept
+Status: **Demo samples for public QR. Marked CONTOH — not official verification of the demo companies.**
 
-Status: **Placeholder SVGs clearly marked as not official certificates**
+Typical exporter show-off set used in the prototype: myGAP, HACCP, Halal, Fitosanitasi, ISO 22000, CoC.
+
+```text
+File: design/assets/certificates/sijil-fitosanitasi-demo.jpg
+      public/certificates/sijil-fitosanitasi-demo.jpg
+Source: https://commons.wikimedia.org/wiki/File:Phytosanitary_certificate_(27169903590).jpg
+Owner: Sasha India (Flickr)
+License/permission: CC BY 2.0
+Used for: public QR Fitosanitasi thumbnail (live phytosanitary example)
+Final or placeholder: licensed live example, overlay CONTOH
+```
+
+```text
+File: public/certificates/sijil-mygap-demo.svg
+      public/certificates/sijil-haccp-demo.svg
+      public/certificates/sijil-halal-demo.svg
+      public/certificates/sijil-iso22000-demo.svg
+      public/certificates/sijil-coc-demo.svg
+      design/assets/certificates/ (copies)
+Source: generated prototype samples
+Owner: project
+License/permission: internal prototype
+Used for: public QR / exporter sijil grid
+Final or placeholder: clearly marked CONTOH SIJIL
+```
 
 Do not present a sample certificate as genuine production verification.
 

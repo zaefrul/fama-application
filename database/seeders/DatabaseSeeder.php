@@ -8,7 +8,6 @@ use App\Domain\Role;
 use App\Models\AppNotification;
 use App\Models\Approval;
 use App\Models\AuditLog;
-use App\Models\Certificate;
 use App\Models\Company;
 use App\Models\CompanyProduce;
 use App\Models\ExportApplication;
@@ -120,15 +119,7 @@ class DatabaseSeeder extends Seeder
             CompanyProduce::query()->create($row);
         }
 
-        foreach ([
-            ['id' => 'cert_abc_haccp', 'company_id' => 'co_abc', 'type' => 'HACCP', 'certificate_no' => 'HACCP-ABC-2025-01', 'document_path' => '/placeholders/certificate-haccp.svg', 'issue_date' => '2025-03-01', 'expiry_date' => '2027-03-01', 'status' => 'ACTIVE'],
-            ['id' => 'cert_abc_mygap', 'company_id' => 'co_abc', 'type' => 'MyGAP', 'certificate_no' => 'MYGAP-ABC-2025-04', 'document_path' => '/placeholders/certificate-mygap.svg', 'issue_date' => '2025-04-12', 'expiry_date' => '2027-04-12', 'status' => 'ACTIVE'],
-            ['id' => 'cert_abc_coc', 'company_id' => 'co_abc', 'type' => 'CoC', 'certificate_no' => 'STB181019EJ100436', 'document_path' => '/placeholders/certificate-coc.svg', 'issue_date' => '2025-06-01', 'expiry_date' => '2026-12-31', 'status' => 'ACTIVE'],
-            ['id' => 'cert_abc_fito', 'company_id' => 'co_abc', 'type' => 'FITOSANITASI', 'certificate_no' => 'FITO-ABC-2026-09', 'document_path' => '/placeholders/certificate-fitosanitasi.svg', 'issue_date' => '2026-01-20', 'expiry_date' => '2026-12-31', 'status' => 'ACTIVE'],
-            ['id' => 'cert_mts_coc', 'company_id' => 'co_mts', 'type' => 'CoC', 'certificate_no' => 'STB190220EJ200118', 'document_path' => '/placeholders/certificate-coc.svg', 'issue_date' => '2025-08-01', 'expiry_date' => '2026-12-31', 'status' => 'ACTIVE'],
-        ] as $row) {
-            Certificate::query()->create($row);
-        }
+        $this->call(CertificateDemoSeeder::class);
 
         foreach ([
             ['id' => 'gal_abc_kebun', 'company_id' => 'co_abc', 'category' => 'KEBUN', 'description' => 'KEBUN', 'file_path' => '/farms/farm-demo-01.jpg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],

@@ -7,6 +7,8 @@
             'product' => 'Maklumat Buah',
             'export' => 'Maklumat Eksport',
             'certs' => 'Sijil',
+            'certsNote' => 'Contoh sijil yang biasa dipamer pengeksport. Ditanda CONTOH — bukan pengesahan rasmi rekod ini.',
+            'sample' => 'CONTOH',
             'nutrition' => 'Nutrisi',
             'verifiedKicker' => 'Pengesahan rasmi FAMA',
             'verifiedTitle' => 'Produk Disahkan Tulen',
@@ -19,6 +21,12 @@
             'scans' => 'Imbasan',
             'scanBody' => 'QR ini telah dibuka oleh pengunjung awam.',
             'malaysia' => 'Malaysia',
+            'pamphletTitle' => 'Sijil Jejak Produk Eksport',
+            'confidence' => 'Maklumat ini dikeluarkan oleh FAMA untuk pengesahan pembeli.',
+            'officialNo' => 'No. Jejak',
+            'originShort' => 'Hasil Malaysia',
+            'stamp' => 'Cap pengesahan rasmi',
+            'fruitType' => 'Jenis Buah',
         ],
         'en' => [
             'inactiveTitle' => 'QR Not Activated',
@@ -27,6 +35,8 @@
             'product' => 'Fruit information',
             'export' => 'Export information',
             'certs' => 'Certificates',
+            'certsNote' => 'Sample certificates exporters typically display. Marked CONTOH — not official verification of this record.',
+            'sample' => 'SAMPLE',
             'nutrition' => 'Nutrition',
             'verifiedKicker' => 'Official FAMA verification',
             'verifiedTitle' => 'Authentic product verified',
@@ -39,6 +49,12 @@
             'scans' => 'Scans',
             'scanBody' => 'This QR has been opened by public visitors.',
             'malaysia' => 'Malaysia',
+            'pamphletTitle' => 'Export product traceability certificate',
+            'confidence' => 'This information is issued by FAMA for buyer verification.',
+            'officialNo' => 'Trace no.',
+            'originShort' => 'Malaysian produce',
+            'stamp' => 'Official verification mark',
+            'fruitType' => 'Fruit type',
         ],
         'zh' => [
             'inactiveTitle' => 'QR 尚未激活',
@@ -47,6 +63,8 @@
             'product' => '水果信息',
             'export' => '出口信息',
             'certs' => '证书',
+            'certsNote' => '出口商常展示的证书样例。标有 CONTOH — 非本记录的正式核验。',
+            'sample' => '样例',
             'nutrition' => '营养',
             'verifiedKicker' => 'FAMA 官方核实',
             'verifiedTitle' => '产品已核实为正品',
@@ -59,6 +77,12 @@
             'scans' => '扫码次数',
             'scanBody' => '此二维码已被公众打开。',
             'malaysia' => '马来西亚',
+            'pamphletTitle' => '出口产品溯源证书',
+            'confidence' => '本信息由 FAMA 签发，供买方核实。',
+            'officialNo' => '溯源编号',
+            'originShort' => '马来西亚农产品',
+            'stamp' => '官方核实印章',
+            'fruitType' => '水果种类',
         ],
     ];
     $t = $copy[$lang];
@@ -74,13 +98,13 @@
     <x-assets />
 </head>
 <body class="min-h-dvh antialiased">
-    <div class="flex min-h-dvh flex-col bg-brand/10">
+    <div class="flex min-h-dvh flex-col bg-surface-dark">
         <x-gov-masthead />
 
-        <header class="bg-surface-dark text-white">
-            <div class="mx-auto flex max-w-lg items-start justify-between gap-3 px-4 py-5">
+        <header class="mx-auto w-full max-w-lg px-4 pt-5">
+            <div class="flex items-start justify-between gap-3 text-white">
                 <div class="flex min-w-0 items-center gap-3">
-                    <div class="shrink-0 rounded-2xl bg-white px-2.5 py-2 shadow-sm">
+                    <div class="shrink-0 rounded-2xl bg-white px-2.5 py-2">
                         <img
                             src="{{ asset('logos/logo-fama.png') }}"
                             alt="FAMA"
@@ -102,26 +126,9 @@
                     <a href="{{ $langUrl('en') }}" class="{{ $lang === 'en' ? 'text-warning' : 'text-white/65' }}">EN</a>
                 </div>
             </div>
-            <p class="bg-black/25 px-4 py-2 text-center text-[11px] font-semibold tracking-[0.16em] text-white">JEJAK EKSPORT HASIL PERTANIAN</p>
-            <div class="h-1 bg-warning" aria-hidden="true"></div>
         </header>
 
-        @if ($qr && $active)
-            <div class="bg-brand text-white shadow-sm">
-                <div class="mx-auto flex max-w-lg items-center gap-3 px-4 py-3.5">
-                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand">
-                        <x-icon name="shield" class="h-5 w-5" />
-                    </span>
-                    <div class="min-w-0">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{{ $t['verifiedKicker'] }}</p>
-                        <p class="text-base font-bold leading-tight">{{ $t['verifiedTitle'] }}</p>
-                        <p class="text-xs text-white/90">{{ $t['verifiedBody'] }}</p>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <main class="mx-auto w-full max-w-lg flex-1 px-4 pb-10 pt-5">
+        <main class="mx-auto w-full max-w-lg flex-1 px-4 pb-10 pt-4">
             @if (! $qr)
                 <x-card class="text-center"><p class="text-lg font-bold">{{ $t['invalid'] }}</p></x-card>
             @elseif (! $active)
@@ -132,48 +139,78 @@
                     <p class="rounded-xl bg-surface-muted px-3 py-2 text-sm font-semibold">QR ID: {{ $qr->qr_code }}</p>
                 </x-card>
             @else
-                <div class="space-y-4">
-                    <x-card class="overflow-hidden p-0">
-                        <div class="flex items-center gap-4 px-4 py-4">
-                            <img
-                                src="{{ $heroImage }}"
-                                alt="{{ $productTitle }}"
-                                width="96"
-                                height="96"
-                                class="trace-produce-photo border-4 border-brand/20"
-                                style="width:96px;height:96px;max-width:96px;max-height:96px;object-fit:cover;border-radius:9999px"
-                            >
-                            <div class="min-w-0">
-                                <p class="text-[11px] font-semibold uppercase tracking-wide text-brand">{{ $t['productName'] }}</p>
-                                <h1 class="text-xl font-bold leading-tight text-ink">{{ $productTitle }}</h1>
-                                <p class="mt-1 text-sm text-muted">{{ $t['origin'] }}: <span class="font-semibold text-ink">{{ $t['malaysia'] }}</span></p>
-                                <p class="text-sm text-muted">{{ $t['exporter'] }}: <span class="font-semibold text-ink">{{ $application?->company?->name }}</span></p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-px bg-brand/15">
-                            <div class="bg-white px-4 py-3">
-                                <p class="text-[10px] font-semibold uppercase tracking-wide text-brand">{{ $t['farm'] }}</p>
-                                <p class="mt-0.5 text-sm font-semibold leading-snug">{{ $application?->farm_name ?: '—' }}</p>
-                            </div>
-                            <div class="bg-white px-4 py-3">
-                                <p class="text-[10px] font-semibold uppercase tracking-wide text-brand">{{ $t['destination'] }}</p>
-                                <p class="mt-0.5 text-sm font-semibold leading-snug">{{ $application?->destination_country ?: '—' }}</p>
-                            </div>
-                        </div>
-                    </x-card>
+                <article class="trace-pamphlet overflow-hidden rounded-sm">
+                    <div class="bg-surface-dark px-5 py-4 text-center text-white">
+                        <p class="text-[10px] font-semibold tracking-[0.22em] text-warning">{{ $t['verifiedKicker'] }}</p>
+                        <h1 class="mt-1 text-lg font-bold tracking-wide">{{ $t['pamphletTitle'] }}</h1>
+                        <p class="mt-1 text-xs text-white/70">Jejak Eksport Hasil Pertanian Malaysia</p>
+                    </div>
+                    <div class="trace-gold-rule"></div>
 
-                    <div class="flex items-center justify-between gap-3">
-                        <x-status-badge :label="'Gred '.$application->grade" tone="success" />
-                        <p class="text-xs font-semibold text-brand">{{ number_format((int) $accessCount) }} {{ $t['scans'] }}</p>
+                    <div class="relative bg-surface-dark">
+                        <img
+                            src="{{ $heroImage }}"
+                            alt="{{ $productTitle }}"
+                            width="640"
+                            height="200"
+                            class="trace-produce-hero"
+                            style="width:100%;height:200px;max-height:200px;object-fit:cover;display:block"
+                        >
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface-dark via-surface-dark/70 to-transparent px-5 pb-4 pt-16">
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-warning">{{ $t['productName'] }}</p>
+                            <p class="text-2xl font-bold leading-tight text-white">{{ $productTitle }}</p>
+                        </div>
                     </div>
 
-                    <x-qr-preview :value="$publicUrl" :size="160" />
+                    <div class="bg-brand px-5 py-3 text-center text-white">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">{{ $t['verifiedKicker'] }}</p>
+                        <p class="text-lg font-bold leading-tight">{{ $t['verifiedTitle'] }}</p>
+                        <p class="text-sm text-white/90">{{ $t['verifiedBody'] }}</p>
+                    </div>
+                    <div class="trace-gold-rule"></div>
 
-                    <section class="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+                    <div class="px-5 py-4">
+                        <p class="text-center text-sm leading-relaxed text-ink">{{ $t['confidence'] }}</p>
+                        <dl class="mt-4 grid grid-cols-3 gap-2 text-center">
+                            <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">{{ $t['officialNo'] }}</dt>
+                                <dd class="mt-0.5 break-all text-[11px] font-bold text-brand">{{ $qr->qr_code }}</dd>
+                            </div>
+                            <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">Gred</dt>
+                                <dd class="mt-0.5 text-sm font-bold text-brand">{{ $application?->grade }}</dd>
+                            </div>
+                            <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">{{ $t['origin'] }}</dt>
+                                <dd class="mt-0.5 text-sm font-bold text-brand">{{ $t['malaysia'] }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div class="mx-5 border-t border-warning/30"></div>
+
+                    <dl class="px-5 py-3">
+                        <x-data-row :label="$t['exporter']" :value="$application?->company?->name" />
+                        <x-data-row :label="$t['farm']" :value="$application?->farm_name" />
+                        <x-data-row :label="$t['destination']" :value="$application?->destination_country" />
+                        <x-data-row :label="$t['scans']" :value="number_format((int) $accessCount)" />
+                    </dl>
+
+                    <div class="px-5 pb-5 pt-1 text-center">
+                        <p class="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">{{ $t['stamp'] }}</p>
+                        <div class="mx-auto w-fit rounded-2xl border border-warning/40 bg-white px-4 py-3">
+                            <x-qr-preview :value="$publicUrl" :size="120" :caption="false" />
+                        </div>
+                        <p class="mt-2 text-[11px] font-semibold tracking-wide text-brand">{{ $qr->qr_code }}</p>
+                    </div>
+                </article>
+
+                <div class="mt-4 space-y-3">
+                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['product'] }}</h2>
                         <dl class="px-4">
                             <x-data-row :label="$t['exporter']" :value="$application?->company?->name" />
-                            <x-data-row :label="$lang === 'en' ? 'Fruit type' : ($lang === 'zh' ? '水果种类' : 'Jenis Buah')" :value="$application?->produceType?->name" />
+                            <x-data-row :label="$t['fruitType']" :value="$application?->produceType?->name" />
                             <x-data-row label="Gred" :value="$application?->grade" />
                             <x-data-row label="Saiz" :value="$application?->size" />
                             <x-data-row label="Berat" :value="$application?->quantity.' '.$application?->quantity_unit" />
@@ -182,7 +219,7 @@
                         </dl>
                     </section>
 
-                    <section class="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['export'] }}</h2>
                         <dl class="px-4">
                             <x-data-row label="Tarikh Eksport" :value="$application?->export_date?->toDateString()" />
@@ -193,20 +230,30 @@
                         </dl>
                     </section>
 
-                    <section class="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['certs'] }}</h2>
+                        <p class="border-b border-warning/20 px-3 py-2 text-[11px] leading-5 text-muted">{{ $t['certsNote'] }}</p>
                         <div class="grid grid-cols-2 gap-2 p-3">
                             @foreach ($certificates as $certificate)
-                                <a href="{{ $certificate->document_path }}" target="_blank" rel="noreferrer" class="overflow-hidden rounded-xl border border-border bg-surface-muted p-2 text-xs">
-                                    <x-document-preview :src="$certificate->document_path" :alt="$certificate->type" class="mb-2 h-20 w-full object-cover" />
-                                    <p class="font-semibold">SIJIL {{ $certificate->type }}</p>
+                                @php
+                                    $certSrc = \App\Services\JejakService::certificatePreviewPath($certificate->type, $certificate->document_path);
+                                @endphp
+                                <a href="{{ $certSrc }}" target="_blank" rel="noreferrer" class="overflow-hidden rounded-sm border border-border bg-surface-muted">
+                                    <div class="relative">
+                                        <x-document-preview :src="$certSrc" :alt="'Contoh sijil '.$certificate->type" class="trace-cert-thumb h-36 w-full object-cover object-top" />
+                                        <span class="absolute left-1.5 top-1.5 rounded-sm bg-danger px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white">{{ $t['sample'] }}</span>
+                                    </div>
+                                    <div class="p-2">
+                                        <p class="text-xs font-semibold">SIJIL {{ $certificate->type }}</p>
+                                        <p class="truncate text-[10px] text-muted">{{ $certificate->certificate_no }}</p>
+                                    </div>
                                 </a>
                             @endforeach
                         </div>
                     </section>
 
                     @if (count($nutrition))
-                        <section class="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+                        <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
                             <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['nutrition'] }}</h2>
                             <table class="w-full text-left text-sm">
                                 <tbody>
@@ -222,8 +269,9 @@
                         </section>
                     @endif
 
-                    <p class="text-center text-[11px] text-muted">{{ $t['scanBody'] }}</p>
-                    <p class="text-center text-[10px] text-muted">Foto produk: Wikimedia Commons · CC BY / CC BY-SA</p>
+                    <p class="text-center text-[11px] text-white/60">{{ $t['scanBody'] }}</p>
+                    <p class="text-center text-[10px] text-white/45">Foto produk: Wikimedia Commons · CC BY / CC BY-SA</p>
+                    <p class="text-center text-[10px] text-white/45">Contoh sijil fitosanitasi: Wikimedia Commons · CC BY 2.0</p>
                 </div>
             @endif
         </main>

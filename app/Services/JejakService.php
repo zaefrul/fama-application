@@ -25,6 +25,28 @@ use RuntimeException;
 
 class JejakService
 {
+    public static function certificatePreviewPath(string $type, ?string $documentPath = null): string
+    {
+        $path = (string) $documentPath;
+        $isUserUpload = $path !== ''
+            && ! str_contains($path, '/placeholders/')
+            && ! str_contains($path, '/certificates/sijil-');
+
+        if ($isUserUpload) {
+            return $path;
+        }
+
+        return match (strtoupper(trim($type))) {
+            'MYGAP' => '/certificates/sijil-mygap-demo.svg',
+            'HACCP' => '/certificates/sijil-haccp-demo.svg',
+            'COC' => '/certificates/sijil-coc-demo.svg',
+            'FITOSANITASI', 'PHYTOSANITARY' => '/certificates/sijil-fitosanitasi-demo.jpg',
+            'HALAL' => '/certificates/sijil-halal-demo.svg',
+            'ISO 22000', 'ISO22000', 'ISO_22000' => '/certificates/sijil-iso22000-demo.svg',
+            default => $path !== '' ? $path : '/placeholders/certificate-coc.svg',
+        };
+    }
+
     public static function produceImagePath(?string $produceTypeId): ?string
     {
         return match ($produceTypeId) {

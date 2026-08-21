@@ -25,5 +25,7 @@
         img { max-width: 100%; height: auto; }
         .trace-fama-logo { width: 56px; height: 56px; max-width: 56px; max-height: 56px; object-fit: contain; }
         .trace-produce-photo { width: 96px; height: 96px; max-width: 96px; max-height: 96px; border-radius: 9999px; object-fit: cover; }
+        .trace-produce-hero { width: 100%; height: 200px; max-height: 200px; object-fit: cover; display: block; }
+        .trace-pamphlet { background: #fffdf8; border: 2px solid #d4b45a; }
     </style>
 @endif

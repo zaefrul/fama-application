@@ -76,7 +76,7 @@ Do not invent new business functions merely to fill desktop space.
 
 ## DD-010 — Public QR page is a consumer trust surface
 
-**Decision:** The public `/trace` page may use a stronger FAMA-green treatment than authenticated screens: large official FAMA mark, dark identity header, solid green “Produk Disahkan Tulen” bar, product photo, and dark section headers.
+**Decision:** The public `/trace` page may use a stronger FAMA-green treatment than authenticated screens: large official FAMA mark, dark identity header, solid green “Produk Disahkan Tulen” bar, product photo, dark section headers, and a certificate/pamphlet cover so buyers feel the record is official.
 
 **Reason:** Customer feedback that the public scan page was too bland. The consumer reference is used for visual hierarchy only.
 

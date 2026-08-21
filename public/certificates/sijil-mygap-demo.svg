@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="640" viewBox="0 0 480 640">
+  <rect width="480" height="640" fill="#f8f4ea"/>
+  <rect x="14" y="14" width="452" height="612" fill="none" stroke="#0f6b4c" stroke-width="3"/>
+  <rect x="22" y="22" width="436" height="596" fill="none" stroke="#c99212" stroke-width="1.5"/>
+  <text x="240" y="58" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0f6b4c" font-weight="700">JABATAN PERTANIAN MALAYSIA</text>
+  <text x="240" y="78" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5b6b63">DEPARTMENT OF AGRICULTURE</text>
+  <circle cx="240" cy="130" r="28" fill="#0f6b4c"/>
+  <text x="240" y="136" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#fff" font-weight="700">DOA</text>
+  <text x="240" y="190" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#0d3d2e" font-weight="700">SIJIL myGAP</text>
+  <text x="240" y="214" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#0f6b4c">Malaysian Good Agricultural Practice</text>
+  <text x="240" y="260" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#14241d">Diberikan kepada ladang yang mematuhi</text>
+  <text x="240" y="278" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#14241d">amalan pertanian baik MS 1784</text>
+  <text x="240" y="320" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5b6b63">No. rujukan contoh</text>
+  <text x="240" y="342" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#0f6b4c" font-weight="700">MYGAP-DEMO-2026-04</text>
+  <text x="240" y="400" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5b6b63">Sah laku contoh · 20252027</text>
+  <text x="240" y="500" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#c0392b" font-weight="700">CONTOH SIJIL</text>
+  <text x="240" y="522" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#c0392b">Bukan pengesahan rasmi syarikat ini</text>
+  <text x="240" y="590" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5b6b63">Prototype Jejak GPL · rujukan skim DOA</text>
+</svg>

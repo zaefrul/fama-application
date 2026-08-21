@@ -11,7 +11,8 @@
                         <option>MyGAP</option>
                         <option>CoC</option>
                         <option>FITOSANITASI</option>
-                        <option value="ISO_22000">ISO 22000</option>
+                        <option value="ISO 22000">ISO 22000</option>
+                        <option>HALAL</option>
                     </x-select>
                 </x-field>
                 <x-field label="No. Sijil" required><x-input name="certificateNo" required /></x-field>
@@ -27,7 +28,7 @@
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
             @foreach ($certificates as $certificate)
                 <x-card class="min-w-0 space-y-2">
-                    <x-document-preview :src="$certificate->document_path" :alt="$certificate->type" />
+                    <x-document-preview :src="\App\Services\JejakService::certificatePreviewPath($certificate->type, $certificate->document_path)" :alt="$certificate->type" />
                     <p class="truncate text-sm font-semibold">SIJIL {{ $certificate->type }}</p>
                     <p class="truncate text-xs text-muted">{{ $certificate->certificate_no }}</p>
                     <a href="{{ $certificate->document_path }}" target="_blank" rel="noreferrer" class="text-xs font-semibold text-brand">Buka fail</a>
