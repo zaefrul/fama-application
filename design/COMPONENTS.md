@@ -58,11 +58,18 @@ Used for:
 
 - QR Aktif
 - QR Belum Aktif
-- Permohonan
+- Permohonan / Permohonan QR
 - Approved
 - Rejected
 - Syarikat Aktif
+- Pengeksport
+- Buah unik
+- Destinasi
 - Imbasan QR
+
+## RankBars
+
+Horizontal ranked bars for categorical dashboard lists (top fruits, destinations, negeri). Each row uses the next chart-palette token (`--chart-1` … `--chart-10`).
 
 ## QrAccessChart
 

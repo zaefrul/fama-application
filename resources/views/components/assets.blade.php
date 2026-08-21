@@ -19,6 +19,16 @@
             --status-danger: #c0392b;
             --status-info: #2b6cb0;
             --status-neutral: #64748b;
+            --chart-1: #2b6cb0;
+            --chart-2: #c99212;
+            --chart-3: #7c3aed;
+            --chart-4: #0e7490;
+            --chart-5: #db2777;
+            --chart-6: #ea580c;
+            --chart-7: #1a7a4c;
+            --chart-8: #4338ca;
+            --chart-9: #c0392b;
+            --chart-10: #64748b;
         }
         body { background: var(--surface-muted); color: var(--text-primary); font-family: "Source Sans 3", "Segoe UI", sans-serif; margin: 0; }
         a { color: inherit; text-decoration: none; }

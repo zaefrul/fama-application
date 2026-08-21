@@ -39,6 +39,8 @@ Use semantic tokens in code:
 
 Populate final exact values from approved design assets.
 
+Charts on the FAMA dashboard MAY use a separate categorical palette (`--chart-1` … `--chart-10`). Those tokens are for data bars only. Do not reuse them as new brand or status colours on chrome, buttons or badges.
+
 ## 3. Status semantics
 
 | State | Visual meaning |

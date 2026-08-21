@@ -83,3 +83,23 @@ Do not invent new business functions merely to fill desktop space.
 **Do not copy from the reference:** MAPC branding, “Jejak Balik Durian” product name, collection/packaging centres, journey events, or scan locations. Those are not Jejak GPL data.
 
 **Assumption:** Existing public fields stay the same. Gallery image is shown when the company has one; otherwise the approved buah placeholder is used. Scan count is page views (ADR-016), without location.
+
+## DD-011 — FAMA dashboard operational charts may use a categorical palette
+
+**Decision:** The FAMA Utama dashboard may show extra operational aggregates and use a 10-colour chart palette. Layout chrome and primary actions stay FAMA green. Chart colours are data tokens, not new brand colours.
+
+Added tiles (aggregates of existing records only):
+
+- Permohonan QR — all export applications, including draf;
+- Pengeksport — users with role `EXPORTER` (not the same as syarikat);
+- Buah unik — distinct produce types registered on any company;
+- Destinasi — distinct destination countries on applications;
+- 10 buah paling kerap — produce types ranked by application count;
+- Destinasi eksport and syarikat mengikut negeri — ranked counts;
+- Status permohonan — mix of canonical application statuses.
+
+QR Aktif / Belum Aktif daily bars still use success/warning because those are status colours.
+
+**Reason:** Stakeholders asked for QR request, exporter, unique fruit and top-fruit monitoring. Status colours (5) are not enough for a top-10 categorical chart.
+
+**Assumption:** Does not change the definition of an active company (`external_status = Aktif`). Does not resolve unique-visitor counting. Daily QR generated uses real `generated_at` in Asia/Kuala_Lumpur for the last 7 calendar days, replacing the earlier placeholder weekday numbers.

@@ -534,11 +534,22 @@ class JejakService
     /**
      * @return array{
      *     activeCompanies: int,
+     *     exporters: int,
+     *     qrRequests: int,
      *     qrActive: int,
+     *     qrInactive: int,
      *     approved: int,
      *     pending: int,
      *     rejected: int,
-     *     dailyQr: list<array{day: string, active: int, inactive: int}>,
+     *     uniqueFruits: int,
+     *     uniqueDestinations: int,
+     *     certificates: int,
+     *     famaCompanies: int,
+     *     dailyQr: list<array{day: string, label: string, active: int, inactive: int, activePercent: int, inactivePercent: int}>,
+     *     topFruits: list<array{label: string, count: int, percent: int, color: int}>,
+     *     topDestinations: list<array{label: string, count: int, percent: int, color: int}>,
+     *     companiesByState: list<array{label: string, count: int, percent: int, color: int}>,
+     *     statusMix: list<array{label: string, count: int, percent: int, tone: string}>,
      *     accessTotal: int,
      *     accessSevenDays: int,
      *     accessWeek: int,
@@ -549,21 +560,45 @@ class JejakService
      */
     public function dashboardFama(): array
     {
-        $days = ['ISNIN', 'SELASA', 'RABU', 'KHAMIS', 'JUMAAT', 'SABTU', 'AHAD'];
         $qrs = QrCode::query()->get();
         $apps = ExportApplication::query()->get();
+        $statusTotal = max(1, $apps->count());
+
+        $statusMix = [];
+        foreach (ApplicationStatus::cases() as $status) {
+            $count = $apps->where('status', $status)->count();
+            $statusMix[] = [
+                'label' => $status->label(),
+                'count' => $count,
+                'percent' => (int) round(($count / $statusTotal) * 100),
+                'tone' => $status->tone(),
+            ];
+        }
 
         return [
             'activeCompanies' => Company::query()->where('external_status', 'Aktif')->count(),
+            'exporters' => User::query()->where('role', Role::Exporter)->count(),
+            'qrRequests' => $apps->count(),
             'qrActive' => $qrs->where('status', QrStatus::Active)->count(),
+            'qrInactive' => $qrs->where('status', QrStatus::GeneratedInactive)->count(),
             'approved' => $apps->where('status', ApplicationStatus::Approved)->count(),
             'pending' => $apps->filter(fn (ExportApplication $app) => in_array($app->status, [ApplicationStatus::Submitted, ApplicationStatus::UnderReview], true))->count(),
             'rejected' => $apps->where('status', ApplicationStatus::Rejected)->count(),
-            'dailyQr' => array_map(fn (string $day, int $index) => [
-                'day' => $day,
-                'active' => 18 + (($index * 5) % 17),
-                'inactive' => 12 + (($index * 3) % 11),
-            ], $days, array_keys($days)),
+            'uniqueFruits' => (int) CompanyProduce::query()->distinct()->count('produce_type_id'),
+            'uniqueDestinations' => $apps->pluck('destination_country')->filter()->unique()->count(),
+            'certificates' => Certificate::query()->count(),
+            'famaCompanies' => Company::query()->where('external_source', 'FAMA')->count(),
+            'dailyQr' => $this->dailyQrGenerated(),
+            'topFruits' => $this->rankNamedCounts($this->produceCounts($apps), 10),
+            'topDestinations' => $this->rankNamedCounts(
+                $apps->pluck('destination_country')->filter()->countBy()->all(),
+                10,
+            ),
+            'companiesByState' => $this->rankNamedCounts(
+                Company::query()->whereNotNull('state')->pluck('state')->filter()->countBy()->all(),
+                10,
+            ),
+            'statusMix' => $statusMix,
             ...$this->qrAccessStats(),
         ];
     }
@@ -650,6 +685,96 @@ class JejakService
             'dailyAccess' => $dailyAccess,
             'topQrAccess' => $topQrAccess,
         ];
+    }
+
+    /**
+     * Last 7 calendar days (Asia/Kuala_Lumpur) of QR generated_at, split by current status.
+     *
+     * @return list<array{day: string, label: string, active: int, inactive: int, activePercent: int, inactivePercent: int}>
+     */
+    private function dailyQrGenerated(): array
+    {
+        $zone = 'Asia/Kuala_Lumpur';
+        $today = CarbonImmutable::now($zone)->startOfDay();
+        $sevenDaysAgo = $today->subDays(6);
+        $recent = QrCode::query()
+            ->where('generated_at', '>=', $sevenDaysAgo->utc())
+            ->get(['status', 'generated_at']);
+
+        $byDay = [];
+        for ($i = 0; $i < 7; $i++) {
+            $byDay[$sevenDaysAgo->addDays($i)->toDateString()] = ['active' => 0, 'inactive' => 0];
+        }
+        foreach ($recent as $qr) {
+            $key = $qr->generated_at?->timezone($zone)->toDateString();
+            if (! $key || ! array_key_exists($key, $byDay)) {
+                continue;
+            }
+            if ($qr->status === QrStatus::Active) {
+                $byDay[$key]['active']++;
+            } else {
+                $byDay[$key]['inactive']++;
+            }
+        }
+
+        $max = max([1, ...array_map(fn (array $row) => $row['active'] + $row['inactive'], $byDay)]);
+        $dailyQr = [];
+        foreach ($byDay as $date => $row) {
+            $day = CarbonImmutable::parse($date, $zone)->locale('ms');
+            $dailyQr[] = [
+                'day' => $date,
+                'label' => strtoupper($day->minDayName),
+                'active' => $row['active'],
+                'inactive' => $row['inactive'],
+                'activePercent' => (int) round(($row['active'] / $max) * 100),
+                'inactivePercent' => (int) round(($row['inactive'] / $max) * 100),
+            ];
+        }
+
+        return $dailyQr;
+    }
+
+    /**
+     * @param  Collection<int, ExportApplication>  $apps
+     * @return array<string, int>
+     */
+    private function produceCounts(Collection $apps): array
+    {
+        $counts = $apps->pluck('produce_type_id')->filter()->countBy();
+        $names = ProduceType::query()
+            ->whereIn('id', $counts->keys())
+            ->pluck('name', 'id');
+
+        $named = [];
+        foreach ($counts as $id => $count) {
+            $named[(string) ($names[$id] ?? $id)] = (int) $count;
+        }
+
+        return $named;
+    }
+
+    /**
+     * @param  array<string, int>  $counts
+     * @return list<array{label: string, count: int, percent: int, color: int}>
+     */
+    private function rankNamedCounts(array $counts, int $limit): array
+    {
+        arsort($counts);
+        $counts = array_slice($counts, 0, $limit, true);
+        $max = max([1, ...array_values($counts)]);
+        $items = [];
+        $color = 1;
+        foreach ($counts as $label => $count) {
+            $items[] = [
+                'label' => (string) $label,
+                'count' => (int) $count,
+                'percent' => (int) round(($count / $max) * 100),
+                'color' => $color,
+            ];
+            $color = $color === 10 ? 1 : $color + 1;
+        }
+
+        return $items;
     }
 
     public function unreadNotificationCount(string $userId): int

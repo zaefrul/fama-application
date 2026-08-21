@@ -6,6 +6,9 @@
         'danger' => 'border-l-danger text-danger',
         'info' => 'border-l-info text-info',
         'neutral' => 'border-l-neutral text-ink',
+        'teal' => 'border-l-chart-4 text-chart-4',
+        'violet' => 'border-l-chart-3 text-chart-3',
+        'rose' => 'border-l-chart-5 text-chart-5',
     ];
     $accent = $accents[$tone] ?? $accents['neutral'];
 @endphp

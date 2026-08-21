@@ -21,6 +21,17 @@
   --status-danger: #c0392b;
   --status-info: #2b6cb0;
   --status-neutral: #64748b;
+  /* Chart palette — data visualisation only. Not FAMA brand tokens. */
+  --chart-1: #2b6cb0;
+  --chart-2: #c99212;
+  --chart-3: #7c3aed;
+  --chart-4: #0e7490;
+  --chart-5: #db2777;
+  --chart-6: #ea580c;
+  --chart-7: #1a7a4c;
+  --chart-8: #4338ca;
+  --chart-9: #c0392b;
+  --chart-10: #64748b;
   /* National identity — Jalur Gemilang. Not FAMA brand tokens. */
   --flag-red: #cc0001;
   --flag-blue: #010066;
@@ -42,6 +53,16 @@
   --color-danger: var(--status-danger);
   --color-info: var(--status-info);
   --color-neutral: var(--status-neutral);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-chart-9: var(--chart-9);
+  --color-chart-10: var(--chart-10);
   --color-flag-red: var(--flag-red);
   --color-flag-blue: var(--flag-blue);
   --color-flag-yellow: var(--flag-yellow);
