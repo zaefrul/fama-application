@@ -16,6 +16,29 @@ if (! is_file(__DIR__.'/../vendor/autoload.php')) {
     exit;
 }
 
+$envPath = __DIR__.'/../.env';
+if (! is_file($envPath)) {
+    http_response_code(500);
+    echo 'Missing .env in the project root. Copy .env.example to .env and set DB_* plus INSTALL_TOKEN.';
+    exit;
+}
+
+$env = file_get_contents($envPath);
+if ($env !== false && ! preg_match('/^APP_KEY=.+/m', $env)) {
+    $key = 'base64:'.base64_encode(random_bytes(32));
+    if (preg_match('/^APP_KEY=/m', $env)) {
+        $env = preg_replace('/^APP_KEY=.*$/m', 'APP_KEY='.$key, $env, 1);
+    } else {
+        $env = 'APP_KEY='.$key."\n".$env;
+    }
+    file_put_contents($envPath, $env);
+}
+
+$configCache = __DIR__.'/../bootstrap/cache/config.php';
+if (is_file($configCache)) {
+    unlink($configCache);
+}
+
 require __DIR__.'/../vendor/autoload.php';
 
 /** @var \Illuminate\Foundation\Application $app */
