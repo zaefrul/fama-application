@@ -56,17 +56,20 @@ For UI work, inspect the reference identified in `design/SCREEN_MAP.md`.
 
 Prototype V1 uses a modular monolith.
 
-Preferred stack:
+Preferred stack on the `laravel` branch:
 
 ```text
-Next.js
-TypeScript
+Laravel
+PHP
+Blade
 Tailwind CSS
-PostgreSQL
-Prisma ORM
+SQLite (default) / MySQL
+Eloquent ORM
 Docker Compose
-Playwright
+PHPUnit
 ```
+
+The accepted Prototype V1 stack on `main` remains Next.js + Prisma. Do not merge this stack change into `main` unless stakeholders accept ADR-015.
 
 Do NOT introduce microservices, Kubernetes, production HA architecture, real DagangNet integration or real iFAMA integration unless scope is explicitly changed.
 

@@ -1,14 +1,13 @@
 services:
-  postgres:
-    image: postgres:16-alpine
+  mysql:
+    image: mysql:8.0
     environment:
-      POSTGRES_USER: fama
-      POSTGRES_PASSWORD: fama
-      POSTGRES_DB: jejak_gpl
+      MYSQL_DATABASE: jejak_gpl
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - jejak_pg:/var/lib/postgresql/data
+      - jejak_mysql:/var/lib/mysql
 
 volumes:
-  jejak_pg:
+  jejak_mysql:

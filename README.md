@@ -1,32 +1,22 @@
-# Sistem Jejak GPL — Agent Project Pack
+# Sistem Jejak GPL — Laravel port
 
-This folder is the working application for the **Sistem Jejak GPL prototype**.
+Laravel + Blade port of the approved **Sistem Jejak GPL** prototype. Requirements and MockFlow references in `docs/` and `design/` are unchanged.
 
-The project is based primarily on the FAMA MockFlow wireframe exported as `design/original/Wireframe-Skrin-Flow.pdf`.
+This is the `laravel` branch. `main` remains the Next.js prototype.
 
-## Source-of-truth order
-
-When sources conflict, use this priority:
-
-1. Approved stakeholder decision / ADR
-2. `docs/FAMA_Jejak_GPL_Prototype_Requirements.md`
-3. Supporting functional documents under `docs/`
-4. `design/SCREEN_MAP.md`
-5. Final-design MockFlow reference pages
-6. Supporting / earlier MockFlow concepts
-7. Developer assumptions
-
-An assumption MUST NOT override a documented requirement.
-
-## Run the prototype (UI-first / fixture data)
+## Run
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
 npm install
-npm run dev
+npm run build
+php artisan serve
 ```
 
-Seed accounts (fixture mode):
+Seed accounts:
 
 ```text
 Exporter: ali@abcfruits.example / Exporter123!
@@ -40,24 +30,17 @@ Public traces:
 - Inactive: `/trace/GPL-QR-000123`
 - Active: `/trace/GPL-QR-000109`
 
-## Optional PostgreSQL
-
-```bash
-docker compose up -d
-# set DATA_SOURCE=prisma and DATABASE_URL in .env.local
-npx prisma db push
-npm run db:seed
-```
-
 ## Scripts
 
 ```bash
-npm run typecheck
-npm run lint
-npm test
-npm run test:e2e
+php artisan test
+vendor/bin/pint
 ```
 
-## Core principle
+## Optional MySQL
 
-The agent must implement the **approved prototype**, not redesign the product and not fill stakeholder gaps with invented logic.
+```bash
+docker compose up -d
+# set DB_CONNECTION=mysql and DB_* in .env
+php artisan migrate --seed
+```

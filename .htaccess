@@ -1,6 +1,0 @@
-Options +FollowSymLinks
-RewriteEngine On
-
-# LiteSpeed/Apache often intercept /_next/static before Node.
-# Map those URLs to the real Next build folder.
-RewriteRule ^_next/static/(.*)$ .next/static/$1 [L]

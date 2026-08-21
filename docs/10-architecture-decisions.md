@@ -117,6 +117,15 @@ Rules:
 - Exporter self-service and DRAFT-only exporter edits stay unchanged.
 - Binding a FAMA-created company to DagangNet or an exporter login remains an open question.
 
+## ADR-015 — Laravel port branch
+
+**Status:** Accepted for the `laravel` branch only  
+**Date:** 2026-08-21
+
+This branch ports the approved Next.js prototype to Laravel + Blade + Eloquent + Tailwind.
+
+It does **not** change the accepted Prototype V1 stack on `main` (ADR-001 / ADR-002). Business rules, routes, seed accounts, and MockFlow screens stay the same. SQLite is the default local store; MySQL remains supported via `.env`.
+
 ## Adding a decision
 
 ```text

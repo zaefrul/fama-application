@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+:root {
+  --brand-primary: #0f6b4c;
+  --brand-primary-hover: #0c5840;
+  --brand-primary-foreground: #ffffff;
+  --brand-accent: #1a8a62;
+  --surface: #ffffff;
+  --surface-muted: #f3f5f4;
+  --surface-dark: #0d3d2e;
+  --border: #d7ddd9;
+  --text-primary: #14241d;
+  --text-secondary: #5b6b63;
+  --status-success: #1a7a4c;
+  --status-warning: #c99212;
+  --status-danger: #c0392b;
+  --status-info: #2b6cb0;
+  --status-neutral: #64748b;
+}
+
+@theme inline {
+  --color-brand: var(--brand-primary);
+  --color-brand-hover: var(--brand-primary-hover);
+  --color-brand-fg: var(--brand-primary-foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-dark: var(--surface-dark);
+  --color-border: var(--border);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-danger: var(--status-danger);
+  --color-info: var(--status-info);
+  --color-neutral: var(--status-neutral);
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  max-width: 100%;
+}
