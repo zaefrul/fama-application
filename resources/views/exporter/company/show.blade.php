@@ -20,7 +20,14 @@
                 @if ($company->logo_path)
                     <div>
                         <p class="mb-1 text-sm font-medium">Logo semasa</p>
-                        <img src="{{ $company->logo_path }}" alt="{{ $company->name }}" class="h-16 w-16 rounded-xl object-contain bg-surface-muted p-1">
+                        <img
+                            src="{{ $company->logo_path }}"
+                            alt="{{ $company->name }}"
+                            width="64"
+                            height="64"
+                            class="company-logo rounded-xl bg-surface-muted p-1"
+                            style="display:block;width:64px;height:64px;max-width:64px;max-height:64px;object-fit:contain"
+                        >
                     </div>
                 @endif
                 <div class="md:col-span-2"><x-error-text>{{ $error }}</x-error-text></div>

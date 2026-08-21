@@ -72,7 +72,7 @@ Do not invent new business functions merely to fill desktop space.
 
 **Reason:** The approved interiors stay intact. The chrome is what makes Malaysian government sites feel official without introducing SaaS styling.
 
-**Assumption:** Uses the existing approved FAMA PNG and current semantic tokens. Exact logo pack and brand hex values remain open questions in `docs/09-open-questions.md`. Authenticated UI stays Bahasa Melayu (ADR-013); no language switcher is added there.
+**Assumption:** Uses the existing approved FAMA PNG and current semantic tokens. Exact logo pack and brand hex values remain open questions in `docs/09-open-questions.md`. Authenticated UI stays Bahasa Melayu (ADR-013); no language switcher is added there. The public QR page may show cropped Jata Negara / KPKM / FAMA marks from stakeholder-supplied lockups in a separate card; that does not approve a final logo pack.
 
 ## DD-010 — Public QR page is a consumer trust surface
 

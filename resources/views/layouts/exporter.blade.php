@@ -13,7 +13,7 @@
     <div class="min-h-dvh md:flex">
         <aside class="hidden w-64 shrink-0 bg-surface-dark p-4 text-white md:flex md:flex-col">
             <div class="mb-6 rounded-2xl bg-white px-3 py-2">
-                <img src="{{ asset('logos/jejak-gpl.png') }}" alt="Sistem Jejak GPL" class="mx-auto h-12 w-auto object-contain">
+                <x-brand-logo variant="sidebar" />
             </div>
             <p class="mb-3 text-xs uppercase tracking-wide text-white/60">Menu Utama</p>
             <ul class="space-y-1">

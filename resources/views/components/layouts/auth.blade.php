@@ -12,7 +12,7 @@
         <div class="flex flex-1 items-center justify-center bg-[linear-gradient(180deg,#e8f3ee_0%,#f3f5f4_42%)] px-4 py-8">
             <div class="w-full max-w-md">
                 <div class="mb-6 flex flex-col items-center text-center">
-                    <img src="{{ asset('logos/jejak-gpl.png') }}" alt="Sistem Jejak GPL" class="h-16 w-auto max-w-[70vw] object-contain sm:h-24">
+                    <x-brand-logo variant="auth" />
                     <p class="mt-2 text-xs font-medium text-ink">Lembaga Pemasaran Pertanian Persekutuan</p>
                     <p class="mt-0.5 text-xs text-muted">Portal rasmi jejak eksport hasil pertanian</p>
                 </div>

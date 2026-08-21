@@ -12,7 +12,7 @@
                 <x-icon name="menu" class="h-5 w-5" />
             </a>
         @endif
-        <img src="{{ asset('logos/logo-fama.png') }}" alt="FAMA" class="h-8 w-auto shrink-0 object-contain sm:h-9">
+        <x-brand-logo variant="header" />
         <div class="min-w-0 flex-1">
             <p class="truncate text-sm font-bold leading-tight text-ink sm:text-base">Sistem Jejak GPL</p>
             <p class="truncate text-[11px] leading-tight text-muted sm:text-xs">Jejak Eksport Hasil Pertanian</p>

@@ -39,6 +39,35 @@ Final or placeholder: approved original PNG
 
 Jejak GPL wordmark is composed from this FAMA logo plus text. No separate official Jejak GPL SVG was supplied.
 
+Stakeholder supplied combined FAMA + KPKM lockups (black/transparent, P3). Cropped for a public QR agency card only. This does not close the open question on the final approved logo pack.
+
+```text
+File: public/logos/LOGO FAMA-MAFS IN MALAY P3-P1-01.png
+      public/logos/LOGO FAMA-MAFS IN MALAY N ENGLSIH P3-P1-01-01.png
+      public/logos/LOGO FAMA-MAFS IN MALAY P3-P2-01-01.png
+      public/logos/LOGO FAMA-MAFI IN MALAY N ENGLSIH P3-P2-01-01.png
+Source: stakeholder-supplied official lockup
+Owner: FAMA / KPKM
+License/permission: supplied project asset
+Used for: source of cropped agency marks
+Final or placeholder: supplied original
+```
+
+```text
+File: public/logos/logo-jata-negara.png
+      public/logos/logo-kpkm-ms.png
+      public/logos/logo-kpkm-en.png
+      public/logos/logo-kpkm-ms-light.png
+      public/logos/logo-kpkm-en-light.png
+      public/logos/logo-fama-lockup.png
+      design/assets/logos/ (copies)
+Source: cropped from the supplied P3 lockups above
+Owner: FAMA / KPKM
+License/permission: supplied project asset
+Used for: public QR “Agensi Kerajaan” card
+Final or placeholder: cropped display extract; *-light variants recolor white lockup text to dark ink for the cream pamphlet card
+```
+
 ### Product/agricultural imagery
 
 Status: **Prototype demo photos added from Wikimedia Commons**

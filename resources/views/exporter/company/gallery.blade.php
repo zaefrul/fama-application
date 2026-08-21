@@ -24,7 +24,14 @@
             @foreach ($items as $item)
                 <li>
                     <x-card class="flex items-center gap-3">
-                        <img src="{{ $item->file_path }}" alt="{{ $item->description }}" class="h-16 w-16 rounded-lg object-cover">
+                        <img
+                            src="{{ $item->file_path }}"
+                            alt="{{ $item->description }}"
+                            width="64"
+                            height="64"
+                            class="company-logo rounded-lg"
+                            style="display:block;width:64px;height:64px;max-width:64px;max-height:64px;object-fit:cover"
+                        >
                         <div class="flex-1">
                             <p class="font-semibold">{{ $item->description }}</p>
                             <p class="text-xs text-muted">{{ $item->uploaded_at?->locale('ms')->translatedFormat('d/m/Y') }}</p>

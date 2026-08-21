@@ -65,7 +65,14 @@
             <h2 class="mb-3 font-semibold">Galeri</h2>
             <div class="overflow-hidden rounded-2xl bg-surface-muted">
                 @if ($gallery->first())
-                    <img src="{{ $gallery->first()->file_path }}" alt="{{ $gallery->first()->description }}" class="h-44 w-full object-cover">
+                    <img
+                        src="{{ $gallery->first()->file_path }}"
+                        alt="{{ $gallery->first()->description }}"
+                        width="640"
+                        height="176"
+                        class="gallery-hero"
+                        style="display:block;width:100%;height:176px;max-height:176px;object-fit:cover"
+                    >
                 @else
                     <div class="flex h-44 items-center justify-center text-sm text-muted">Tiada gambar</div>
                 @endif

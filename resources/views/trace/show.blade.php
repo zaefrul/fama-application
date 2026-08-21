@@ -27,6 +27,11 @@
             'originShort' => 'Hasil Malaysia',
             'stamp' => 'Cap pengesahan rasmi',
             'fruitType' => 'Jenis Buah',
+            'agencies' => 'Agensi Kerajaan',
+            'agenciesNote' => 'Logo rasmi yang dibekalkan untuk paparan portal. Bukan sijil produk.',
+            'agencyMalaysia' => 'Kerajaan Malaysia',
+            'agencyKpkm' => 'KPKM',
+            'agencyFama' => 'FAMA',
         ],
         'en' => [
             'inactiveTitle' => 'QR Not Activated',
@@ -55,6 +60,11 @@
             'originShort' => 'Malaysian produce',
             'stamp' => 'Official verification mark',
             'fruitType' => 'Fruit type',
+            'agencies' => 'Government agencies',
+            'agenciesNote' => 'Official marks supplied for this portal. Not a product certificate.',
+            'agencyMalaysia' => 'Government of Malaysia',
+            'agencyKpkm' => 'MAFS',
+            'agencyFama' => 'FAMA',
         ],
         'zh' => [
             'inactiveTitle' => 'QR 尚未激活',
@@ -83,6 +93,11 @@
             'originShort' => '马来西亚农产品',
             'stamp' => '官方核实印章',
             'fruitType' => '水果种类',
+            'agencies' => '政府机构',
+            'agenciesNote' => '本门户提供的官方标志。不是产品证书。',
+            'agencyMalaysia' => '马来西亚政府',
+            'agencyKpkm' => 'KPKM',
+            'agencyFama' => 'FAMA',
         ],
     ];
     $t = $copy[$lang];
@@ -206,6 +221,45 @@
                 </article>
 
                 <div class="mt-4 space-y-3">
+                    <section class="trace-pamphlet overflow-hidden rounded-sm">
+                        <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['agencies'] }}</h2>
+                        <p class="border-b border-warning/20 px-3 py-2 text-[11px] leading-5 text-muted">{{ $t['agenciesNote'] }}</p>
+                        <div class="grid grid-cols-4 items-center gap-2 px-3 py-4">
+                            <img
+                                src="{{ asset('logos/logo-jata-negara.png') }}"
+                                alt="{{ $t['agencyMalaysia'] }}"
+                                width="160"
+                                height="114"
+                                class="trace-gov-logo"
+                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
+                            >
+                            <img
+                                src="{{ asset('logos/logo-jata-negara.png') }}"
+                                alt="{{ $t['agencyKpkm'] }}"
+                                width="160"
+                                height="114"
+                                class="trace-gov-logo"
+                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
+                            >
+                            <img
+                                src="{{ asset('logos/logo-fama.png') }}"
+                                alt="{{ $t['agencyFama'] }}"
+                                width="80"
+                                height="80"
+                                class="trace-gov-logo"
+                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
+                            >
+                            <img
+                                src="{{ asset('logos/fama-jejak-gpl-logo-hd-1kpx.png') }}"
+                                alt="Jejak GPL"
+                                width="80"
+                                height="80"
+                                class="trace-gov-logo"
+                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
+                            >
+                        </div>
+                    </section>
+
                     <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['product'] }}</h2>
                         <dl class="px-4">

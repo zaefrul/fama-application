@@ -17,7 +17,8 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('LAMAN RASMI FAMA')
             ->assertSee('Kementerian Pertanian dan Keterjaminan Makanan')
             ->assertSee('Hak cipta terpelihara')
-            ->assertSee('Portal rasmi jejak eksport hasil pertanian');
+            ->assertSee('Portal rasmi jejak eksport hasil pertanian')
+            ->assertSee('brand-logo-auth');
     }
 
     public function test_active_public_trace_shows_fama_verification(): void
@@ -35,6 +36,10 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('/certificates/sijil-haccp-demo.svg')
             ->assertSee('/certificates/sijil-coc-demo.svg')
             ->assertSee('CONTOH')
+            ->assertSee('Agensi Kerajaan')
+            ->assertSee('/logos/logo-jata-negara.png')
+            ->assertSee('/logos/logo-fama.png')
+            ->assertSee('/logos/fama-jejak-gpl-logo-hd-1kpx.png')
             ->assertSee('Hak cipta terpelihara');
     }
 
@@ -59,6 +64,7 @@ class GovernmentChromeTest extends TestCase
             ->assertOk()
             ->assertSee('LAMAN RASMI FAMA')
             ->assertSee('Sistem Jejak GPL')
+            ->assertSee('brand-logo-header')
             ->assertSee('Hak cipta terpelihara');
     }
 }
