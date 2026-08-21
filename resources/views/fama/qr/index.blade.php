@@ -9,6 +9,7 @@
                             <div>
                                 <p class="font-semibold">{{ $qr->qr_code }}</p>
                                 <p class="text-xs text-muted">{{ $qr->application?->company?->name }}</p>
+                                <p class="mt-1 text-xs text-muted">{{ number_format((int) $qr->accesses_count) }} imbasan</p>
                             </div>
                             <x-status-badge :qr="$qr->status" />
                         </x-card>

@@ -21,5 +21,19 @@
             </div>
             <p class="mt-2 text-xs text-muted">Hijau: QR Aktif · Kuning: QR Belum Aktif</p>
         </x-card>
+        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+            <x-kpi-card :value="$stats['accessSevenDays']" label="Imbasan QR · 7 hari" tone="info" href="/fama/qr" />
+            <x-kpi-card :value="$stats['accessTotal']" label="Imbasan QR · keseluruhan" tone="neutral" href="/fama/qr" />
+        </div>
+        <x-card>
+            <h2 class="mb-1 font-semibold">Imbasan Halaman Awam QR</h2>
+            <p class="mb-4 text-xs text-muted">Setiap buka halaman awam untuk kod QR yang wujud dikira sebagai satu imbasan. Pengunjung tidak dinamakan.</p>
+            <x-qr-access-chart
+                :week="$stats['accessWeek']"
+                :last-week="$stats['accessLastWeek']"
+                :daily="$stats['dailyAccess']"
+                :top="$stats['topQrAccess']"
+            />
+        </x-card>
     </div>
 </x-layouts.fama>

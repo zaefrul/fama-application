@@ -1,21 +1,33 @@
 @props(['notificationCount' => 0, 'menuHref' => null])
+@php
+    use App\Domain\Role;
+    $user = auth()->user();
+    $roleLabel = $user?->role === Role::FamaOfficer ? 'Pegawai FAMA' : 'Pengeksport';
+@endphp
 
-<header class="sticky top-0 z-20 flex items-center gap-2 border-b border-border bg-white px-3 py-2 sm:px-4 sm:py-2.5">
-    @if ($menuHref)
-        <a href="{{ $menuHref }}" class="shrink-0 rounded-lg border border-border px-2 py-1 text-lg" aria-label="Menu">☰</a>
-    @else
-        <span class="w-8 shrink-0"></span>
-    @endif
-    <div class="flex min-w-0 flex-1 justify-center">
-        <div class="flex min-w-0 max-w-full flex-col items-center leading-tight">
-            <img src="{{ asset('logos/jejak-gpl.png') }}" alt="Sistem Jejak GPL" class="h-8 w-auto max-w-[42vw] object-contain sm:h-11">
-            <p class="mt-0.5 hidden max-w-[220px] text-center text-[10px] leading-tight text-muted sm:block">Lembaga Pemasaran Pertanian Persekutuan</p>
-        </div>
-    </div>
-    <span class="relative w-8 shrink-0 rounded-lg border border-border px-2 py-1 text-center text-sm" aria-label="Notifikasi">
-        🔔
-        @if ($notificationCount > 0)
-            <span class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] text-white">{{ $notificationCount }}</span>
+<header class="sticky top-0 z-20 border-b border-border bg-white">
+    <div class="flex items-center gap-2.5 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
+        @if ($menuHref)
+            <a href="{{ $menuHref }}" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-ink md:hidden" aria-label="Menu">
+                <x-icon name="menu" class="h-5 w-5" />
+            </a>
         @endif
-    </span>
+        <img src="{{ asset('logos/logo-fama.png') }}" alt="FAMA" class="h-8 w-auto shrink-0 object-contain sm:h-9">
+        <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-bold leading-tight text-ink sm:text-base">Sistem Jejak GPL</p>
+            <p class="truncate text-[11px] leading-tight text-muted sm:text-xs">Jejak Eksport Hasil Pertanian</p>
+        </div>
+        @if ($user)
+            <div class="hidden min-w-0 text-right md:block">
+                <p class="truncate text-xs font-semibold text-ink">{{ $user->name }}</p>
+                <p class="text-[11px] text-muted">{{ $roleLabel }}</p>
+            </div>
+        @endif
+        <span class="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-ink" aria-label="Notifikasi">
+            <x-icon name="bell" class="h-5 w-5" />
+            @if ($notificationCount > 0)
+                <span class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white">{{ $notificationCount }}</span>
+            @endif
+        </span>
+    </div>
 </header>

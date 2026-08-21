@@ -149,7 +149,24 @@ QR must:
 - have clear state text;
 - retain a visible identifier where the design requires it.
 
-## 11. Responsive QA targets
+## 11. Official government chrome
+
+Authenticated, auth and public pages share one portal frame:
+
+```text
+Jalur Gemilang hairline
+Laman Rasmi FAMA utility bar
+Identity header / page canvas
+Official footer
+```
+
+Do not remove this chrome to “simplify” a screen. Do not add SaaS decoration (glass, heavy gradients, motion) to make it more attractive.
+
+Attractiveness comes from restraint: official identity, clear type, status colour used sparingly, and a verification banner on the public QR page.
+
+The public `/trace` page (DD-010) may use a stronger FAMA-green identity header and a solid verification bar. Do not copy that intensity onto authenticated exporter/FAMA screens.
+
+## 12. Responsive QA targets
 
 ```text
 Mobile: 390 × 844

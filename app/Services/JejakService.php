@@ -16,13 +16,26 @@ use App\Models\CompanyProduce;
 use App\Models\ExportApplication;
 use App\Models\GalleryItem;
 use App\Models\ProduceType;
+use App\Models\QrAccess;
 use App\Models\QrCode;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
 class JejakService
 {
+    public static function produceImagePath(?string $produceTypeId): ?string
+    {
+        return match ($produceTypeId) {
+            'pt_durian' => '/products/produce-durian-demo-01.jpg',
+            'pt_tembikai' => '/products/produce-tembikai-demo-01.jpg',
+            'pt_mangga' => '/products/produce-mangga-demo-01.jpg',
+            'pt_nangka' => '/products/produce-nangka-demo-01.jpg',
+            default => null,
+        };
+    }
+
     /**
      * @return array<string, list<array{name: string, amount: string, dailyPercent: string}>>
      */
@@ -437,7 +450,7 @@ class JejakService
 
     public function listQrCodes(?string $companyId = null): Collection
     {
-        $query = QrCode::query()->with('application.produceType', 'application.company');
+        $query = QrCode::query()->with('application.produceType', 'application.company')->withCount('accesses');
         if ($companyId) {
             $query->whereHas('application', fn ($q) => $q->where('company_id', $companyId));
         }
@@ -451,6 +464,16 @@ class JejakService
             ->where('qr_code', $qrCode)
             ->orWhere('public_slug', $qrCode)
             ->first();
+    }
+
+    public function recordQrAccess(QrCode $qr): void
+    {
+        QrAccess::query()->create([
+            'id' => Ids::create('acc'),
+            'qr_id' => $qr->id,
+            'qr_code' => $qr->qr_code,
+            'accessed_at' => now(),
+        ]);
     }
 
     public function listAudit(?string $companyId = null): Collection
@@ -493,7 +516,13 @@ class JejakService
      *     approved: int,
      *     pending: int,
      *     rejected: int,
-     *     dailyQr: list<array{day: string, active: int, inactive: int}>
+     *     dailyQr: list<array{day: string, active: int, inactive: int}>,
+     *     accessTotal: int,
+     *     accessSevenDays: int,
+     *     accessWeek: int,
+     *     accessLastWeek: int,
+     *     dailyAccess: list<array{day: string, label: string, count: int, percent: int}>,
+     *     topQrAccess: list<array{qrCode: string, produce: string, company: string, count: int, percent: int}>
      * }
      */
     public function dashboardFama(): array
@@ -513,6 +542,91 @@ class JejakService
                 'active' => 18 + (($index * 5) % 17),
                 'inactive' => 12 + (($index * 3) % 11),
             ], $days, array_keys($days)),
+            ...$this->qrAccessStats(),
+        ];
+    }
+
+    /**
+     * Prototype assumption (ADR-016): one public HTML view of a known QR = one imbasan.
+     * Daily buckets use Asia/Kuala_Lumpur. Weeks start on Monday.
+     *
+     * @return array{
+     *     accessTotal: int,
+     *     accessSevenDays: int,
+     *     accessWeek: int,
+     *     accessLastWeek: int,
+     *     dailyAccess: list<array{day: string, label: string, count: int, percent: int}>,
+     *     topQrAccess: list<array{qrCode: string, produce: string, company: string, count: int, percent: int}>
+     * }
+     */
+    private function qrAccessStats(): array
+    {
+        $zone = 'Asia/Kuala_Lumpur';
+        $today = CarbonImmutable::now($zone)->startOfDay();
+        $weekStart = $today->startOfWeek(CarbonImmutable::MONDAY);
+        $lastWeekStart = $weekStart->subWeek();
+        $sevenDaysAgo = $today->subDays(6);
+
+        $accessTotal = QrAccess::query()->count();
+        $accessWeek = QrAccess::query()->where('accessed_at', '>=', $weekStart->utc())->count();
+        $accessLastWeek = QrAccess::query()
+            ->where('accessed_at', '>=', $lastWeekStart->utc())
+            ->where('accessed_at', '<', $weekStart->utc())
+            ->count();
+
+        $recent = QrAccess::query()
+            ->where('accessed_at', '>=', $sevenDaysAgo->utc())
+            ->get(['qr_id', 'qr_code', 'accessed_at']);
+
+        $byDay = [];
+        for ($i = 0; $i < 7; $i++) {
+            $day = $sevenDaysAgo->addDays($i);
+            $byDay[$day->toDateString()] = 0;
+        }
+        foreach ($recent as $access) {
+            $key = $access->accessed_at->timezone($zone)->toDateString();
+            if (array_key_exists($key, $byDay)) {
+                $byDay[$key]++;
+            }
+        }
+        $maxDay = max([1, ...array_values($byDay)]);
+        $dailyAccess = [];
+        foreach ($byDay as $date => $count) {
+            $day = CarbonImmutable::parse($date, $zone)->locale('ms');
+            $dailyAccess[] = [
+                'day' => $date,
+                'label' => strtoupper($day->minDayName),
+                'count' => $count,
+                'percent' => (int) round(($count / $maxDay) * 100),
+            ];
+        }
+
+        $topCounts = $recent->countBy('qr_id')->sortDesc()->take(3);
+        $topQr = QrCode::query()
+            ->with('application.produceType', 'application.company')
+            ->whereIn('id', $topCounts->keys())
+            ->get()
+            ->keyBy('id');
+        $maxTop = max([1, ...$topCounts->values()->all()]);
+        $topQrAccess = [];
+        foreach ($topCounts as $qrId => $count) {
+            $qr = $topQr->get($qrId);
+            $topQrAccess[] = [
+                'qrCode' => $qr?->qr_code ?? (string) $qrId,
+                'produce' => $qr?->application?->produceType?->name ?? '—',
+                'company' => $qr?->application?->company?->name ?? '—',
+                'count' => $count,
+                'percent' => (int) round(($count / $maxTop) * 100),
+            ];
+        }
+
+        return [
+            'accessTotal' => $accessTotal,
+            'accessSevenDays' => array_sum(array_column($dailyAccess, 'count')),
+            'accessWeek' => $accessWeek,
+            'accessLastWeek' => $accessLastWeek,
+            'dailyAccess' => $dailyAccess,
+            'topQrAccess' => $topQrAccess,
         ];
     }
 

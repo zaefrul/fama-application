@@ -18,7 +18,9 @@
             </fieldset>
             <x-field label="Emel" required>
                 <div class="relative">
-                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">✉</span>
+                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">
+                        <x-icon name="mail" class="h-4 w-4" />
+                    </span>
                     <x-input name="email" type="email" required placeholder="nama@contoh.com" class="pl-9" />
                 </div>
             </x-field>

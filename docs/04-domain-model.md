@@ -21,6 +21,7 @@ Approval
 
 AuditLog
 Notification
+QrAccess
 ```
 
 ## Relationship overview
@@ -36,6 +37,7 @@ User
             ├── GalleryItem
             └── ExportApplication
                   ├── QRCode
+                  │    └── QrAccess
                   ├── Approval
                   └── AuditLog
 ```
@@ -146,6 +148,15 @@ Observed categories:
 - activatedAt
 - createdAt
 - updatedAt
+
+## QrAccess — prototype fields (ADR-016)
+
+- id
+- qrId
+- qrCode
+- accessedAt
+
+One row per public HTML view of a known QR. No visitor identity.
 
 ## Approval — suggested fields
 

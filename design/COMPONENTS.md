@@ -2,16 +2,32 @@
 
 Build reusable components rather than cloning markup per screen.
 
+## GovMasthead
+
+Official top chrome: Jalur Gemilang hairline and “Laman Rasmi FAMA” utility bar.
+
+## GovFooter
+
+Official footer: FAMA, ministry, prototype disclaimer, copyright.
+
+## Icon
+
+Shared inline SVG set. Do not use emoji as navigation or header icons.
+
+## GovVerifiedBanner
+
+Public active-QR trust banner: “Disahkan oleh FAMA”.
+
 ## AppHeader
 
 Used across authenticated areas.
 
 Supports:
 
-- FAMA logo / Jejak GPL identity;
+- FAMA mark and Sistem Jejak GPL identity;
 - menu/back control depending screen;
 - notification indicator;
-- profile access where shown.
+- signed-in officer/exporter name on desktop.
 
 ## MobileBottomNav
 
@@ -46,6 +62,15 @@ Used for:
 - Approved
 - Rejected
 - Syarikat Aktif
+- Imbasan QR
+
+## QrAccessChart
+
+FAMA dashboard comparison:
+
+- this week vs last week;
+- 7-day imbasan bars;
+- top scanned QRs.
 
 Suggested inputs:
 

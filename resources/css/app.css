@@ -21,6 +21,10 @@
   --status-danger: #c0392b;
   --status-info: #2b6cb0;
   --status-neutral: #64748b;
+  /* National identity — Jalur Gemilang. Not FAMA brand tokens. */
+  --flag-red: #cc0001;
+  --flag-blue: #010066;
+  --flag-yellow: #fcd116;
 }
 
 @theme inline {
@@ -38,6 +42,9 @@
   --color-danger: var(--status-danger);
   --color-info: var(--status-info);
   --color-neutral: var(--status-neutral);
+  --color-flag-red: var(--flag-red);
+  --color-flag-blue: var(--flag-blue);
+  --color-flag-yellow: var(--flag-yellow);
   --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
 }
 

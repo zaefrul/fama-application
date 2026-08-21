@@ -126,6 +126,19 @@ This branch ports the approved Next.js prototype to Laravel + Blade + Eloquent +
 
 It does **not** change the accepted Prototype V1 stack on `main` (ADR-001 / ADR-002). Business rules, routes, seed accounts, and MockFlow screens stay the same. SQLite is the default local store; MySQL remains supported via `.env`.
 
+## ADR-016 — Public QR access is a page view
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-08-21
+
+A known public HTML `/trace/{qrCode}` view is stored as one `QrAccess` row. Invalid codes and the public JSON API are not counted.
+
+The FAMA dashboard compares this calendar week with last week (Monday start, Asia/Kuala_Lumpur) and shows a 7-day imbasan bar chart plus the three most-scanned QRs.
+
+**Reason:** Stakeholders asked for “how many people access the QR”. Public visitors have no identity. Unique-visitor and IP storage remain open questions, so the prototype counts page views and labels them *imbasan*, not *orang*.
+
+**Consequences:** Language switches and refreshes increment the count. No IP or user-agent is stored.
+
 ## Adding a decision
 
 ```text

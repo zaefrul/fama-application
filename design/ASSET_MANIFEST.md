@@ -41,14 +41,69 @@ Jejak GPL wordmark is composed from this FAMA logo plus text. No separate offici
 
 ### Product/agricultural imagery
 
-Examples visible:
+Status: **Prototype demo photos added from Wikimedia Commons**
 
-- farm/orchard
-- fruit/product imagery
-- packing/process imagery
-- storage/shipping imagery
+```text
+File: design/assets/products/produce-durian-demo-01.jpg
+      public/products/produce-durian-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Buka_buah_durian.jpg
+Owner: Astari28
+License/permission: CC BY-SA 4.0
+Used for: public QR hero / gallery BUAH (Durian)
+Final or placeholder: licensed demo photo
+```
 
-Status: **Prototype image resources required**
+```text
+File: design/assets/products/produce-tembikai-demo-01.jpg
+      public/products/produce-tembikai-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Watermelon_sliced.jpg
+Owner: Irvin calicut
+License/permission: CC BY-SA 3.0
+Used for: public QR hero (Tembikai)
+Final or placeholder: licensed demo photo
+```
+
+```text
+File: design/assets/products/produce-mangga-demo-01.jpg
+      public/products/produce-mangga-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Mango_-_single.jpg
+Owner: Ivar Leidus
+License/permission: CC BY-SA 4.0
+Used for: public QR hero (Mangga)
+Final or placeholder: licensed demo photo
+```
+
+```text
+File: design/assets/products/produce-nangka-demo-01.jpg
+      public/products/produce-nangka-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Jackfruit_(Artocarpus_heterophyllus)_-_photo_of_the_inside.jpg
+Owner: Susan Slater
+License/permission: CC BY-SA 4.0
+Used for: public QR hero (Nangka)
+Final or placeholder: licensed demo photo
+```
+
+```text
+File: design/assets/farms/farm-demo-01.jpg
+      public/farms/farm-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Durian_tree_in_malaysia.jpg
+Owner: Yun Huang Yong
+License/permission: CC BY-SA 2.0
+Used for: gallery KEBUN demo
+Final or placeholder: licensed demo photo
+```
+
+```text
+File: design/assets/farms/farm-lot-demo-01.jpg
+      public/farms/farm-lot-demo-01.jpg
+Source: https://commons.wikimedia.org/wiki/File:Mango_orchard_in_Lucknow.jpg
+Owner: Wikimedia Commons contributor
+License/permission: CC BY-SA 4.0
+Used for: gallery LOT_KEBUN demo
+Final or placeholder: licensed demo photo
+```
+
+These are prototype demonstration photos, not FAMA-owned product photography.
 
 ### Gallery categories
 

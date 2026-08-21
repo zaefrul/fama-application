@@ -57,3 +57,29 @@ Where a reference is not pixel-specification quality, match in this priority:
 Where only mobile exists, desktop MAY adapt the same hierarchy into sidebar/grid layout.
 
 Do not invent new business functions merely to fill desktop space.
+
+## DD-009 — Government portal chrome
+
+**Decision:** Wrap existing MockFlow screens in a shared official FAMA/government shell:
+
+- Jalur Gemilang hairline (national colours, not a new FAMA brand);
+- “Laman Rasmi FAMA” masthead with Kementerian Pertanian dan Keterjaminan Makanan;
+- identity header (FAMA logo + Sistem Jejak GPL);
+- official footer;
+- SVG icons instead of emoji;
+- “Disahkan oleh FAMA” banner on active public QR pages;
+- KPI cards use a left status accent on a white surface.
+
+**Reason:** The approved interiors stay intact. The chrome is what makes Malaysian government sites feel official without introducing SaaS styling.
+
+**Assumption:** Uses the existing approved FAMA PNG and current semantic tokens. Exact logo pack and brand hex values remain open questions in `docs/09-open-questions.md`. Authenticated UI stays Bahasa Melayu (ADR-013); no language switcher is added there.
+
+## DD-010 — Public QR page is a consumer trust surface
+
+**Decision:** The public `/trace` page may use a stronger FAMA-green treatment than authenticated screens: large official FAMA mark, dark identity header, solid green “Produk Disahkan Tulen” bar, product photo, and dark section headers.
+
+**Reason:** Customer feedback that the public scan page was too bland. The consumer reference is used for visual hierarchy only.
+
+**Do not copy from the reference:** MAPC branding, “Jejak Balik Durian” product name, collection/packaging centres, journey events, or scan locations. Those are not Jejak GPL data.
+
+**Assumption:** Existing public fields stay the same. Gallery image is shown when the company has one; otherwise the approved buah placeholder is used. Scan count is page views (ADR-016), without location.

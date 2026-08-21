@@ -77,6 +77,9 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Should importer full address be public?
 - Should certificate documents/images be public?
 - Is multilingual BM / English / Chinese required?
+- Should QR access statistics count unique visitors or page views?
+- May IP address or user-agent be stored for scan analytics?
+- Should pengeksport see their own QR access counts?
 
 ## Design
 

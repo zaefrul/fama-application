@@ -16,9 +16,17 @@ class TraceController extends Controller
     {
         $lang = in_array($request->query('lang'), ['en', 'zh'], true) ? $request->query('lang') : 'bm';
         $qr = $jejak->getQrByCode($qrCode);
-        $application = $qr ? ExportApplication::query()->with(['company', 'produceType'])->find($qr->application_id) : null;
+        if ($qr) {
+            $jejak->recordQrAccess($qr);
+        }
+        $application = $qr ? ExportApplication::query()->with(['company.gallery', 'company.certificates', 'produceType'])->find($qr->application_id) : null;
         $certificates = $application ? $application->company->certificates : collect();
         $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
+        $gallery = $application?->company?->gallery ?? collect();
+        $heroImage = JejakService::produceImagePath($application?->produce_type_id)
+            ?? $gallery->firstWhere('category', 'BUAH')?->file_path
+            ?? $gallery->first()?->file_path
+            ?? asset('placeholders/gallery-buah.svg');
 
         return view('trace.show', [
             'qrCode' => $qrCode,
@@ -27,6 +35,8 @@ class TraceController extends Controller
             'application' => $application,
             'certificates' => $certificates,
             'nutrition' => $nutrition,
+            'heroImage' => $heroImage,
+            'accessCount' => $qr ? $qr->accesses()->count() : 0,
             'publicUrl' => $qr ? $qrImage->traceUrl($qr->qr_code) : '',
             'active' => $qr?->status === QrStatus::Active,
         ]);

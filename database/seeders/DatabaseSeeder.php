@@ -131,9 +131,10 @@ class DatabaseSeeder extends Seeder
         }
 
         foreach ([
-            ['id' => 'gal_abc_kebun', 'company_id' => 'co_abc', 'category' => 'KEBUN', 'description' => 'KEBUN', 'file_path' => '/placeholders/gallery-kebun.svg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
-            ['id' => 'gal_abc_lot', 'company_id' => 'co_abc', 'category' => 'LOT_KEBUN', 'description' => 'LOT KEBUN', 'file_path' => '/placeholders/gallery-lot.svg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
-            ['id' => 'gal_abc_buah', 'company_id' => 'co_abc', 'category' => 'BUAH', 'description' => 'BUAH', 'file_path' => '/placeholders/gallery-buah.svg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
+            ['id' => 'gal_abc_kebun', 'company_id' => 'co_abc', 'category' => 'KEBUN', 'description' => 'KEBUN', 'file_path' => '/farms/farm-demo-01.jpg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
+            ['id' => 'gal_abc_lot', 'company_id' => 'co_abc', 'category' => 'LOT_KEBUN', 'description' => 'LOT KEBUN', 'file_path' => '/farms/farm-lot-demo-01.jpg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
+            ['id' => 'gal_abc_buah', 'company_id' => 'co_abc', 'category' => 'BUAH', 'description' => 'BUAH', 'file_path' => '/products/produce-durian-demo-01.jpg', 'uploaded_by' => 'user_ali', 'uploaded_at' => '2026-06-03 00:00:00'],
+            ['id' => 'gal_mts_buah', 'company_id' => 'co_mts', 'category' => 'BUAH', 'description' => 'BUAH', 'file_path' => '/products/produce-tembikai-demo-01.jpg', 'uploaded_by' => 'user_siti', 'uploaded_at' => '2026-06-03 00:00:00'],
         ] as $row) {
             GalleryItem::query()->create($row);
         }
@@ -215,5 +216,7 @@ class DatabaseSeeder extends Seeder
             'read' => true,
             'created_at' => '2026-03-12 00:00:00',
         ]);
+
+        $this->call(QrAccessSeeder::class);
     }
 }

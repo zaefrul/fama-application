@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Domain\QrStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QrCode extends Model
 {
@@ -36,5 +37,10 @@ class QrCode extends Model
     public function application(): BelongsTo
     {
         return $this->belongsTo(ExportApplication::class, 'application_id');
+    }
+
+    public function accesses(): HasMany
+    {
+        return $this->hasMany(QrAccess::class, 'qr_id');
     }
 }
