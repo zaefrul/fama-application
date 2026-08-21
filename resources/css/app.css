@@ -63,6 +63,27 @@ img,
 video,
 svg {
   max-width: 100%;
+  height: auto;
+}
+
+.trace-fama-logo {
+  display: block;
+  width: 56px;
+  height: 56px;
+  max-width: 56px;
+  max-height: 56px;
+  object-fit: contain;
+}
+
+.trace-produce-photo {
+  display: block;
+  width: 96px;
+  height: 96px;
+  max-width: 96px;
+  max-height: 96px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  object-fit: cover;
 }
 
 input,

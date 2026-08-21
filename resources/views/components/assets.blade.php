@@ -22,6 +22,8 @@
         }
         body { background: var(--surface-muted); color: var(--text-primary); font-family: "Source Sans 3", "Segoe UI", sans-serif; margin: 0; }
         a { color: inherit; text-decoration: none; }
-        img { max-width: 100%; }
+        img { max-width: 100%; height: auto; }
+        .trace-fama-logo { width: 56px; height: 56px; max-width: 56px; max-height: 56px; object-fit: contain; }
+        .trace-produce-photo { width: 96px; height: 96px; max-width: 96px; max-height: 96px; border-radius: 9999px; object-fit: cover; }
     </style>
 @endif

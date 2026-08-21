@@ -81,7 +81,14 @@
             <div class="mx-auto flex max-w-lg items-start justify-between gap-3 px-4 py-5">
                 <div class="flex min-w-0 items-center gap-3">
                     <div class="shrink-0 rounded-2xl bg-white px-2.5 py-2 shadow-sm">
-                        <img src="{{ asset('logos/logo-fama.png') }}" alt="FAMA" class="h-14 w-auto object-contain sm:h-16">
+                        <img
+                            src="{{ asset('logos/logo-fama.png') }}"
+                            alt="FAMA"
+                            width="56"
+                            height="56"
+                            class="trace-fama-logo"
+                            style="width:56px;height:56px;max-width:56px;max-height:56px;object-fit:contain"
+                        >
                     </div>
                     <div class="min-w-0">
                         <p class="text-[10px] font-semibold tracking-[0.18em] text-warning">LAMAN RASMI FAMA</p>
@@ -128,7 +135,14 @@
                 <div class="space-y-4">
                     <x-card class="overflow-hidden p-0">
                         <div class="flex items-center gap-4 px-4 py-4">
-                            <img src="{{ $heroImage }}" alt="{{ $productTitle }}" class="h-24 w-24 shrink-0 rounded-full border-4 border-brand/20 object-cover">
+                            <img
+                                src="{{ $heroImage }}"
+                                alt="{{ $productTitle }}"
+                                width="96"
+                                height="96"
+                                class="trace-produce-photo border-4 border-brand/20"
+                                style="width:96px;height:96px;max-width:96px;max-height:96px;object-fit:cover;border-radius:9999px"
+                            >
                             <div class="min-w-0">
                                 <p class="text-[11px] font-semibold uppercase tracking-wide text-brand">{{ $t['productName'] }}</p>
                                 <h1 class="text-xl font-bold leading-tight text-ink">{{ $productTitle }}</h1>

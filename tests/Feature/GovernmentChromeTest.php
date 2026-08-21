@@ -30,6 +30,8 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('Produk Disahkan Tulen')
             ->assertSee('Disahkan oleh FAMA')
             ->assertSee('/products/produce-tembikai-demo-01.jpg')
+            ->assertSee('width="96"', false)
+            ->assertSee('trace-produce-photo')
             ->assertSee('Hak cipta terpelihara');
     }
 
