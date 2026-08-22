@@ -225,14 +225,14 @@
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['agencies'] }}</h2>
                         <p class="border-b border-warning/20 px-3 py-2 text-[11px] leading-5 text-muted">{{ $t['agenciesNote'] }}</p>
                         <div class="grid grid-cols-4 items-center gap-2 px-3 py-4">
-                            <img
+                            <!-- <img
                                 src="{{ asset('logos/logo-jata-negara.png') }}"
                                 alt="{{ $t['agencyMalaysia'] }}"
                                 width="160"
                                 height="114"
                                 class="trace-gov-logo"
                                 style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
-                            >
+                            > -->
                             <img
                                 src="{{ asset('logos/logo-jata-negara.png') }}"
                                 alt="{{ $t['agencyKpkm'] }}"
