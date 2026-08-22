@@ -72,7 +72,7 @@ Do not invent new business functions merely to fill desktop space.
 
 **Reason:** The approved interiors stay intact. The chrome is what makes Malaysian government sites feel official without introducing SaaS styling.
 
-**Assumption:** Uses the existing approved FAMA PNG and current semantic tokens. Exact logo pack and brand hex values remain open questions in `docs/09-open-questions.md`. Authenticated UI stays Bahasa Melayu (ADR-013); no language switcher is added there. The public QR page may show cropped Jata Negara / KPKM / FAMA marks from stakeholder-supplied lockups in a separate card; that does not approve a final logo pack.
+**Assumption:** Uses the existing approved FAMA PNG and current semantic tokens. Exact logo pack and brand hex values remain open questions in `docs/09-open-questions.md`. Authenticated UI stays Bahasa Melayu (ADR-013); no language switcher is added there. The public QR page may show cropped Jata Negara / KPKM / FAMA marks from stakeholder-supplied lockups in a separate card, plus the official MAHA 2026 lockup from mahaofficial.com.my. That does not approve a final logo pack. MAHA is event branding, not a new Jejak GPL agency.
 
 ## DD-010 — Public QR page is a consumer trust surface
 
@@ -83,6 +83,16 @@ Do not invent new business functions merely to fill desktop space.
 **Do not copy from the reference:** MAPC branding, “Jejak Balik Durian” product name, collection/packaging centres, journey events, or scan locations. Those are not Jejak GPL data.
 
 **Assumption:** Existing public fields stay the same. Gallery image is shown when the company has one; otherwise the approved buah placeholder is used. Scan count is page views (ADR-016), without location.
+
+## DD-012 — Public QR desktop is Profil Produk Disahkan
+
+**Decision:** `/trace` keeps the mobile pamphlet (MockFlow page 21). From the `lg` breakpoint it becomes a two-column **Profil Produk Disahkan**: product photo and identity on the left of a hero band, detail sections in the main column, and a sticky trust rail (QR, verification, agency marks, scan count) on the right.
+
+**Reason:** Opening the same QR on a laptop or booth webview should not stretch the handset pamphlet. Buyers need identity first, then records, with the official stamp remaining visible.
+
+**Do not add:** maps, journey events, MAPC branding, or new public fields.
+
+**Assumption:** Same public fields and tokens as the mobile page. Inactive and invalid states stay a centred card. This is a DD-008 desktop derivation, not a new product.
 
 ## DD-011 — FAMA dashboard operational charts may use a categorical palette
 

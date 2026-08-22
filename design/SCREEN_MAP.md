@@ -67,7 +67,8 @@ These must not introduce banking/finance content into Jejak GPL.
 | `/fama/applications` | FAMA | Review queue | 28 adapted for FAMA | 7 |
 | `/fama/applications/:id` | FAMA | Review + approve/reject | 20 | 6, 7 |
 | `/fama/qr` | FAMA | QR monitoring | 16 / 26 | 7 |
-| `/trace/:qrCode` | Public | Active QR | 21 | 12 |
+| `/trace/:qrCode` | Public | Active QR (mobile pamphlet) | 21 | 12 |
+| `/trace/:qrCode` | Public | Active QR desktop — Profil Produk Disahkan | 21 (DD-012) | 12 |
 | `/trace/:qrCode` | Public | Inactive QR state | 21 | 12 |
 
 ## Navigation

@@ -32,6 +32,8 @@
             'agencyMalaysia' => 'Kerajaan Malaysia',
             'agencyKpkm' => 'KPKM',
             'agencyFama' => 'FAMA',
+            'agencyMaha' => 'MAHA 2026',
+            'profileTitle' => 'Profil Produk Disahkan',
         ],
         'en' => [
             'inactiveTitle' => 'QR Not Activated',
@@ -65,6 +67,8 @@
             'agencyMalaysia' => 'Government of Malaysia',
             'agencyKpkm' => 'MAFS',
             'agencyFama' => 'FAMA',
+            'agencyMaha' => 'MAHA 2026',
+            'profileTitle' => 'Verified product profile',
         ],
         'zh' => [
             'inactiveTitle' => 'QR 尚未激活',
@@ -98,6 +102,8 @@
             'agencyMalaysia' => '马来西亚政府',
             'agencyKpkm' => 'KPKM',
             'agencyFama' => 'FAMA',
+            'agencyMaha' => 'MAHA 2026',
+            'profileTitle' => '已核实产品档案',
         ],
     ];
     $t = $copy[$lang];
@@ -116,7 +122,7 @@
     <div class="flex min-h-dvh flex-col bg-surface-dark">
         <x-gov-masthead />
 
-        <header class="mx-auto w-full max-w-lg px-4 pt-5">
+        <header class="mx-auto w-full max-w-lg px-4 pt-5 lg:max-w-6xl">
             <div class="flex items-start justify-between gap-3 text-white">
                 <div class="flex min-w-0 items-center gap-3">
                     <div class="shrink-0 rounded-2xl bg-white px-2.5 py-2">
@@ -143,17 +149,18 @@
             </div>
         </header>
 
-        <main class="mx-auto w-full max-w-lg flex-1 px-4 pb-10 pt-4">
+        <main class="mx-auto w-full max-w-lg flex-1 px-4 pb-10 pt-4 lg:max-w-6xl">
             @if (! $qr)
-                <x-card class="text-center"><p class="text-lg font-bold">{{ $t['invalid'] }}</p></x-card>
+                <x-card class="mx-auto max-w-lg text-center"><p class="text-lg font-bold">{{ $t['invalid'] }}</p></x-card>
             @elseif (! $active)
-                <x-card class="space-y-4 py-8 text-center">
+                <x-card class="mx-auto max-w-lg space-y-4 py-8 text-center">
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-warning text-4xl font-bold text-white">!</div>
                     <h1 class="text-2xl font-bold">{{ $t['inactiveTitle'] }}</h1>
                     <p class="text-sm text-muted">{{ $t['inactiveBody'] }}</p>
                     <p class="rounded-xl bg-surface-muted px-3 py-2 text-sm font-semibold">QR ID: {{ $qr->qr_code }}</p>
                 </x-card>
             @else
+            <div class="lg:hidden">
                 <article class="trace-pamphlet overflow-hidden rounded-sm">
                     <div class="bg-surface-dark px-5 py-4 text-center text-white">
                         <p class="text-[10px] font-semibold tracking-[0.22em] text-warning">{{ $t['verifiedKicker'] }}</p>
@@ -223,103 +230,28 @@
                 <div class="mt-4 space-y-3">
                     <section class="trace-pamphlet overflow-hidden rounded-sm">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['agencies'] }}</h2>
-                        <p class="border-b border-warning/20 px-3 py-2 text-[11px] leading-5 text-muted">{{ $t['agenciesNote'] }}</p>
-                        <div class="grid grid-cols-4 items-center gap-2 px-3 py-4">
-                            <!-- <img
-                                src="{{ asset('logos/logo-jata-negara.png') }}"
-                                alt="{{ $t['agencyMalaysia'] }}"
-                                width="160"
-                                height="114"
-                                class="trace-gov-logo"
-                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
-                            > -->
-                            <img
-                                src="{{ asset('logos/logo-jata-negara.png') }}"
-                                alt="{{ $t['agencyKpkm'] }}"
-                                width="160"
-                                height="114"
-                                class="trace-gov-logo"
-                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
-                            >
-                            <img
-                                src="{{ asset('logos/logo-fama.png') }}"
-                                alt="{{ $t['agencyFama'] }}"
-                                width="80"
-                                height="80"
-                                class="trace-gov-logo"
-                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
-                            >
-                            <img
-                                src="{{ asset('logos/fama-jejak-gpl-logo-hd-1kpx.png') }}"
-                                alt="Jejak GPL"
-                                width="80"
-                                height="80"
-                                class="trace-gov-logo"
-                                style="display:block;width:auto;height:64px;max-width:100%;margin:0 auto;object-fit:contain"
-                            >
-                        </div>
+                        @include('trace.partials.agencies')
                     </section>
 
-                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
+                    <section class="trace-pamphlet overflow-hidden rounded-sm">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['product'] }}</h2>
-                        <dl class="px-4">
-                            <x-data-row :label="$t['exporter']" :value="$application?->company?->name" />
-                            <x-data-row :label="$t['fruitType']" :value="$application?->produceType?->name" />
-                            <x-data-row label="Gred" :value="$application?->grade" />
-                            <x-data-row label="Saiz" :value="$application?->size" />
-                            <x-data-row label="Berat" :value="$application?->quantity.' '.$application?->quantity_unit" />
-                            <x-data-row :label="$t['destination']" :value="$application?->destination_country" />
-                            <x-data-row label="No. Sijil CoC" :value="$application?->coc_number" />
-                        </dl>
+                        @include('trace.partials.product-dl')
                     </section>
 
-                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
+                    <section class="trace-pamphlet overflow-hidden rounded-sm">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['export'] }}</h2>
-                        <dl class="px-4">
-                            <x-data-row label="Tarikh Eksport" :value="$application?->export_date?->toDateString()" />
-                            <x-data-row label="Alamat Pengeksport" :value="$application?->company?->address" />
-                            <x-data-row :label="$t['farm']" :value="$application?->farm_name" />
-                            <x-data-row label="Pengimport" :value="$application?->importer_name" />
-                            <x-data-row label="Alamat Pengimport" :value="$application?->importer_address" />
-                        </dl>
+                        @include('trace.partials.export-dl')
                     </section>
 
-                    <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
+                    <section class="trace-pamphlet overflow-hidden rounded-sm">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['certs'] }}</h2>
-                        <p class="border-b border-warning/20 px-3 py-2 text-[11px] leading-5 text-muted">{{ $t['certsNote'] }}</p>
-                        <div class="grid grid-cols-2 gap-2 p-3">
-                            @foreach ($certificates as $certificate)
-                                @php
-                                    $certSrc = \App\Services\JejakService::certificatePreviewPath($certificate->type, $certificate->document_path);
-                                @endphp
-                                <a href="{{ $certSrc }}" target="_blank" rel="noreferrer" class="overflow-hidden rounded-sm border border-border bg-surface-muted">
-                                    <div class="relative">
-                                        <x-document-preview :src="$certSrc" :alt="'Contoh sijil '.$certificate->type" class="trace-cert-thumb h-36 w-full object-cover object-top" />
-                                        <span class="absolute left-1.5 top-1.5 rounded-sm bg-danger px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white">{{ $t['sample'] }}</span>
-                                    </div>
-                                    <div class="p-2">
-                                        <p class="text-xs font-semibold">SIJIL {{ $certificate->type }}</p>
-                                        <p class="truncate text-[10px] text-muted">{{ $certificate->certificate_no }}</p>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
+                        @include('trace.partials.certificates', ['certCols' => 'grid-cols-2'])
                     </section>
 
                     @if (count($nutrition))
-                        <section class="overflow-hidden rounded-sm border border-warning/30 bg-white">
+                        <section class="trace-pamphlet overflow-hidden rounded-sm">
                             <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['nutrition'] }}</h2>
-                            <table class="w-full text-left text-sm">
-                                <tbody>
-                                    @foreach ($nutrition as $row)
-                                        <tr class="border-t border-border">
-                                            <td class="px-4 py-1.5">{{ $row['name'] }}</td>
-                                            <td class="font-medium">{{ $row['amount'] }}</td>
-                                            <td class="pr-4 text-muted">{{ $row['dailyPercent'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            @include('trace.partials.nutrition')
                         </section>
                     @endif
 
@@ -327,6 +259,108 @@
                     <p class="text-center text-[10px] text-white/45">Foto produk: Wikimedia Commons · CC BY / CC BY-SA</p>
                     <p class="text-center text-[10px] text-white/45">Contoh sijil fitosanitasi: Wikimedia Commons · CC BY 2.0</p>
                 </div>
+            </div>
+
+            <div class="trace-profile hidden lg:block">
+                <article class="trace-pamphlet overflow-hidden rounded-sm">
+                    <div class="grid grid-cols-12">
+                        <div class="relative col-span-4 min-h-[360px] border-r-2 border-warning bg-surface-dark">
+                            <img
+                                src="{{ $heroImage }}"
+                                alt="{{ $productTitle }}"
+                                width="480"
+                                height="360"
+                                class="trace-produce-portrait"
+                                style="width:100%;height:100%;max-height:none;object-fit:cover"
+                            >
+                            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface-dark via-surface-dark/80 to-transparent px-5 pb-4 pt-20">
+                                <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-warning">{{ $t['originShort'] }}</p>
+                                <p class="mt-1 text-lg font-bold leading-tight text-white">{{ $productTitle }}</p>
+                                <p class="mt-1 text-xs text-white/80">{{ $t['verifiedBody'] }}</p>
+                            </div>
+                        </div>
+                        <div class="col-span-8 flex min-w-0 flex-col">
+                            <div class="bg-surface-dark px-6 py-4 text-white">
+                                <p class="text-[10px] font-semibold tracking-[0.22em] text-warning">{{ $t['verifiedKicker'] }}</p>
+                                <p class="mt-1 text-sm font-semibold text-white/80">{{ $t['pamphletTitle'] }}</p>
+                                <h1 class="mt-1 text-2xl font-bold leading-tight">{{ $t['profileTitle'] }}</h1>
+                            </div>
+                            <div class="trace-gold-rule"></div>
+                            <div class="flex flex-1 flex-col justify-center px-6 py-5">
+                                <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">{{ $t['productName'] }}</p>
+                                <p class="mt-1 text-3xl font-bold leading-tight text-ink">{{ $productTitle }}</p>
+                                <dl class="mt-4 grid grid-cols-3 gap-2 text-center">
+                                    <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                        <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">{{ $t['officialNo'] }}</dt>
+                                        <dd class="mt-0.5 break-all text-[11px] font-bold text-brand">{{ $qr->qr_code }}</dd>
+                                    </div>
+                                    <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                        <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">Gred</dt>
+                                        <dd class="mt-0.5 text-sm font-bold text-brand">{{ $application?->grade }}</dd>
+                                    </div>
+                                    <div class="rounded-xl border border-warning/40 bg-white/80 px-2 py-2.5">
+                                        <dt class="text-[10px] font-semibold uppercase tracking-wide text-muted">{{ $t['origin'] }}</dt>
+                                        <dd class="mt-0.5 text-sm font-bold text-brand">{{ $t['malaysia'] }}</dd>
+                                    </div>
+                                </dl>
+                                <dl class="mt-2">
+                                    <x-data-row :label="$t['exporter']" :value="$application?->company?->name" />
+                                    <x-data-row :label="$t['farm']" :value="$application?->farm_name" />
+                                    <x-data-row :label="$t['destination']" :value="$application?->destination_country" />
+                                </dl>
+                            </div>
+                            <div class="bg-brand px-6 py-3 text-white">
+                                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">{{ $t['verifiedKicker'] }}</p>
+                                <p class="text-lg font-bold leading-tight">{{ $t['verifiedTitle'] }}</p>
+                                <p class="text-sm text-white/90">{{ $t['verifiedBody'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="mt-6 grid grid-cols-12 items-start gap-6">
+                    <div class="col-span-8 space-y-4">
+                        <section class="trace-pamphlet overflow-hidden rounded-sm">
+                            <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['product'] }}</h2>
+                            @include('trace.partials.product-dl')
+                        </section>
+                        <section class="trace-pamphlet overflow-hidden rounded-sm">
+                            <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['export'] }}</h2>
+                            @include('trace.partials.export-dl')
+                        </section>
+                        <section class="trace-pamphlet overflow-hidden rounded-sm">
+                            <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['certs'] }}</h2>
+                            @include('trace.partials.certificates', ['certCols' => 'grid-cols-3'])
+                        </section>
+                        @if (count($nutrition))
+                            <section class="trace-pamphlet overflow-hidden rounded-sm">
+                                <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['nutrition'] }}</h2>
+                                @include('trace.partials.nutrition')
+                            </section>
+                        @endif
+                    </div>
+
+                    <aside class="col-span-4 space-y-4 lg:sticky lg:top-4">
+                        <section class="trace-pamphlet overflow-hidden rounded-sm px-5 py-5 text-center">
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">{{ $t['stamp'] }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-ink">{{ $t['confidence'] }}</p>
+                            <div class="mx-auto mt-4 w-fit rounded-2xl border border-warning/40 bg-white px-4 py-3">
+                                <x-qr-preview :value="$publicUrl" :size="148" :caption="false" />
+                            </div>
+                            <p class="mt-2 text-[11px] font-semibold tracking-wide text-brand">{{ $qr->qr_code }}</p>
+                            <p class="mt-3 text-xs text-muted">{{ $t['scans'] }}: {{ number_format((int) $accessCount) }}</p>
+                        </section>
+                        <section class="trace-pamphlet overflow-hidden rounded-sm">
+                            <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['agencies'] }}</h2>
+                            @include('trace.partials.agencies')
+                        </section>
+                    </aside>
+                </div>
+
+                <p class="mt-6 text-center text-[11px] text-white/60">{{ $t['scanBody'] }}</p>
+                <p class="text-center text-[10px] text-white/45">Foto produk: Wikimedia Commons · CC BY / CC BY-SA</p>
+                <p class="text-center text-[10px] text-white/45">Contoh sijil fitosanitasi: Wikimedia Commons · CC BY 2.0</p>
+            </div>
             @endif
         </main>
         <x-gov-footer />

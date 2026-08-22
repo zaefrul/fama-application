@@ -68,6 +68,16 @@ Used for: public QR “Agensi Kerajaan” card
 Final or placeholder: cropped display extract; *-light variants recolor white lockup text to dark ink for the cream pamphlet card
 ```
 
+```text
+File: public/logos/logo-maha-2026.webp
+      design/assets/logos/logo-maha-2026.webp
+Source: https://mahaofficial.com.my/assets/maha-2026-logo.webp
+Owner: MAHA / Kementerian Pertanian dan Keterjaminan Makanan
+License/permission: official event asset from mahaofficial.com.my, requested for public QR display
+Used for: public QR “Agensi Kerajaan” card
+Final or placeholder: official MAHA 2026 lockup as published; event branding, not a Jejak GPL agency mark
+```
+
 ### Product/agricultural imagery
 
 Status: **Prototype demo photos added from Wikimedia Commons**

@@ -181,3 +181,5 @@ Reusable public-page sections:
 - Supplier
 - Certificates
 - Nutrition
+
+Desktop `/trace` also uses a Profil Produk Disahkan shell: identity hero, main record column, sticky trust rail. Mobile keeps the pamphlet.
