@@ -122,6 +122,7 @@ If a current reference and an earlier concept conflict, follow the priority in `
 - Never store plaintext passwords.
 - Do not expose private application data on the public QR route.
 - Use database migrations.
+- Do **not** reset the shared application database. Never run `migrate:fresh`, `migrate:refresh`, `db:wipe`, or equivalent against the `.env` database unless the user explicitly asks. PHPUnit `RefreshDatabase` on sqlite `:memory:` is allowed.
 
 ## 9. Workflow
 

@@ -100,8 +100,8 @@ class CompanyController extends Controller
             'type' => (string) $request->input('type', 'CoC'),
             'certificate_no' => (string) $request->input('certificateNo', ''),
             'document_path' => $documentPath ?? '/placeholders/certificate-coc.svg',
-            'issue_date' => (string) $request->input('issueDate', now()->toDateString()),
-            'expiry_date' => (string) $request->input('expiryDate', ''),
+            'issue_date' => trim((string) $request->input('issueDate', '')) ?: now()->toDateString(),
+            'expiry_date' => trim((string) $request->input('expiryDate', '')) ?: null,
             'status' => 'ACTIVE',
         ]);
 

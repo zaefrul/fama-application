@@ -250,7 +250,7 @@ class JejakService
             'type' => $input['type'],
             'certificate_no' => $input['certificate_no'],
             'document_path' => $input['document_path'],
-            'issue_date' => $input['issue_date'],
+            'issue_date' => $input['issue_date'] ?: now()->toDateString(),
             'expiry_date' => $input['expiry_date'] ?: null,
             'status' => $input['status'] ?? 'ACTIVE',
         ]);

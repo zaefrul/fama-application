@@ -22,10 +22,11 @@ class UploadService
         }
 
         $allowed = $allowPdf
-            ? ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+            ? ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'application/x-pdf']
             : ['image/jpeg', 'image/png', 'image/webp'];
 
-        if (! in_array($file->getMimeType(), $allowed, true)) {
+        $mime = $file->getMimeType() ?: $file->getClientMimeType();
+        if (! in_array($mime, $allowed, true)) {
             throw new RuntimeException(
                 $allowPdf
                     ? 'Format dibenarkan: JPG, PNG, WEBP atau PDF'
@@ -33,7 +34,20 @@ class UploadService
             );
         }
 
-        $path = $file->store($folder, 'public');
+        $directory = public_path('storage/'.$folder);
+        if (! is_dir($directory) && ! @mkdir($directory, 0755, true) && ! is_dir($directory)) {
+            throw new RuntimeException('Folder muat naik tidak dapat dicipta. Sila semak kebenaran public/storage.');
+        }
+
+        try {
+            $path = $file->store($folder, 'public');
+        } catch (\Throwable) {
+            throw new RuntimeException('Fail tidak dapat disimpan. Sila semak folder public/storage.');
+        }
+
+        if (! $path) {
+            throw new RuntimeException('Fail tidak dapat disimpan. Sila semak folder public/storage.');
+        }
 
         return '/storage/'.$path;
     }
