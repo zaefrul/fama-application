@@ -6,19 +6,29 @@
     'editable' => false,
     'primaryLabel' => 'Seterusnya',
     'hideSecondary' => false,
+    'companyName' => null,
 ])
 @php
     $readOnly = $editable ? false : ($application ? $application->status->value !== 'DRAFT' : false);
     $cocCertificates = $certificates->where('type', 'CoC');
+    $displayCompany = $companyName ?? $application?->company?->name;
 @endphp
 <div class="space-y-4">
     <x-breadcrumb :items="['Senarai QR', 'Maklumat Eksport']" />
     <x-progress-steps :current="2" :total="2" />
     <x-card class="px-5 py-5">
-        <form action="{{ $action }}" method="post" class="grid gap-4">
+        <form action="{{ $action }}" method="post" enctype="multipart/form-data" class="grid gap-4">
             @csrf
+            @if (session('error'))
+                <x-error-text>{{ session('error') }}</x-error-text>
+            @endif
             <section class="grid gap-3">
                 <h2 class="text-sm font-bold text-brand">Maklumat Keluaran</h2>
+                @if ($displayCompany)
+                    <x-field label="Nama Syarikat">
+                        <x-input :value="$displayCompany" readonly />
+                    </x-field>
+                @endif
                 <x-field label="Jenis Keluaran Pertanian" required>
                     <x-select name="produceTypeId" :disabled="$readOnly" required>
                         @foreach ($produceTypes as $type)
@@ -52,15 +62,48 @@
                     </x-select>
                 </x-field>
                 <input type="hidden" name="cocNumber" value="{{ $application?->coc_number }}">
+                <x-field label="Gambar paparan QR" hint="JPG/PNG/WEBP, maksimum 5MB. Gambar ini dipaparkan pada halaman awam QR.">
+                    @if ($application?->display_image_path)
+                        <img
+                            src="{{ $application->display_image_path }}"
+                            alt="Gambar paparan QR"
+                            width="160"
+                            height="96"
+                            class="mb-2 h-24 w-40 rounded-xl object-cover"
+                        >
+                    @endif
+                    <x-input name="displayImage" type="file" accept="image/jpeg,image/png,image/webp" :disabled="$readOnly" />
+                </x-field>
             </section>
             <section class="grid gap-3 border-t border-border pt-4">
                 <h2 class="text-sm font-bold text-brand">Maklumat Eksport</h2>
-                <x-field label="Tarikh Eksport" required>
-                    <x-input name="exportDate" type="date" :value="$application?->export_date?->toDateString()" :readonly="$readOnly" required />
+                <x-field label="Tarikh Eksport">
+                    <x-input name="exportDate" type="date" :value="$application?->export_date?->toDateString()" :readonly="$readOnly" />
                 </x-field>
                 <x-field label="Nama Ladang" required>
                     <x-input name="farmName" :value="$application?->farm_name" :readonly="$readOnly" required />
                 </x-field>
+                <x-field label="No. Lot">
+                    <x-input name="lotNo" :value="$application?->lot_no" :readonly="$readOnly" />
+                </x-field>
+                <x-field label="Lokasi ladang">
+                    <x-input name="farmLocation" :value="$application?->farm_location" :readonly="$readOnly" />
+                </x-field>
+                <div class="grid grid-cols-2 gap-3">
+                    <x-field label="Latitud">
+                        <x-input name="farmLat" type="number" step="any" :value="$application?->farm_lat" :readonly="$readOnly" />
+                    </x-field>
+                    <x-field label="Longitud">
+                        <x-input name="farmLng" type="number" step="any" :value="$application?->farm_lng" :readonly="$readOnly" />
+                    </x-field>
+                </div>
+                @if ($application?->hasFarmCoordinates())
+                    <x-farm-map
+                        :lat="$application->farm_lat"
+                        :lng="$application->farm_lng"
+                        :interactive="! $readOnly"
+                    />
+                @endif
                 <x-field label="Pengimport" required>
                     <x-input name="importerName" :value="$application?->importer_name" :readonly="$readOnly" required />
                 </x-field>

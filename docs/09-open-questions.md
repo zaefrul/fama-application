@@ -61,7 +61,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 
 - Is Farm reusable master data?
 - Does it have registration ID?
-- Is geolocation required?
+- Is geolocation required? *(Prototype assumption ADR-018: optional lat/lng on the application; not a Farm master. SA asked for an interactive map on the public QR.)*
 - Is it integrated from another FAMA source?
 
 ## Importer
@@ -79,7 +79,10 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Is multilingual BM / English / Chinese required?
 - Should QR access statistics count unique visitors or page views?
 - May IP address or user-agent be stored for scan analytics?
-- Should pengeksport see their own QR access counts?
+- Should usahawan see their own QR access counts?
+- May farm location / lot number be public? *(Prototype assumption: yes on `/trace` because SA asked to display them.)*
+- Must FAMA approve the usahawan display photo before it appears on the public QR?
+- Official Hubungi Kami details beyond `https://www.fama.gov.my`?
 
 ## Design
 

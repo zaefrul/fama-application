@@ -141,9 +141,9 @@ Unless separately approved:
 
 # 6. Primary Actors
 
-## 6.1 Pengeksport
+## 6.1 Usahawan
 
-The exporter SHALL be able to:
+The usahawan (internal role `EXPORTER`) SHALL be able to:
 
 - register;
 - log in;
@@ -202,7 +202,7 @@ The public user SHALL be able to:
 The system SHALL provide a login experience for:
 
 - FAMA;
-- Pengeksport.
+- Usahawan.
 
 Minimum fields:
 
@@ -326,7 +326,7 @@ The exporter dashboard SHOULD include:
 - QR Aktif;
 - QR Belum Aktif;
 - application summary;
-- quick action: Maklumat Buah / Keluaran Pertanian;
+- quick action: Maklumat Keluaran Pertanian;
 - quick action: Cetak QR;
 - quick action: Kelulusan QR;
 - company gallery;

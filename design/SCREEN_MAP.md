@@ -45,19 +45,19 @@ These must not introduce banking/finance content into Jejak GPL.
 | Route | Actor | Screen | Primary PDF Reference | Supporting Reference |
 |---|---|---|---:|---:|
 | `/auth/login` | All | Login | 25 | 5, 14 |
-| `/auth/register/exporter` | Exporter | Company lookup + onboarding | 25 | 5, 14 |
+| `/auth/register/exporter` | Usahawan | Company lookup + onboarding | 25 | 5, 14 |
 | `/auth/register/fama` | FAMA | Staff lookup + onboarding | 25 | 5, 14 |
-| `/exporter` | Exporter | Dashboard | 27 | 17, 11, 12 |
-| `/exporter/company` | Exporter | Company profile | 18 / 23 | 10 |
-| `/exporter/company/produce` | Exporter | Agricultural produce | 18 | 11, 12 |
-| `/exporter/company/certificates` | Exporter | Certificate management | 18 | 10 |
-| `/exporter/company/gallery` | Exporter | Gallery | 18 / 23 | 10 |
-| `/exporter/applications` | Exporter | Application list | 28 | 27 |
-| `/exporter/applications/new` | Exporter | New export application | 19 / 20 / 26 | 12 |
-| `/exporter/applications/:id` | Exporter | Application detail/summary | 19 / 20 / 26 | 9 |
-| `/exporter/qr` | Exporter | QR list | 19 / 26 | 6, 12 |
-| `/exporter/qr/:id` | Exporter | QR detail | 19 / 26 | 9 |
-| `/exporter/qr/:id/download` | Exporter | QR download options | 19 | 12 |
+| `/exporter` | Usahawan | Dashboard | 27 | 17, 11, 12 |
+| `/exporter/company` | Usahawan | Company profile | 18 / 23 | 10 |
+| `/exporter/company/produce` | Usahawan | Agricultural produce | 18 | 11, 12 |
+| `/exporter/company/certificates` | Usahawan | Certificate management | 18 | 10 |
+| `/exporter/company/gallery` | Usahawan | Gallery | 18 / 23 | 10 |
+| `/exporter/applications` | Usahawan | Application list | 28 | 27 |
+| `/exporter/applications/new` | Usahawan | New export application | 19 / 20 / 26 | 12 |
+| `/exporter/applications/:id` | Usahawan | Application detail/summary | 19 / 20 / 26 | 9 |
+| `/exporter/qr` | Usahawan | QR list | 19 / 26 | 6, 12 |
+| `/exporter/qr/:id` | Usahawan | QR detail | 19 / 26 | 9 |
+| `/exporter/qr/:id/download` | Usahawan | QR download options | 19 | 12 |
 | `/fama` | FAMA | Monitoring dashboard | 16 | 12 |
 | `/fama/companies` | FAMA | Company list | 18 / 23 | — |
 | `/fama/companies/new` | FAMA | Daftar vendor | no MockFlow — FAMA ops reuse | 18 / 23 |
@@ -68,7 +68,7 @@ These must not introduce banking/finance content into Jejak GPL.
 | `/fama/applications/:id` | FAMA | Review + approve/reject | 20 | 6, 7 |
 | `/fama/qr` | FAMA | QR monitoring | 16 / 26 | 7 |
 | `/trace/:qrCode` | Public | Active QR (mobile pamphlet) | 21 | 12 |
-| `/trace/:qrCode` | Public | Active QR desktop — Profil Produk Disahkan | 21 (DD-012) | 12 |
+| `/trace/:qrCode` | Public | Active QR desktop — Profil Keluaran Pertanian | 21 (DD-012 / DD-013) | 12 |
 | `/trace/:qrCode` | Public | Inactive QR state | 21 | 12 |
 
 ## Navigation

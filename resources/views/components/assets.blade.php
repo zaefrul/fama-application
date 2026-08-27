@@ -34,6 +34,8 @@
         a { color: inherit; text-decoration: none; }
         img { max-width: 100%; height: auto; }
         .trace-fama-logo { width: 56px; height: 56px; max-width: 56px; max-height: 56px; object-fit: contain; }
+        .trace-header-mark { width: 44px; height: 44px; max-width: 44px; max-height: 44px; object-fit: contain; }
+        .farm-map { display: block; width: 100%; height: 192px; border: 0; }
         .trace-produce-photo { width: 96px; height: 96px; max-width: 96px; max-height: 96px; border-radius: 9999px; object-fit: cover; }
         .trace-produce-hero { width: 100%; height: 200px; max-height: 200px; object-fit: cover; display: block; }
         .trace-produce-portrait { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; object-fit: cover; display: block; }

@@ -4,6 +4,7 @@
         <x-error-text>{{ $error }}</x-error-text>
         <x-application-form
             :action="url('/fama/companies/'.$company->id.'/qr')"
+            :company-name="$companyName ?? $company->name"
             :produce-types="$produceTypes"
             :certificates="$certificates"
             :editable="true"

@@ -64,7 +64,7 @@ File: public/logos/logo-jata-negara.png
 Source: cropped from the supplied P3 lockups above
 Owner: FAMA / KPKM
 License/permission: supplied project asset
-Used for: public QR “Agensi Kerajaan” card
+Used for: public QR header (Jata + FAMA) and Hubungi Kami card
 Final or placeholder: cropped display extract; *-light variants recolor white lockup text to dark ink for the cream pamphlet card
 ```
 
@@ -74,7 +74,7 @@ File: public/logos/logo-maha-2026.webp
 Source: https://mahaofficial.com.my/assets/maha-2026-logo.webp
 Owner: MAHA / Kementerian Pertanian dan Keterjaminan Makanan
 License/permission: official event asset from mahaofficial.com.my, requested for public QR display
-Used for: public QR “Agensi Kerajaan” card
+Used for: not shown on public QR after DD-013 (retained as an asset)
 Final or placeholder: official MAHA 2026 lockup as published; event branding, not a Jejak GPL agency mark
 ```
 
@@ -88,7 +88,7 @@ File: design/assets/products/produce-durian-demo-01.jpg
 Source: https://commons.wikimedia.org/wiki/File:Buka_buah_durian.jpg
 Owner: Astari28
 License/permission: CC BY-SA 4.0
-Used for: public QR hero / gallery BUAH (Durian)
+Used for: seeded usahawan display image / gallery BUAH (Durian); Wikimedia is not the live default hero
 Final or placeholder: licensed demo photo
 ```
 

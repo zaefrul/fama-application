@@ -139,6 +139,40 @@ The FAMA dashboard compares this calendar week with last week (Monday start, Asi
 
 **Consequences:** Language switches and refreshes increment the count. No IP or user-agent is stored.
 
+## ADR-017 — Official actor label is Usahawan
+
+**Status:** Accepted for Prototype V1  
+**Date:** 2026-08-27
+
+User-visible Malay copy uses **Usahawan** instead of Pengeksport. Public EN uses Entrepreneur; ZH uses 业者.
+
+Internal identifiers stay `Role::EXPORTER`, `/exporter/*` routes, and `Exporter*` classes.
+
+**Reason:** SA terminology (2026-08-27). A route/enum rename is out of scope and would not change behaviour.
+
+**Consequences:** Docs, login, dashboards, application views, public `/trace`, and tests use Usahawan. API path `/api/exporter` is unchanged.
+
+## ADR-018 — Optional export date, lot, farm location, and QR display image
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-08-27
+
+`ExportApplication` stores:
+
+- `export_date` (nullable);
+- `lot_no` (nullable);
+- `farm_location` (nullable text);
+- `farm_lat` / `farm_lng` (nullable);
+- `display_image_path` (nullable; QR hero).
+
+Farm details stay on the application (ADR-008). Geolocation is optional, not required. Public `/trace` embeds OpenStreetMap when both coordinates exist.
+
+FAMA review of uploaded photos before they go public is not specified and is not implemented.
+
+**Reason:** SA asked for usahawan-uploaded premium images, lot number, interactive farm location, and a non-mandatory export date.
+
+**Consequences:** Empty export date is hidden on the public page, not shown as a blank. Missing display image falls back to company gallery, then a marked placeholder.
+
 ## Adding a decision
 
 ```text

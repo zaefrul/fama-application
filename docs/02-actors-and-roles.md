@@ -1,8 +1,10 @@
 # 02 — Actors and Roles
 
-## PENGEKSPORT
+## USAHAWAN
 
-External business user representing an exporter/company.
+External business user representing an agricultural entrepreneur/company.
+
+Display label is **Usahawan**. Internal role remains `EXPORTER` (ADR-017).
 
 ### Capabilities
 
@@ -44,7 +46,7 @@ Internal reviewing/monitoring user.
 - Reject
 - View QR status
 - View audit history
-- Temporary MAHA/ops extension (ADR-014): register a vendor as a company-only record (no exporter login)
+- Temporary MAHA/ops extension (ADR-014): register a vendor as a company-only record (no usahawan login)
 - Temporary MAHA/ops extension (ADR-014): create and activate a QR in one flow
 - Temporary MAHA/ops extension (ADR-014): edit FAMA-managed company fields and APPROVED public application fields
 - Temporary MAHA/ops extension (ADR-014): add or remove certificates on a managed company
@@ -55,7 +57,7 @@ Internal reviewing/monitoring user.
 - Exact authorization by job/department is not defined yet
 - Must not alter exporter-authoritative data unless later confirmed
 - DagangNet-sourced name and registration no. remain read-only
-- Must not create an exporter login when registering a FAMA-managed vendor
+- Must not create a usahawan login when registering a FAMA-managed vendor
 - Must not change QR identity after activation
 
 ## PUBLIC / CONSUMER

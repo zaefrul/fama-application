@@ -22,7 +22,7 @@
         <x-card>
             <h2 class="mb-3 font-semibold">Tindakan Pantas</h2>
             <div class="grid grid-cols-2 gap-2 md:grid-cols-3">
-                <a href="{{ route('exporter.produce') }}"><x-button type="button" class="w-full">+ Maklumat Buah</x-button></a>
+                <a href="{{ route('exporter.produce') }}"><x-button type="button" class="w-full">+ Maklumat Keluaran Pertanian</x-button></a>
                 <a href="{{ route('exporter.certificates') }}"><x-button type="button" variant="secondary" class="w-full">+ Sijil</x-button></a>
                 <a href="{{ route('exporter.qr') }}"><x-button type="button" variant="secondary" class="w-full">Cetak QR</x-button></a>
             </div>

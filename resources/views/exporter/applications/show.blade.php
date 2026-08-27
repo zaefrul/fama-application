@@ -9,19 +9,25 @@
             <x-application-form
                 :action="url('/exporter/applications/'.$application->id)"
                 :application="$application"
+                :company-name="$companyName ?? $application->company?->name"
                 :produce-types="$produceTypes"
                 :certificates="$certificates"
             />
         @else
             <x-card class="px-5">
                 <dl>
-                    <x-data-row label="Pengeksport" :value="$application->company?->name" />
+                    <x-data-row label="Nama Syarikat" :value="$application->company?->name" />
                     <x-data-row label="Alamat" :value="$application->company?->address" />
                     <x-data-row label="Gred" :value="$application->grade" />
                     <x-data-row label="Saiz" :value="$application->size" />
                     <x-data-row label="Kuantiti" :value="$application->quantity.' '.$application->quantity_unit" />
                     <x-data-row label="Destinasi" :value="$application->destination_country" />
+                    @if ($application->export_date)
+                        <x-data-row label="Tarikh eksport" :value="$application->export_date->toDateString()" />
+                    @endif
                     <x-data-row label="Ladang" :value="$application->farm_name" />
+                    <x-data-row label="No. Lot" :value="$application->lot_no" />
+                    <x-data-row label="Lokasi ladang" :value="$application->farm_location" />
                     <x-data-row label="Pengimport" :value="$application->importer_name" />
                     <x-data-row label="Alamat pengimport" :value="$application->importer_address" />
                     <x-data-row label="No. Sijil CoC" :value="$application->coc_number" />

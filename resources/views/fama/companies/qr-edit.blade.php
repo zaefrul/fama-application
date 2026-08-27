@@ -34,6 +34,7 @@
         <x-application-form
             :action="url('/fama/companies/'.$company->id.'/qr/'.$application->id)"
             :application="$application"
+            :company-name="$companyName ?? $company->name"
             :produce-types="$produceTypes"
             :certificates="$certificates"
             :editable="true"

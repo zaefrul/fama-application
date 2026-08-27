@@ -4,7 +4,7 @@
 
         <div class="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-5">
             <x-kpi-card :value="$stats['activeCompanies']" label="Syarikat Aktif" tone="info" href="/fama/companies" />
-            <x-kpi-card :value="$stats['exporters']" label="Pengeksport" tone="teal" href="/fama/companies" />
+            <x-kpi-card :value="$stats['exporters']" label="Usahawan" tone="teal" href="/fama/companies" />
             <x-kpi-card :value="$stats['qrRequests']" label="Permohonan QR" tone="violet" href="/fama/applications" />
             <x-kpi-card :value="$stats['qrActive']" label="QR Aktif" tone="success" href="/fama/qr" />
             <x-kpi-card :value="$stats['qrInactive']" label="QR Belum Aktif" tone="warning" href="/fama/qr" />

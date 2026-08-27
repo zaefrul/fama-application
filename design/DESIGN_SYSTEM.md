@@ -79,7 +79,7 @@ Where desktop is shown:
 
 Do not merely stretch mobile cards to desktop width.
 
-Public `/trace` at `lg` and above uses the Profil Produk Disahkan two-column profile (DD-012). The mobile pamphlet is unchanged.
+Public `/trace` at `lg` and above uses the Profil Keluaran Pertanian two-column profile (DD-012 / DD-013). The mobile pamphlet is unchanged.
 
 ## 5. Surfaces
 

@@ -1,10 +1,10 @@
 # 03 — Business Flows
 
-## Flow A — Exporter onboarding
+## Flow A — Usahawan onboarding
 
 ```text
 Open Registration
-→ Enter exporter/company identifier
+→ Enter usahawan/company identifier
 → Query Mock DagangNet
 → Record found?
    ├─ No → show "Tiada rekod dijumpai"
@@ -29,7 +29,7 @@ Open FAMA Registration
       → create account
 ```
 
-## Flow C — Exporter profile setup
+## Flow C — Usahawan profile setup
 
 ```text
 Login

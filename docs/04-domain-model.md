@@ -127,7 +127,11 @@ Observed categories:
 - quantityUnit
 - destinationCountry
 - cocCertificateId / cocNumber
-- exportDate
+- exportDate (nullable)
+- lotNo
+- farmLocation
+- farmLat / farmLng
+- displayImagePath
 - farmName
 - importerName
 - importerAddress

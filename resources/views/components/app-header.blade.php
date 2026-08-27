@@ -2,7 +2,7 @@
 @php
     use App\Domain\Role;
     $user = auth()->user();
-    $roleLabel = $user?->role === Role::FamaOfficer ? 'Pegawai FAMA' : 'Pengeksport';
+    $roleLabel = $user?->role === Role::FamaOfficer ? 'Pegawai FAMA' : 'Usahawan';
 @endphp
 
 <header class="sticky top-0 z-20 border-b border-border bg-white">

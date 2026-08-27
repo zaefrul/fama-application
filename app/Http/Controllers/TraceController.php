@@ -23,10 +23,10 @@ class TraceController extends Controller
         $certificates = $application ? $application->company->certificates : collect();
         $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
         $gallery = $application?->company?->gallery ?? collect();
-        $heroImage = JejakService::produceImagePath($application?->produce_type_id)
-            ?? $gallery->firstWhere('category', 'BUAH')?->file_path
-            ?? $gallery->first()?->file_path
-            ?? asset('placeholders/gallery-buah.svg');
+        $heroImage = $application?->display_image_path
+            ?: $gallery->firstWhere('category', 'BUAH')?->file_path
+            ?: $gallery->first()?->file_path
+            ?: asset('placeholders/gallery-buah.svg');
 
         return view('trace.show', [
             'qrCode' => $qrCode,
@@ -72,8 +72,14 @@ class TraceController extends Controller
             'quantityUnit' => $application->quantity_unit,
             'destinationCountry' => $application->destination_country,
             'exportDate' => $application->export_date?->toDateString(),
+            'companyName' => $application->company?->name,
             'exporter' => $application->company?->name,
             'exporterAddress' => $application->company?->address,
+            'lotNo' => $application->lot_no,
+            'farmLocation' => $application->farm_location,
+            'farmLat' => $application->farm_lat,
+            'farmLng' => $application->farm_lng,
+            'displayImage' => $application->display_image_path,
             'farmName' => $application->farm_name,
             'importerName' => $application->importer_name,
             'importerAddress' => $application->importer_address,

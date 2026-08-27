@@ -11,7 +11,7 @@ Demonstrate a FAMA agricultural-product traceability workflow in which an export
 ## V1 end-to-end outcome
 
 ```text
-Pengeksport registration
+Usahawan registration
 → company lookup
 → company/produce/certificate setup
 → export application

@@ -158,6 +158,23 @@ class FamaManagedTest extends TestCase
         $this->assertSame('DAGANGNET', $updated->external_source);
     }
 
+    public function test_application_can_be_created_without_export_date(): void
+    {
+        $this->seed();
+        $application = app(JejakService::class)->createApplication([
+            ...$this->applicationInput('co_abc'),
+            'export_date' => null,
+            'lot_no' => 'LOT-Z01',
+            'farm_location' => 'Serdang',
+            'farm_lat' => 2.9860000,
+            'farm_lng' => 101.7000000,
+        ]);
+
+        $this->assertNull($application->export_date);
+        $this->assertSame('LOT-Z01', $application->lot_no);
+        $this->assertSame('Serdang', $application->farm_location);
+    }
+
     public function test_login_and_public_trace(): void
     {
         $this->seed();

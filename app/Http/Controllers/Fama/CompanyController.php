@@ -77,6 +77,7 @@ class CompanyController extends Controller
 
         return view('fama.companies.qr-create', [
             'company' => $company,
+            'companyName' => $company->name,
             'produceTypes' => ProduceType::query()->orderBy('name')->get(),
             'certificates' => Certificate::query()->where('company_id', $id)->get(),
             'error' => $request->query('error'),
@@ -88,7 +89,7 @@ class CompanyController extends Controller
         try {
             $result = $this->jejak->createAndActivateQr(
                 $id,
-                ApplicationInput::from($request, $id),
+                $this->applicationInput($request, $id),
                 $request->user(),
             );
         } catch (RuntimeException $e) {
@@ -109,6 +110,7 @@ class CompanyController extends Controller
 
         return view('fama.companies.qr-edit', [
             'company' => $company,
+            'companyName' => $company->name,
             'application' => $application,
             'qr' => $application->qrCode,
             'produceTypes' => ProduceType::query()->orderBy('name')->get(),
@@ -124,7 +126,7 @@ class CompanyController extends Controller
         try {
             $this->jejak->updateManagedApplication(
                 $applicationId,
-                ApplicationInput::from($request, $id),
+                $this->applicationInput($request, $id),
                 $request->user(),
             );
         } catch (RuntimeException $e) {
@@ -168,6 +170,20 @@ class CompanyController extends Controller
         Certificate::query()->where('id', $request->input('id'))->delete();
 
         return redirect()->route('fama.companies.show', $id);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function applicationInput(Request $request, string $companyId): array
+    {
+        $input = ApplicationInput::from($request, $companyId);
+        $path = $this->uploads->save($request->file('displayImage'), 'applications');
+        if ($path) {
+            $input['display_image_path'] = $path;
+        }
+
+        return $input;
     }
 
     /**

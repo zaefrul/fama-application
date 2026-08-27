@@ -86,7 +86,12 @@ return new class extends Migration
             $table->string('destination_country');
             $table->string('coc_certificate_id')->nullable();
             $table->string('coc_number');
-            $table->date('export_date');
+            $table->date('export_date')->nullable();
+            $table->string('lot_no')->nullable();
+            $table->string('farm_location')->nullable();
+            $table->decimal('farm_lat', 10, 7)->nullable();
+            $table->decimal('farm_lng', 10, 7)->nullable();
+            $table->string('display_image_path')->nullable();
             $table->string('farm_name');
             $table->string('importer_name');
             $table->text('importer_address');

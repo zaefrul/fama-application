@@ -62,7 +62,7 @@ Used for:
 - Approved
 - Rejected
 - Syarikat Aktif
-- Pengeksport
+- Usahawan
 - Buah unik
 - Destinasi
 - Imbasan QR
@@ -182,4 +182,4 @@ Reusable public-page sections:
 - Certificates
 - Nutrition
 
-Desktop `/trace` also uses a Profil Produk Disahkan shell: identity hero, main record column, sticky trust rail. Mobile keeps the pamphlet.
+Desktop `/trace` also uses a Profil Keluaran Pertanian shell: identity hero, main record column, sticky QR / Hubungi Kami rail. Mobile keeps the pamphlet.

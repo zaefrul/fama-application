@@ -28,6 +28,11 @@ class ExportApplication extends Model
         'coc_certificate_id',
         'coc_number',
         'export_date',
+        'lot_no',
+        'farm_location',
+        'farm_lat',
+        'farm_lng',
+        'display_image_path',
         'farm_name',
         'importer_name',
         'importer_address',
@@ -41,10 +46,17 @@ class ExportApplication extends Model
         return [
             'status' => ApplicationStatus::class,
             'export_date' => 'date',
+            'farm_lat' => 'float',
+            'farm_lng' => 'float',
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
             'quantity' => 'integer',
         ];
+    }
+
+    public function hasFarmCoordinates(): bool
+    {
+        return $this->farm_lat !== null && $this->farm_lng !== null;
     }
 
     public function company(): BelongsTo

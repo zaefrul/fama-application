@@ -1,6 +1,6 @@
-<x-layouts.auth title="Daftar Pengeksport">
+<x-layouts.auth title="Daftar Usahawan">
     <x-card>
-        <p class="mb-2 text-xs font-semibold text-muted">Pendaftaran Pengeksport · Langkah <span id="step-label">1</span> / 4</p>
+        <p class="mb-2 text-xs font-semibold text-muted">Pendaftaran Usahawan · Langkah <span id="step-label">1</span> / 4</p>
         <div class="mb-4 grid grid-cols-4 gap-1">
             @for ($i = 1; $i <= 4; $i++)
                 <div id="bar-{{ $i }}" class="h-1.5 rounded-full {{ $i === 1 ? 'bg-brand' : 'bg-border' }}"></div>

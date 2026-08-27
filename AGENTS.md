@@ -8,7 +8,7 @@ Build a functional prototype of **Sistem Jejak GPL** based on the supplied FAMA 
 
 The prototype demonstrates:
 
-- Pengeksport onboarding;
+- Usahawan onboarding;
 - Pegawai FAMA onboarding;
 - company and produce information;
 - certification and gallery;

@@ -12,7 +12,7 @@
                     </label>
                     <label class="relative cursor-pointer text-center text-sm font-semibold">
                         <input type="radio" name="role" value="EXPORTER" @checked($defaultRole !== 'FAMA_OFFICER') class="peer absolute inset-0 z-10 cursor-pointer opacity-0">
-                        <span class="pointer-events-none block rounded-xl px-3 py-2 text-muted peer-checked:bg-white peer-checked:text-brand peer-checked:shadow-sm">PENGEKSPORT</span>
+                        <span class="pointer-events-none block rounded-xl px-3 py-2 text-muted peer-checked:bg-white peer-checked:text-brand peer-checked:shadow-sm">USAHAWAN</span>
                     </label>
                 </div>
             </fieldset>

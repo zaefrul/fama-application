@@ -39,7 +39,7 @@ class FamaDashboardTest extends TestCase
             ->get(route('fama.dashboard'))
             ->assertOk()
             ->assertSee('Permohonan QR')
-            ->assertSee('Pengeksport')
+            ->assertSee('Usahawan')
             ->assertSee('Buah unik')
             ->assertSee('10 buah paling kerap')
             ->assertSee('Destinasi eksport')
