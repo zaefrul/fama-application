@@ -20,7 +20,9 @@ use App\Models\QrAccess;
 use App\Models\QrCode;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class JejakService
@@ -241,17 +243,26 @@ class JejakService
             throw new RuntimeException('Jenis Keluaran Pertanian terlalu panjang');
         }
 
-        $existing = ProduceType::query()
-            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
-            ->first();
-        if ($existing) {
-            return $existing;
-        }
+        return DB::transaction(function () use ($name) {
+            $existing = $this->findProduceTypeByName($name);
+            if ($existing) {
+                return $existing;
+            }
 
-        return ProduceType::query()->create([
-            'id' => Ids::create('pt'),
-            'name' => $name,
-        ]);
+            try {
+                return ProduceType::query()->create([
+                    'id' => Ids::create('pt'),
+                    'name' => $name,
+                ]);
+            } catch (UniqueConstraintViolationException) {
+                $existing = $this->findProduceTypeByName($name);
+                if ($existing) {
+                    return $existing;
+                }
+
+                throw new RuntimeException('Tidak dapat menyimpan Jenis Keluaran Pertanian');
+            }
+        });
     }
 
     /**
@@ -290,21 +301,35 @@ class JejakService
 
     public function addCompanyProduce(string $companyId, string $produceTypeId, ?string $variety = null): CompanyProduce
     {
-        $existing = CompanyProduce::query()
-            ->where('company_id', $companyId)
-            ->where('produce_type_id', $produceTypeId)
-            ->first();
-        if ($existing) {
-            return $existing;
-        }
+        return DB::transaction(function () use ($companyId, $produceTypeId, $variety) {
+            $existing = CompanyProduce::query()
+                ->where('company_id', $companyId)
+                ->where('produce_type_id', $produceTypeId)
+                ->first();
+            if ($existing) {
+                return $existing;
+            }
 
-        return CompanyProduce::query()->create([
-            'id' => Ids::create('cp'),
-            'company_id' => $companyId,
-            'produce_type_id' => $produceTypeId,
-            'variety' => $variety,
-            'active' => true,
-        ]);
+            try {
+                return CompanyProduce::query()->create([
+                    'id' => Ids::create('cp'),
+                    'company_id' => $companyId,
+                    'produce_type_id' => $produceTypeId,
+                    'variety' => $variety,
+                    'active' => true,
+                ]);
+            } catch (UniqueConstraintViolationException) {
+                $existing = CompanyProduce::query()
+                    ->where('company_id', $companyId)
+                    ->where('produce_type_id', $produceTypeId)
+                    ->first();
+                if ($existing) {
+                    return $existing;
+                }
+
+                throw new RuntimeException('Tidak dapat menyimpan keluaran syarikat');
+            }
+        });
     }
 
     public function addCertificate(array $input): Certificate
@@ -860,6 +885,13 @@ class JejakService
         }
 
         return ProduceType::query()->find($produceTypeId)?->name ?? '—';
+    }
+
+    private function findProduceTypeByName(string $name): ?ProduceType
+    {
+        return ProduceType::query()
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
     }
 
     private function famaAccountNo(string $registrationNo): string

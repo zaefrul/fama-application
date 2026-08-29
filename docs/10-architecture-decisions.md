@@ -180,11 +180,13 @@ FAMA review of uploaded photos before they go public is not specified and is not
 
 Authenticated usahawan and FAMA officers search **Jenis Keluaran Pertanian** with an autocomplete (type to filter a scrollable list) and can press **+** to add a name that is not in the list. The name is stored on shared `produce_types` (case-insensitive reuse) and linked to the company.
 
+If two users add the same new name at once, a transaction looks up the name first and reuses that id; a unique-name clash still resolves to the existing row instead of failing.
+
 Official ownership of produce master data remains an open question (`docs/09-open-questions.md`). This does not add a FAMA-only catalogue admin screen.
 
 **Reason:** Requested so a keluaran can be recorded when the seeded list is incomplete.
 
-**Consequences:** New names become selectable for every company. Duplicate company rows for the same type are not created.
+**Consequences:** New names become selectable for every company. Duplicate company rows for the same type are not created. `company_produce` is unique per company and produce type.
 
 ## Adding a decision
 
