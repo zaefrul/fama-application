@@ -46,5 +46,10 @@
         .gallery-hero { display: block; width: 100%; height: 176px; max-height: 176px; object-fit: cover; }
         .company-logo { display: block; width: 64px; height: 64px; max-width: 64px; max-height: 64px; object-fit: contain; }
         .trace-pamphlet { background: #fffdf8; border: 2px solid #d4b45a; }
+        .produce-type-list { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; margin-top: 0.25rem; max-height: 15rem; overflow-y: auto; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--surface); padding: 0.25rem 0; box-shadow: 0 8px 20px rgba(20, 36, 29, 0.08); }
+        .produce-type-option { cursor: pointer; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: var(--text-primary); }
+        .produce-type-option:hover, .produce-type-option.is-active { background: var(--surface-muted); }
+        .produce-type-option.is-active { font-weight: 600; }
+        .produce-type-empty { padding: 0.5rem 0.75rem; font-size: 0.875rem; color: var(--text-secondary); }
     </style>
 @endif

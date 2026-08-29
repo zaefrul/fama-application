@@ -178,7 +178,7 @@ FAMA review of uploaded photos before they go public is not specified and is not
 **Status:** Temporary prototype decision  
 **Date:** 2026-08-29
 
-Authenticated usahawan and FAMA officers can press **+** next to the **Jenis Keluaran Pertanian** dropdown and type a name that is not in the list. The name is stored on shared `produce_types` (case-insensitive reuse) and linked to the company.
+Authenticated usahawan and FAMA officers search **Jenis Keluaran Pertanian** with an autocomplete (type to filter a scrollable list) and can press **+** to add a name that is not in the list. The name is stored on shared `produce_types` (case-insensitive reuse) and linked to the company.
 
 Official ownership of produce master data remains an open question (`docs/09-open-questions.md`). This does not add a FAMA-only catalogue admin screen.
 

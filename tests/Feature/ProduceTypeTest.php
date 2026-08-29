@@ -23,8 +23,26 @@ class ProduceTypeTest extends TestCase
             ->get('/exporter/company/produce')
             ->assertOk()
             ->assertSee('Jenis Keluaran Pertanian')
+            ->assertSee('Cari Jenis Keluaran Pertanian')
             ->assertSee('Tambah Jenis Keluaran Pertanian')
-            ->assertSee('Jenis Keluaran Pertanian baharu');
+            ->assertSee('role="combobox"', false)
+            ->assertSee('Durian');
+    }
+
+    public function test_exporter_can_add_an_existing_produce_type_by_id(): void
+    {
+        $this->seed();
+
+        $this->actingAs(User::query()->findOrFail('user_ali'))
+            ->post('/exporter/company/produce', [
+                'produceTypeId' => 'pt_nanas',
+            ])
+            ->assertRedirect(route('exporter.produce'));
+
+        $this->assertDatabaseHas('company_produce', [
+            'company_id' => 'co_abc',
+            'produce_type_id' => 'pt_nanas',
+        ]);
     }
 
     public function test_exporter_can_add_a_new_produce_type_from_keluaran_form(): void

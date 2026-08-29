@@ -29,7 +29,7 @@
                         <x-input :value="$displayCompany" readonly />
                     </x-field>
                 @endif
-                <x-field label="Jenis Keluaran Pertanian" required hint="Jika tiada dalam senarai, tekan + untuk tambah.">
+                <x-field label="Jenis Keluaran Pertanian" required hint="Taip untuk cari. Jika tiada dalam senarai, tekan + untuk tambah.">
                     <x-produce-type-field
                         :types="$produceTypes"
                         :selected="$application?->produce_type_id"

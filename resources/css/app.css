@@ -219,6 +219,43 @@ svg {
   background: #f7f3e8;
 }
 
+.produce-type-list {
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  z-index: 30;
+  margin-top: 0.25rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  padding: 0.25rem 0;
+  box-shadow: 0 8px 20px rgba(20, 36, 29, 0.08);
+}
+
+.produce-type-option {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.produce-type-option:hover,
+.produce-type-option.is-active {
+  background: var(--surface-muted);
+}
+
+.produce-type-option.is-active {
+  font-weight: 600;
+}
+
+.produce-type-empty {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
 input,
 select,
 textarea,
