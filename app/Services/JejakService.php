@@ -231,8 +231,73 @@ class JejakService
         return $current;
     }
 
+    public function findOrCreateProduceType(string $name): ProduceType
+    {
+        $name = trim(preg_replace('/\s+/u', ' ', $name) ?? '');
+        if ($name === '') {
+            throw new RuntimeException('Jenis Keluaran Pertanian diperlukan');
+        }
+        if (mb_strlen($name) > 80) {
+            throw new RuntimeException('Jenis Keluaran Pertanian terlalu panjang');
+        }
+
+        $existing = ProduceType::query()
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
+        if ($existing) {
+            return $existing;
+        }
+
+        return ProduceType::query()->create([
+            'id' => Ids::create('pt'),
+            'name' => $name,
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     * @return array<string, mixed>
+     */
+    public function withResolvedProduceType(array $input, bool $allowEmpty = false): array
+    {
+        $newName = trim((string) ($input['new_produce_name'] ?? ''));
+        $produceTypeId = trim((string) ($input['produce_type_id'] ?? ''));
+        unset($input['new_produce_name']);
+
+        if ($newName !== '') {
+            $input['produce_type_id'] = $this->findOrCreateProduceType($newName)->id;
+
+            return $input;
+        }
+
+        if ($produceTypeId !== '') {
+            if (! ProduceType::query()->where('id', $produceTypeId)->exists()) {
+                throw new RuntimeException('Jenis Keluaran Pertanian tidak sah');
+            }
+            $input['produce_type_id'] = $produceTypeId;
+
+            return $input;
+        }
+
+        if ($allowEmpty) {
+            unset($input['produce_type_id']);
+
+            return $input;
+        }
+
+        throw new RuntimeException('Sila pilih atau tambah Jenis Keluaran Pertanian');
+    }
+
     public function addCompanyProduce(string $companyId, string $produceTypeId, ?string $variety = null): CompanyProduce
     {
+        $existing = CompanyProduce::query()
+            ->where('company_id', $companyId)
+            ->where('produce_type_id', $produceTypeId)
+            ->first();
+        if ($existing) {
+            return $existing;
+        }
+
         return CompanyProduce::query()->create([
             'id' => Ids::create('cp'),
             'company_id' => $companyId,
@@ -271,9 +336,10 @@ class JejakService
 
     public function createApplication(array $input): ExportApplication
     {
+        $input = $this->withResolvedProduceType($input);
         $existing = ExportApplication::query()->pluck('application_no')->all();
 
-        return ExportApplication::query()->create([
+        $application = ExportApplication::query()->create([
             'id' => Ids::create('app'),
             'application_no' => Ids::nextApplicationNo($existing),
             'company_id' => $input['company_id'],
@@ -297,6 +363,9 @@ class JejakService
             'importer_address' => $input['importer_address'],
             'status' => ApplicationStatus::Draft,
         ]);
+        $this->addCompanyProduce($application->company_id, $application->produce_type_id);
+
+        return $application;
     }
 
     public function updateApplication(string $id, array $patch): ExportApplication
@@ -306,8 +375,10 @@ class JejakService
             throw new RuntimeException('Hanya draf boleh dikemaskini');
         }
 
+        $patch = $this->withResolvedProduceType($patch, true);
         $this->fillApplication($current, $patch);
         $current->save();
+        $this->addCompanyProduce($current->company_id, $current->produce_type_id);
 
         return $current;
     }
@@ -322,8 +393,10 @@ class JejakService
             throw new RuntimeException('Hanya permohonan diluluskan boleh dikemaskini oleh FAMA');
         }
 
+        $patch = $this->withResolvedProduceType($patch, true);
         $this->fillApplication($current, $patch);
         $current->save();
+        $this->addCompanyProduce($current->company_id, $current->produce_type_id);
         $this->writeAudit($actor, 'APPLICATION_UPDATED', 'ExportApplication', $id);
 
         return $current;
@@ -456,13 +529,6 @@ class JejakService
     public function createAndActivateQr(string $companyId, array $input, User $actor): array
     {
         $application = $this->createApplication([...$input, 'company_id' => $companyId]);
-        $produce = CompanyProduce::query()
-            ->where('company_id', $companyId)
-            ->where('produce_type_id', $input['produce_type_id'])
-            ->first();
-        if (! $produce) {
-            $this->addCompanyProduce($companyId, $input['produce_type_id']);
-        }
         $generated = $this->generateQr($application->id, $actor);
         $this->submitApplication($application->id, $actor);
         $this->startReview($application->id, $actor);

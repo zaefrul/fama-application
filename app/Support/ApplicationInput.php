@@ -21,6 +21,7 @@ final class ApplicationInput
         return [
             'company_id' => $companyId,
             'produce_type_id' => (string) $request->input('produceTypeId', ''),
+            'new_produce_name' => trim((string) $request->input('newProduceName', '')),
             'variety' => (string) $request->input('variety', ''),
             'grade' => (string) $request->input('grade', ''),
             'size' => (string) $request->input('size', ''),

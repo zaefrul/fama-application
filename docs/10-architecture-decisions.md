@@ -173,6 +173,19 @@ FAMA review of uploaded photos before they go public is not specified and is not
 
 **Consequences:** Empty export date is hidden on the public page, not shown as a blank. Missing display image falls back to company gallery, then a marked placeholder.
 
+## ADR-019 — Users may add a missing produce type from the form
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-08-29
+
+Authenticated usahawan and FAMA officers can press **+** next to the **Jenis Keluaran Pertanian** dropdown and type a name that is not in the list. The name is stored on shared `produce_types` (case-insensitive reuse) and linked to the company.
+
+Official ownership of produce master data remains an open question (`docs/09-open-questions.md`). This does not add a FAMA-only catalogue admin screen.
+
+**Reason:** Requested so a keluaran can be recorded when the seeded list is incomplete.
+
+**Consequences:** New names become selectable for every company. Duplicate company rows for the same type are not created.
+
 ## Adding a decision
 
 ```text

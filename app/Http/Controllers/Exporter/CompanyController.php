@@ -67,7 +67,15 @@ class CompanyController extends Controller
 
     public function addProduce(Request $request): RedirectResponse
     {
-        $this->jejak->addCompanyProduce($request->user()->company_id, (string) $request->input('produceTypeId'));
+        try {
+            $resolved = $this->jejak->withResolvedProduceType([
+                'produce_type_id' => (string) $request->input('produceTypeId', ''),
+                'new_produce_name' => (string) $request->input('newProduceName', ''),
+            ]);
+            $this->jejak->addCompanyProduce($request->user()->company_id, (string) $resolved['produce_type_id']);
+        } catch (RuntimeException $e) {
+            return redirect()->route('exporter.produce')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('exporter.produce');
     }

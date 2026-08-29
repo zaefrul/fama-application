@@ -29,12 +29,13 @@
                         <x-input :value="$displayCompany" readonly />
                     </x-field>
                 @endif
-                <x-field label="Jenis Keluaran Pertanian" required>
-                    <x-select name="produceTypeId" :disabled="$readOnly" required>
-                        @foreach ($produceTypes as $type)
-                            <option value="{{ $type->id }}" @selected($application?->produce_type_id === $type->id)>{{ $type->name }}</option>
-                        @endforeach
-                    </x-select>
+                <x-field label="Jenis Keluaran Pertanian" required hint="Jika tiada dalam senarai, tekan + untuk tambah.">
+                    <x-produce-type-field
+                        :types="$produceTypes"
+                        :selected="$application?->produce_type_id"
+                        :disabled="$readOnly"
+                        :required="! $readOnly"
+                    />
                 </x-field>
                 <x-field label="Varieti" required>
                     <x-input name="variety" :value="$application?->variety" :readonly="$readOnly" required />

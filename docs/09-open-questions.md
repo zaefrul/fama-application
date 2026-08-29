@@ -51,7 +51,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 
 ## Produce
 
-- Who maintains produce master data?
+- Who maintains produce master data? *(Prototype assumption ADR-019: usahawan and FAMA officers may add a missing type from the keluaran/application form. Official ownership is not decided.)*
 - Who maintains variety?
 - Who maintains grade?
 - Are sizes standardized?

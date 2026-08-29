@@ -3,14 +3,17 @@
         <x-page-title title="Maklumat Keluaran Pertanian" />
         <x-company-nav />
         <x-card>
-            <form action="{{ route('exporter.produce') }}" method="post" class="flex gap-2">
+            <form action="{{ route('exporter.produce') }}" method="post" class="space-y-3">
                 @csrf
-                <x-select name="produceTypeId" class="flex-1">
-                    @foreach ($types as $type)
-                        <option value="{{ $type->id }}">{{ $type->name }}</option>
-                    @endforeach
-                </x-select>
-                <x-button type="submit">+ Tambah</x-button>
+                @if (session('error'))
+                    <x-error-text>{{ session('error') }}</x-error-text>
+                @endif
+                <x-field label="Jenis Keluaran Pertanian" hint="Jika tiada dalam senarai, tekan + untuk tambah.">
+                    <div class="flex items-start gap-2">
+                        <x-produce-type-field :types="$types" class="min-w-0 flex-1" />
+                        <x-button type="submit">+ Tambah</x-button>
+                    </div>
+                </x-field>
             </form>
             <ul class="mt-4 space-y-2">
                 @foreach ($produce as $row)
