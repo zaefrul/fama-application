@@ -25,7 +25,7 @@
                                 <x-card class="flex items-center justify-between">
                                     <div>
                                         <p class="text-xs text-muted">{{ $company->registration_no }}</p>
-                                        <p class="font-semibold">{{ $company->displayName() }}</p>
+                                        <p class="font-semibold">{{ $company->name }}</p>
                                     </div>
                                     <span class="text-brand">✎</span>
                                 </x-card>

@@ -28,8 +28,19 @@ class FamaCompanyListTest extends TestCase
             'website' => '',
         ], $fama);
         $jejak->createCompany([
-            'name' => '9 (Beta Farm Resources)',
-            'registration_no' => 'BF900002',
+            'name' => '10 (Zebra Orchard)',
+            'registration_no' => 'ZO900010',
+            'email' => '',
+            'phone' => '',
+            'address' => '',
+            'state' => '',
+            'district' => '',
+            'postcode' => '',
+            'website' => '',
+        ], $fama);
+        $jejak->createCompany([
+            'name' => '2 (Alpha Farm)',
+            'registration_no' => 'AF900002',
             'email' => '',
             'phone' => '',
             'address' => '',
@@ -43,8 +54,9 @@ class FamaCompanyListTest extends TestCase
             ->get(route('fama.companies'))
             ->assertOk()
             ->assertSeeInOrder([
+                '2 (Alpha Farm)',
+                '10 (Zebra Orchard)',
                 'ABC Fruits Sdn. Bhd.',
-                'Beta Farm Resources',
                 'MTS Fruits Sdn. Bhd.',
                 'Zahid Orchard Sdn. Bhd.',
             ])
@@ -70,7 +82,7 @@ class FamaCompanyListTest extends TestCase
         $this->actingAs(User::query()->findOrFail('user_fama'))
             ->get(route('fama.companies', ['q' => 'ZBM']))
             ->assertOk()
-            ->assertSee('ZBM AGROTECH')
+            ->assertSee('5 (ZBM AGROTECH)')
             ->assertDontSee('ABC Fruits Sdn. Bhd.');
     }
 

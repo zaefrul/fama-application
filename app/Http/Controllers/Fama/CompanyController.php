@@ -37,7 +37,7 @@ class CompanyController extends Controller
                 });
             })
             ->get()
-            ->sortBy(fn (Company $company) => $company->nameSortKey(), SORT_NATURAL)
+            ->sortBy(fn (Company $company) => $company->nameSortKey())
             ->values();
 
         return view('fama.companies.index', [

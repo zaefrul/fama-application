@@ -36,7 +36,8 @@ class Company extends Model
     public function displayName(): string
     {
         $name = trim((string) $this->name);
-        if (preg_match('/^\d+\s*\((.+)\)\s*$/u', $name, $matches) === 1) {
+        if (preg_match('/^\d+\s*[\-\x{2013}\x{2014}]\s*(.+)$/u', $name, $matches) === 1
+            || preg_match('/^\d+\s*\((.+)\)\s*$/u', $name, $matches) === 1) {
             $inner = trim($matches[1]);
             if ($inner !== '') {
                 return $inner;
@@ -46,12 +47,23 @@ class Company extends Model
         return $name !== '' ? $name : 'Tanpa nama syarikat';
     }
 
+    public function leadingNumber(): ?int
+    {
+        if (preg_match('/^(\d+)\b/u', trim((string) $this->name), $matches) === 1) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
     public function nameSortKey(): string
     {
-        $display = $this->displayName();
-        $unnamed = preg_match('/^\d+$/u', $display) === 1 || $display === 'Tanpa nama syarikat';
+        $number = $this->leadingNumber();
+        if ($number === null) {
+            return '1|'.mb_strtolower(trim((string) $this->name));
+        }
 
-        return ($unnamed ? '1|' : '0|').mb_strtolower($display);
+        return '0|'.str_pad((string) $number, 6, '0', STR_PAD_LEFT).'|'.mb_strtolower($this->displayName());
     }
 
     public function users(): HasMany
