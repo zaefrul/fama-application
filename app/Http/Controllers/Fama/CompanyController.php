@@ -23,10 +23,26 @@ class CompanyController extends Controller
         private readonly UploadService $uploads,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
+        $q = trim((string) $request->query('q', ''));
+        $like = '%'.addcslashes($q, '%_\\').'%';
+
+        $companies = Company::query()
+            ->when($q !== '', function ($query) use ($like) {
+                $query->where(function ($inner) use ($like) {
+                    $inner->where('name', 'like', $like)
+                        ->orWhere('registration_no', 'like', $like)
+                        ->orWhere('external_account_no', 'like', $like);
+                });
+            })
+            ->get()
+            ->sortBy(fn (Company $company) => $company->nameSortKey(), SORT_NATURAL)
+            ->values();
+
         return view('fama.companies.index', [
-            'companies' => Company::query()->orderBy('name')->get(),
+            'companies' => $companies,
+            'q' => $q,
         ]);
     }
 

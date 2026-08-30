@@ -33,6 +33,27 @@ class Company extends Model
         return $this->external_source === 'FAMA';
     }
 
+    public function displayName(): string
+    {
+        $name = trim((string) $this->name);
+        if (preg_match('/^\d+\s*\((.+)\)\s*$/u', $name, $matches) === 1) {
+            $inner = trim($matches[1]);
+            if ($inner !== '') {
+                return $inner;
+            }
+        }
+
+        return $name !== '' ? $name : 'Tanpa nama syarikat';
+    }
+
+    public function nameSortKey(): string
+    {
+        $display = $this->displayName();
+        $unnamed = preg_match('/^\d+$/u', $display) === 1 || $display === 'Tanpa nama syarikat';
+
+        return ($unnamed ? '1|' : '0|').mb_strtolower($display);
+    }
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
