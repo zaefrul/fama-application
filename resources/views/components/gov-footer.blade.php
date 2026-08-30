@@ -7,7 +7,6 @@
         </div>
         <div class="space-y-1 text-xs text-white/70 sm:text-right">
             <p>Portal rasmi jejak eksport hasil pertanian</p>
-            <p>Prototaip V1 · Bukan laman produksi</p>
             <p>&copy; {{ date('Y') }} FAMA. Hak cipta terpelihara.</p>
         </div>
     </div>

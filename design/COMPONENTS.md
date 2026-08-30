@@ -8,7 +8,7 @@ Official top chrome: Jalur Gemilang hairline and “Laman Rasmi FAMA” utility 
 
 ## GovFooter
 
-Official footer: FAMA, ministry, prototype disclaimer, copyright.
+Official footer: FAMA, ministry, copyright.
 
 ## Icon
 

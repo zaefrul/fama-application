@@ -1,6 +1,6 @@
 <x-layouts.fama title="Utama FAMA">
     <div class="space-y-4">
-        <x-page-title title="Utama FAMA" subtitle="Pemantauan prototaip Jejak GPL" />
+        <x-page-title title="Utama FAMA" subtitle="Pemantauan Jejak GPL" />
 
         <div class="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-5">
             <x-kpi-card :value="$stats['activeCompanies']" label="Syarikat Aktif" tone="info" href="/fama/companies" />
