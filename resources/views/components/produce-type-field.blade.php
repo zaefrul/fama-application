@@ -5,6 +5,8 @@
     'required' => false,
     'selectName' => 'produceTypeId',
     'newNameField' => 'newProduceName',
+    'placeholder' => 'Cari Jenis Keluaran Pertanian',
+    'addLabel' => 'Tambah Jenis Keluaran Pertanian',
 ])
 @php
     $uid = 'produce-type-'.str_replace('.', '', uniqid('', true));
@@ -24,6 +26,7 @@
 <div
     {{ $attributes->merge(['id' => $uid, 'class' => 'flex gap-2']) }}
     data-required="{{ $required ? '1' : '0' }}"
+    data-add-label="{{ $addLabel }}"
 >
     <div class="relative min-w-0 flex-1">
         <input type="hidden" name="{{ $selectName }}" value="{{ $startCustom ? '' : $selectedId }}" data-role="id" @disabled($disabled)>
@@ -33,7 +36,7 @@
             role="combobox"
             data-role="query"
             value="{{ $selectedName }}"
-            placeholder="Cari Jenis Keluaran Pertanian"
+            placeholder="{{ $placeholder }}"
             maxlength="80"
             autocomplete="off"
             autocorrect="off"
@@ -41,7 +44,7 @@
             aria-autocomplete="list"
             aria-expanded="false"
             aria-controls="{{ $uid }}-list"
-            aria-label="Cari Jenis Keluaran Pertanian"
+            aria-label="{{ $placeholder }}"
             :disabled="$disabled"
             :readonly="$disabled"
             :required="$required"
@@ -63,8 +66,8 @@
             variant="secondary"
             class="min-w-11 px-3"
             data-role="toggle"
-            aria-label="Tambah Jenis Keluaran Pertanian"
-            title="Tambah Jenis Keluaran Pertanian"
+            aria-label="{{ $addLabel }}"
+            title="{{ $addLabel }}"
         >+</x-button>
         <script>
             (function () {
@@ -80,6 +83,17 @@
                 try { items = JSON.parse(itemsNode.textContent || '[]'); } catch (e) { items = []; }
                 var active = -1;
                 var browseAll = true;
+                var addLabel = root.getAttribute('data-add-label') || 'Tambah Jenis Keluaran Pertanian';
+                function showAdd() {
+                    toggle.textContent = '+';
+                    toggle.setAttribute('aria-label', addLabel);
+                    toggle.setAttribute('title', addLabel);
+                }
+                function showCancel() {
+                    toggle.textContent = '×';
+                    toggle.setAttribute('aria-label', 'Batal ' + addLabel);
+                    toggle.setAttribute('title', 'Batal');
+                }
 
                 function norm(value) {
                     return String(value || '').trim().toLowerCase();
@@ -161,9 +175,7 @@
                     query.value = item.name;
                     browseAll = true;
                     setExpanded(false);
-                    toggle.textContent = '+';
-                    toggle.setAttribute('aria-label', 'Tambah Jenis Keluaran Pertanian');
-                    toggle.setAttribute('title', 'Tambah Jenis Keluaran Pertanian');
+                    showAdd();
                 }
                 function commitTyped() {
                     var typed = String(query.value || '').trim();
@@ -182,18 +194,14 @@
                     query.value = typed;
                     list.innerHTML = '';
                     setExpanded(false);
-                    toggle.textContent = '×';
-                    toggle.setAttribute('aria-label', 'Batal tambah Jenis Keluaran Pertanian');
-                    toggle.setAttribute('title', 'Batal');
+                    showCancel();
                     return true;
                 }
                 function cancelCustom() {
                     newInput.value = '';
                     idInput.value = '';
                     query.value = '';
-                    toggle.textContent = '+';
-                    toggle.setAttribute('aria-label', 'Tambah Jenis Keluaran Pertanian');
-                    toggle.setAttribute('title', 'Tambah Jenis Keluaran Pertanian');
+                    showAdd();
                     browseAll = true;
                     query.focus();
                     openList();
@@ -212,9 +220,7 @@
                     idInput.value = '';
                     newInput.value = '';
                     browseAll = false;
-                    toggle.textContent = '+';
-                    toggle.setAttribute('aria-label', 'Tambah Jenis Keluaran Pertanian');
-                    toggle.setAttribute('title', 'Tambah Jenis Keluaran Pertanian');
+                    showAdd();
                     openList();
                 });
                 query.addEventListener('keydown', function (event) {

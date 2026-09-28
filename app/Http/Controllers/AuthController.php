@@ -70,33 +70,68 @@ class AuthController extends Controller
 
     public function showRegisterExporter(Request $request): View
     {
-        return view('auth.register-exporter', ['error' => $request->query('error')]);
+        $account = trim((string) $request->query('account', ''));
+        $error = $request->query('error');
+        $message = match ($error) {
+            'notfound' => 'Tiada rekod dijumpai'.($account !== '' ? ' untuk '.$account.'.' : '.'),
+            'taken' => 'Nombor akaun sudah didaftarkan'.($account !== '' ? ': '.$account.'.' : '.'),
+            'email' => 'Emel syarikat pertama sudah digunakan untuk akaun lain.',
+            'validation' => 'Sila semak kata laluan dan maklumat pengguna.',
+            default => '',
+        };
+
+        return view('auth.register-exporter', [
+            'error' => $error,
+            'errorMessage' => $message,
+        ]);
     }
 
     public function registerExporter(Request $request): RedirectResponse
     {
-        $identifier = trim((string) $request->input('identifier'));
+        $identifiers = collect($request->input('identifiers', []))
+            ->map(fn ($value) => trim((string) $value))
+            ->filter()
+            ->unique(fn ($value) => strtolower($value))
+            ->values();
         $name = trim((string) $request->input('name'));
         $identity = trim((string) $request->input('identityReference'));
         $password = (string) $request->input('password');
         $confirm = (string) $request->input('confirmPassword');
 
-        if ($name === '' || $identity === '' || strlen($password) < 8 || $password !== $confirm) {
+        if ($identifiers->isEmpty() || $name === '' || $identity === '' || strlen($password) < 8 || $password !== $confirm) {
             return redirect()->route('register.exporter', ['error' => 'validation']);
         }
 
-        $companyLookup = $this->dagangNet->findCompany($identifier);
-        $match = Company::query()->where('external_account_no', $identifier)->first();
-        if (! $companyLookup || ! $match) {
-            return redirect()->route('register.exporter', ['error' => 'notfound']);
+        $companies = [];
+        foreach ($identifiers as $identifier) {
+            $companyLookup = $this->dagangNet->findCompany($identifier);
+            $match = Company::query()
+                ->whereRaw('LOWER(external_account_no) = ?', [strtolower($identifier)])
+                ->first();
+            if (! $companyLookup || ! $match) {
+                return redirect()->route('register.exporter', ['error' => 'notfound', 'account' => $identifier]);
+            }
+            if ($match->members()->exists() || User::query()->where('company_id', $match->id)->exists()) {
+                return redirect()->route('register.exporter', [
+                    'error' => 'taken',
+                    'account' => $match->external_account_no,
+                ]);
+            }
+            $companies[] = $match;
+        }
+
+        $email = $companies[0]->email;
+        if (User::query()->where('email', $email)->exists()) {
+            return redirect()->route('register.exporter', ['error' => 'email']);
         }
 
         $user = $this->jejak->createExporterUser([
             'name' => $name,
-            'email' => $companyLookup['email'],
+            'email' => $email,
             'password' => $password,
             'identity_reference' => $identity,
-            'company_id' => $match->id,
+            'company_id' => $companies[0]->id,
+            'company_ids' => array_map(fn (Company $company) => $company->id, $companies),
         ]);
         Auth::login($user);
 

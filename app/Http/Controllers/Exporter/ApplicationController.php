@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Exporter;
 
+use App\Domain\ProductKind;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\ExportApplication;
@@ -12,6 +13,7 @@ use App\Services\UploadService;
 use App\Support\ApplicationInput;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use RuntimeException;
 
@@ -35,9 +37,12 @@ class ApplicationController extends Controller
 
     public function create(Request $request): View
     {
+        $kind = ProductKind::fromQuery($request->query('kind'));
+
         return view('exporter.applications.create', [
+            'kind' => $kind,
             'companyName' => $request->user()->company?->name,
-            'produceTypes' => ProduceType::query()->orderBy('name')->get(),
+            'produceTypes' => $this->typesFor($kind),
             'certificates' => Certificate::query()->where('company_id', $request->user()->company_id)->get(),
         ]);
     }
@@ -64,7 +69,7 @@ class ApplicationController extends Controller
         return view('exporter.applications.show', [
             'application' => $application,
             'companyName' => $application->company?->name,
-            'produceTypes' => ProduceType::query()->orderBy('name')->get(),
+            'produceTypes' => ProduceType::query()->where('category', $application->product_kind->value)->orderBy('name')->get(),
             'certificates' => Certificate::query()->where('company_id', $application->company_id)->get(),
             'publicUrl' => $application->qrCode ? $qrImage->traceUrl($application->qrCode->qr_code) : '',
         ]);
@@ -111,5 +116,17 @@ class ApplicationController extends Controller
         }
 
         return $input;
+    }
+
+    /**
+     * @return Collection<int, ProduceType>
+     */
+    private function typesFor(?ProductKind $kind): Collection
+    {
+        if (! $kind) {
+            return collect();
+        }
+
+        return ProduceType::query()->where('category', $kind->value)->orderBy('name')->get();
     }
 }

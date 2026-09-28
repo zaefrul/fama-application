@@ -39,6 +39,7 @@ Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 Route::middleware(['auth', 'role:EXPORTER'])->group(function () {
     Route::get('/exporter', ExporterDashboardController::class)->name('exporter.dashboard');
+    Route::post('/exporter/company/switch', [ExporterCompanyController::class, 'switchCompany'])->name('exporter.company.switch');
     Route::get('/exporter/company', [ExporterCompanyController::class, 'show'])->name('exporter.company');
     Route::post('/exporter/company', [ExporterCompanyController::class, 'update']);
     Route::get('/exporter/company/produce', [ExporterCompanyController::class, 'produce'])->name('exporter.produce');

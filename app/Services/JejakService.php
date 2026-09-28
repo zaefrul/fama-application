@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Domain\ApplicationStatus;
 use App\Domain\Ids;
+use App\Domain\ProductKind;
 use App\Domain\QrStatus;
 use App\Domain\Role;
 use App\Domain\Transitions;
@@ -97,16 +98,22 @@ class JejakService
 
     public function createExporterUser(array $input): User
     {
-        return User::query()->create([
-            'id' => Ids::create('user'),
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => $input['password'],
-            'role' => Role::Exporter,
-            'identity_reference' => $input['identity_reference'],
-            'status' => 'ACTIVE',
-            'company_id' => $input['company_id'],
-        ]);
+        return DB::transaction(function () use ($input) {
+            $companyIds = array_values(array_unique($input['company_ids'] ?? [$input['company_id']]));
+            $user = User::query()->create([
+                'id' => Ids::create('user'),
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'password' => $input['password'],
+                'role' => Role::Exporter,
+                'identity_reference' => $input['identity_reference'],
+                'status' => 'ACTIVE',
+                'company_id' => $input['company_id'] ?? $companyIds[0],
+            ]);
+            $user->companies()->sync($companyIds);
+
+            return $user;
+        });
     }
 
     public function createFamaUser(array $input): User
@@ -233,19 +240,24 @@ class JejakService
         return $current;
     }
 
-    public function findOrCreateProduceType(string $name): ProduceType
+    public function findOrCreateProduceType(string $name, string $category = 'PRODUCE'): ProduceType
     {
+        $label = $category === ProductKind::Livestock->value ? 'jenis ternakan' : 'Jenis Keluaran Pertanian';
         $name = trim(preg_replace('/\s+/u', ' ', $name) ?? '');
         if ($name === '') {
-            throw new RuntimeException('Jenis Keluaran Pertanian diperlukan');
+            throw new RuntimeException($label.' diperlukan');
         }
         if (mb_strlen($name) > 80) {
-            throw new RuntimeException('Jenis Keluaran Pertanian terlalu panjang');
+            throw new RuntimeException($label.' terlalu panjang');
         }
 
-        return DB::transaction(function () use ($name) {
+        return DB::transaction(function () use ($name, $category, $label) {
             $existing = $this->findProduceTypeByName($name);
             if ($existing) {
+                if (($existing->category ?? ProductKind::Produce->value) !== $category) {
+                    throw new RuntimeException('Nama ini sudah digunakan untuk kategori lain');
+                }
+
                 return $existing;
             }
 
@@ -253,14 +265,15 @@ class JejakService
                 return ProduceType::query()->create([
                     'id' => Ids::create('pt'),
                     'name' => $name,
+                    'category' => $category,
                 ]);
             } catch (UniqueConstraintViolationException) {
                 $existing = $this->findProduceTypeByName($name);
-                if ($existing) {
+                if ($existing && ($existing->category ?? ProductKind::Produce->value) === $category) {
                     return $existing;
                 }
 
-                throw new RuntimeException('Tidak dapat menyimpan Jenis Keluaran Pertanian');
+                throw new RuntimeException('Tidak dapat menyimpan '.$label);
             }
         });
     }
@@ -271,19 +284,27 @@ class JejakService
      */
     public function withResolvedProduceType(array $input, bool $allowEmpty = false): array
     {
+        $category = (string) ($input['produce_category'] ?? ProductKind::Produce->value);
         $newName = trim((string) ($input['new_produce_name'] ?? ''));
         $produceTypeId = trim((string) ($input['produce_type_id'] ?? ''));
-        unset($input['new_produce_name']);
+        unset($input['new_produce_name'], $input['produce_category']);
+        $invalidType = $category === ProductKind::Livestock->value
+            ? 'Jenis ternakan tidak sah'
+            : 'Jenis Keluaran Pertanian tidak sah';
+        $missingType = $category === ProductKind::Livestock->value
+            ? 'Sila pilih atau tambah jenis ternakan'
+            : 'Sila pilih atau tambah Jenis Keluaran Pertanian';
 
         if ($newName !== '') {
-            $input['produce_type_id'] = $this->findOrCreateProduceType($newName)->id;
+            $input['produce_type_id'] = $this->findOrCreateProduceType($newName, $category)->id;
 
             return $input;
         }
 
         if ($produceTypeId !== '') {
-            if (! ProduceType::query()->where('id', $produceTypeId)->exists()) {
-                throw new RuntimeException('Jenis Keluaran Pertanian tidak sah');
+            $type = ProduceType::query()->find($produceTypeId);
+            if (! $type || ($type->category ?? ProductKind::Produce->value) !== $category) {
+                throw new RuntimeException($invalidType);
             }
             $input['produce_type_id'] = $produceTypeId;
 
@@ -296,7 +317,7 @@ class JejakService
             return $input;
         }
 
-        throw new RuntimeException('Sila pilih atau tambah Jenis Keluaran Pertanian');
+        throw new RuntimeException($missingType);
     }
 
     public function addCompanyProduce(string $companyId, string $produceTypeId, ?string $variety = null): CompanyProduce
@@ -359,9 +380,69 @@ class JejakService
         ]);
     }
 
+    /**
+     * @param  array<string, mixed>  $input
+     * @return array<string, mixed>
+     */
+    private function prepareApplicationInput(array $input, ?ExportApplication $current = null): array
+    {
+        $kind = $current?->product_kind
+            ?? (ProductKind::tryFrom((string) ($input['product_kind'] ?? '')) ?? ProductKind::Produce);
+        $input['product_kind'] = $kind->value;
+        $input['produce_category'] = $kind->value;
+        $input = $this->withResolvedProduceType($input, $current !== null);
+
+        if ($kind === ProductKind::Livestock) {
+            $input['grade'] = '';
+            $input['size'] = '';
+            $input['coc_certificate_id'] = null;
+            $input['coc_number'] = '';
+            $input['quantity_unit'] = 'kg';
+            $input['head_count'] = (int) ($input['head_count'] ?? 0);
+            $input['abattoir_name'] = trim((string) ($input['abattoir_name'] ?? ''));
+            $input['vet_certificate_no'] = trim((string) ($input['vet_certificate_no'] ?? ''));
+            $input['slaughter_date'] = ($input['slaughter_date'] ?? null) ?: null;
+            $this->assertLivestock($input);
+
+            return $input;
+        }
+
+        $input['head_count'] = null;
+        $input['slaughter_date'] = null;
+        $input['abattoir_name'] = null;
+        $input['vet_certificate_no'] = null;
+
+        return $input;
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     */
+    private function assertLivestock(array $input): void
+    {
+        if (trim((string) ($input['variety'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi baka');
+        }
+        if ((int) ($input['head_count'] ?? 0) < 1) {
+            throw new RuntimeException('Sila isi bilangan ternakan');
+        }
+        if ((int) ($input['quantity'] ?? 0) < 1) {
+            throw new RuntimeException('Sila isi berat');
+        }
+        if (trim((string) ($input['vet_certificate_no'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi no. sijil veterinar');
+        }
+        if (trim((string) ($input['farm_name'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi nama premis');
+        }
+        if (trim((string) ($input['abattoir_name'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi rumah sembelih');
+        }
+    }
+
     public function createApplication(array $input): ExportApplication
     {
-        $input = $this->withResolvedProduceType($input);
+        $input = $this->prepareApplicationInput($input);
         $existing = ExportApplication::query()->pluck('application_no')->all();
 
         $application = ExportApplication::query()->create([
@@ -369,21 +450,26 @@ class JejakService
             'application_no' => Ids::nextApplicationNo($existing),
             'company_id' => $input['company_id'],
             'produce_type_id' => $input['produce_type_id'],
+            'product_kind' => $input['product_kind'],
             'variety' => $input['variety'],
             'grade' => $input['grade'],
             'size' => $input['size'],
             'quantity' => (int) $input['quantity'],
             'quantity_unit' => $input['quantity_unit'] ?? 'kg',
+            'head_count' => $input['head_count'],
             'destination_country' => $input['destination_country'],
             'coc_certificate_id' => $input['coc_certificate_id'] ?: null,
             'coc_number' => $input['coc_number'] ?? '',
+            'vet_certificate_no' => $input['vet_certificate_no'],
             'export_date' => $input['export_date'] ?: null,
+            'slaughter_date' => $input['slaughter_date'] ?: null,
             'lot_no' => $input['lot_no'] ?? null,
             'farm_location' => $input['farm_location'] ?? null,
             'farm_lat' => $input['farm_lat'] ?? null,
             'farm_lng' => $input['farm_lng'] ?? null,
             'display_image_path' => $input['display_image_path'] ?? null,
             'farm_name' => $input['farm_name'],
+            'abattoir_name' => $input['abattoir_name'],
             'importer_name' => $input['importer_name'],
             'importer_address' => $input['importer_address'],
             'status' => ApplicationStatus::Draft,
@@ -400,7 +486,7 @@ class JejakService
             throw new RuntimeException('Hanya draf boleh dikemaskini');
         }
 
-        $patch = $this->withResolvedProduceType($patch, true);
+        $patch = $this->prepareApplicationInput($patch, $current);
         $this->fillApplication($current, $patch);
         $current->save();
         $this->addCompanyProduce($current->company_id, $current->produce_type_id);
@@ -418,7 +504,7 @@ class JejakService
             throw new RuntimeException('Hanya permohonan diluluskan boleh dikemaskini oleh FAMA');
         }
 
-        $patch = $this->withResolvedProduceType($patch, true);
+        $patch = $this->prepareApplicationInput($patch, $current);
         $this->fillApplication($current, $patch);
         $current->save();
         $this->addCompanyProduce($current->company_id, $current->produce_type_id);
@@ -680,7 +766,10 @@ class JejakService
             'approved' => $apps->where('status', ApplicationStatus::Approved)->count(),
             'pending' => $apps->filter(fn (ExportApplication $app) => in_array($app->status, [ApplicationStatus::Submitted, ApplicationStatus::UnderReview], true))->count(),
             'rejected' => $apps->where('status', ApplicationStatus::Rejected)->count(),
-            'uniqueFruits' => (int) CompanyProduce::query()->distinct()->count('produce_type_id'),
+            'uniqueFruits' => (int) CompanyProduce::query()
+                ->whereHas('produceType', fn ($query) => $query->where('category', ProductKind::Produce->value))
+                ->distinct()
+                ->count('produce_type_id'),
             'uniqueDestinations' => $apps->pluck('destination_country')->filter()->unique()->count(),
             'certificates' => Certificate::query()->count(),
             'famaCompanies' => Company::query()->where('external_source', 'FAMA')->count(),
@@ -836,7 +925,8 @@ class JejakService
      */
     private function produceCounts(Collection $apps): array
     {
-        $counts = $apps->pluck('produce_type_id')->filter()->countBy();
+        $produceIds = ProduceType::query()->where('category', ProductKind::Produce->value)->pluck('id');
+        $counts = $apps->whereIn('produce_type_id', $produceIds->all())->pluck('produce_type_id')->filter()->countBy();
         $names = ProduceType::query()
             ->whereIn('id', $counts->keys())
             ->pluck('name', 'id');
@@ -903,21 +993,26 @@ class JejakService
     {
         $application->fill([
             'produce_type_id' => $patch['produce_type_id'] ?? $application->produce_type_id,
+            'product_kind' => $application->product_kind,
             'variety' => $patch['variety'] ?? $application->variety,
             'grade' => $patch['grade'] ?? $application->grade,
             'size' => $patch['size'] ?? $application->size,
             'quantity' => array_key_exists('quantity', $patch) ? (int) $patch['quantity'] : $application->quantity,
             'quantity_unit' => $patch['quantity_unit'] ?? $application->quantity_unit,
+            'head_count' => array_key_exists('head_count', $patch) ? $patch['head_count'] : $application->head_count,
             'destination_country' => $patch['destination_country'] ?? $application->destination_country,
             'coc_certificate_id' => array_key_exists('coc_certificate_id', $patch) ? ($patch['coc_certificate_id'] ?: null) : $application->coc_certificate_id,
             'coc_number' => $patch['coc_number'] ?? $application->coc_number,
+            'vet_certificate_no' => array_key_exists('vet_certificate_no', $patch) ? ($patch['vet_certificate_no'] ?: null) : $application->vet_certificate_no,
             'export_date' => array_key_exists('export_date', $patch) ? ($patch['export_date'] ?: null) : $application->export_date,
+            'slaughter_date' => array_key_exists('slaughter_date', $patch) ? ($patch['slaughter_date'] ?: null) : $application->slaughter_date,
             'lot_no' => array_key_exists('lot_no', $patch) ? ($patch['lot_no'] ?: null) : $application->lot_no,
             'farm_location' => array_key_exists('farm_location', $patch) ? ($patch['farm_location'] ?: null) : $application->farm_location,
             'farm_lat' => array_key_exists('farm_lat', $patch) ? $patch['farm_lat'] : $application->farm_lat,
             'farm_lng' => array_key_exists('farm_lng', $patch) ? $patch['farm_lng'] : $application->farm_lng,
             'display_image_path' => $patch['display_image_path'] ?? $application->display_image_path,
             'farm_name' => $patch['farm_name'] ?? $application->farm_name,
+            'abattoir_name' => array_key_exists('abattoir_name', $patch) ? ($patch['abattoir_name'] ?: null) : $application->abattoir_name,
             'importer_name' => $patch['importer_name'] ?? $application->importer_name,
             'importer_address' => $patch['importer_address'] ?? $application->importer_address,
         ]);

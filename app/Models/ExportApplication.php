@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\ApplicationStatus;
+use App\Domain\ProductKind;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,21 +20,26 @@ class ExportApplication extends Model
         'application_no',
         'company_id',
         'produce_type_id',
+        'product_kind',
         'variety',
         'grade',
         'size',
         'quantity',
         'quantity_unit',
+        'head_count',
         'destination_country',
         'coc_certificate_id',
         'coc_number',
+        'vet_certificate_no',
         'export_date',
+        'slaughter_date',
         'lot_no',
         'farm_location',
         'farm_lat',
         'farm_lng',
         'display_image_path',
         'farm_name',
+        'abattoir_name',
         'importer_name',
         'importer_address',
         'status',
@@ -45,13 +51,21 @@ class ExportApplication extends Model
     {
         return [
             'status' => ApplicationStatus::class,
+            'product_kind' => ProductKind::class,
             'export_date' => 'date',
+            'slaughter_date' => 'date',
+            'head_count' => 'integer',
             'farm_lat' => 'float',
             'farm_lng' => 'float',
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
             'quantity' => 'integer',
         ];
+    }
+
+    public function isLivestock(): bool
+    {
+        return $this->product_kind === ProductKind::Livestock;
     }
 
     public function hasFarmCoordinates(): bool

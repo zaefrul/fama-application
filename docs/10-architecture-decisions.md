@@ -188,6 +188,36 @@ Official ownership of produce master data remains an open question (`docs/09-ope
 
 **Consequences:** New names become selectable for every company. Duplicate company rows for the same type are not created. `company_produce` is unique per company and produce type.
 
+## ADR-020 — One usahawan may hold several DagangNet companies
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-09-28
+
+Registration can attach more than one DagangNet account number to a new usahawan login. `company_user` stores the links. `users.company_id` stays the active company, and the usahawan switches it from **Syarikat aktif**. The login email is the email of the first company in the list.
+
+An account number already linked to another usahawan is rejected. Whether one company can have multiple users stays open.
+
+Unused demo lookups for this path: `H0B00003` (Ladang Demo Utara) and `H0B00004` (Selatan Fresh). `H0B00001` and `H0B00002` stay with the seeded Ali and Siti logins.
+
+**Reason:** The demo needs one usahawan registration to carry more than one DagangNet account.
+
+**Consequences:** Exporter screens keep reading the active `company_id`. A login with one company does not show the switcher. This does not change FAMA-managed companies or the open question about several users on one company.
+
+## ADR-021 — QR registration chooses keluaran or ternakan first
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-09-28
+
+Starting a QR, as usahawan or pegawai FAMA, shows a choice before the form: **Keluaran Pertanian** or **Haiwan Ternakan**. The choice is stored on `export_applications.product_kind`. After the draft is saved, the kind stays fixed.
+
+Keluaran Pertanian keeps the existing form (varieti, gred, saiz, ladang, sijil CoC). Haiwan Ternakan uses a separate form: jenis ternakan, baka, bilangan (ekor), berat (kg), nama premis, rumah sembelih, tarikh sembelih, and no. sijil veterinar. Review, approval, and the public QR page follow the same pipeline and show the matching labels.
+
+Jenis ternakan lives on `produce_types.category = LIVESTOCK`. The keluaran screen only lists `PRODUCE`. Seeded livestock names: Lembu, Kambing, Ayam, Kerbau. A missing name can still be added from the ternakan form.
+
+**Reason:** The demo needs a livestock QR without replacing the buah and sayur application.
+
+**Consequences:** This does not put livestock inside Peraturan GPL. Official field ownership stays open in `docs/09-open-questions.md`. The FAMA dashboard chart “10 buah paling kerap” still counts keluaran pertanian only.
+
 ## Adding a decision
 
 ```text

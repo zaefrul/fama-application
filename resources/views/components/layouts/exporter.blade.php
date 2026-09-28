@@ -41,6 +41,19 @@
             <div class="flex min-w-0 flex-1 flex-col pb-20 md:pb-0">
                 <x-app-header :notification-count="$notificationCount ?? 0" />
                 <main class="mx-auto w-full min-w-0 max-w-5xl flex-1 px-3 py-3 sm:px-4 sm:py-4">
+                    @if (($linkedCompanies ?? collect())->count() > 1)
+                        <form method="post" action="{{ route('exporter.company.switch') }}" class="mb-3">
+                            @csrf
+                            <label class="mb-1 block text-xs font-semibold text-muted" for="active-company">Syarikat aktif</label>
+                            <x-select id="active-company" name="company_id" onchange="this.form.submit()">
+                                @foreach ($linkedCompanies as $linked)
+                                    <option value="{{ $linked->id }}" @selected($linked->id === auth()->user()->company_id)>
+                                        {{ $linked->external_account_no }} — {{ $linked->name }}
+                                    </option>
+                                @endforeach
+                            </x-select>
+                        </form>
+                    @endif
                     {{ $slot }}
                 </main>
                 <x-gov-footer />

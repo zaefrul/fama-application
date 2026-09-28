@@ -31,6 +31,17 @@
         @if ($saved)
             <p class="text-sm text-success">Maklumat awam disimpan. Identiti QR tidak berubah.</p>
         @endif
+        @if ($application->isLivestock())
+            <x-livestock-form
+                :action="url('/fama/companies/'.$company->id.'/qr/'.$application->id)"
+                :application="$application"
+                :company-name="$companyName ?? $company->name"
+                :produce-types="$produceTypes"
+                :editable="true"
+                :hide-secondary="true"
+                primary-label="Simpan"
+            />
+        @else
         <x-application-form
             :action="url('/fama/companies/'.$company->id.'/qr/'.$application->id)"
             :application="$application"
@@ -41,5 +52,6 @@
             :hide-secondary="true"
             primary-label="Simpan"
         />
+        @endif
     </div>
 </x-layouts.fama>

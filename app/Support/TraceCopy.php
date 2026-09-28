@@ -119,4 +119,65 @@ class TraceCopy
 
         return $bundle[$lang] ?? $bundle['bm'];
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function forPage(string $lang, bool $livestock): array
+    {
+        $copy = self::shared($lang);
+        if (! $livestock) {
+            return $copy;
+        }
+
+        $overrides = [
+            'bm' => [
+                'product' => 'Maklumat Ternakan',
+                'fruitType' => 'Jenis ternakan',
+                'breed' => 'Baka',
+                'headCount' => 'Bilangan',
+                'headUnit' => 'ekor',
+                'weight' => 'Berat',
+                'vetCertificate' => 'No. sijil veterinar',
+                'farm' => 'Premis',
+                'farmLocation' => 'Lokasi premis',
+                'slaughterDate' => 'Tarikh sembelih',
+                'abattoir' => 'Rumah sembelih',
+                'pamphletTitle' => 'Jejak Haiwan Ternakan',
+                'profileTitle' => 'Profil Ternakan',
+            ],
+            'en' => [
+                'product' => 'Livestock information',
+                'fruitType' => 'Livestock type',
+                'breed' => 'Breed',
+                'headCount' => 'Head count',
+                'headUnit' => 'head',
+                'weight' => 'Weight',
+                'vetCertificate' => 'Veterinary certificate no.',
+                'farm' => 'Premises',
+                'farmLocation' => 'Premises location',
+                'slaughterDate' => 'Slaughter date',
+                'abattoir' => 'Abattoir',
+                'pamphletTitle' => 'Livestock trace',
+                'profileTitle' => 'Livestock profile',
+            ],
+            'zh' => [
+                'product' => '牲畜信息',
+                'fruitType' => '牲畜种类',
+                'breed' => '品种',
+                'headCount' => '数量',
+                'headUnit' => '头',
+                'weight' => '重量',
+                'vetCertificate' => '兽医证书编号',
+                'farm' => '场所',
+                'farmLocation' => '场所位置',
+                'slaughterDate' => '屠宰日期',
+                'abattoir' => '屠宰场',
+                'pamphletTitle' => '牲畜溯源',
+                'profileTitle' => '牲畜档案',
+            ],
+        ];
+
+        return array_merge($copy, $overrides[$lang] ?? $overrides['bm']);
+    }
 }

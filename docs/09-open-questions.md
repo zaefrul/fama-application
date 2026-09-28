@@ -32,6 +32,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Which fields can exporter edit?
 - What defines an active company?
 - Can one company have multiple users?
+- Can one usahawan hold multiple DagangNet companies? *(Prototype assumption ADR-020: yes, for the demo. The active company stays on `users.company_id`. An account number already linked to another usahawan is rejected.)*
 - Can a FAMA-created company later bind to DagangNet and/or an exporter login?
 
 ## iFAMA
@@ -52,6 +53,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 ## Produce
 
 - Who maintains produce master data? *(Prototype assumption ADR-019: usahawan and FAMA officers may add a missing type from the keluaran/application form. Official ownership is not decided.)*
+- Which livestock fields are official for Jejak GPL? *(Prototype assumption ADR-021: a separate QR form records type, breed, head count, weight, premises, abattoir, and veterinary certificate number. Haiwan ternakan is outside the seven GPL commodities.)*
 - Who maintains variety?
 - Who maintains grade?
 - Are sizes standardized?

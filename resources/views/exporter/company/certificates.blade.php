@@ -1,6 +1,6 @@
 <x-layouts.exporter title="Sijil">
     <div class="space-y-4">
-        <x-page-title title="Sijil" subtitle="Muat naik salinan sijil (JPG, PNG, WEBP atau PDF, maksimum 5MB). Tiada pengesahan pihak berkuasa untuk V1." />
+        <x-page-title title="Sijil" subtitle="Muat naik salinan sijil (JPG, PNG, WEBP atau PDF, maksimum {{ \App\Services\UploadService::maxLabel() }}). Tiada pengesahan pihak berkuasa untuk V1." />
         <x-company-nav />
         <x-card>
             <form action="{{ route('exporter.certificates') }}" method="post" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">

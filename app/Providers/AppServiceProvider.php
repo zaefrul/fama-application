@@ -27,7 +27,12 @@ class AppServiceProvider extends ServiceProvider
             if ($user) {
                 $unread = app(JejakService::class)->unreadNotificationCount($user->id);
             }
+            $linkedCompanies = collect();
+            if ($user && $user->isExporter()) {
+                $linkedCompanies = $user->companies()->orderBy('name')->get();
+            }
             $view->with('notificationCount', $unread);
+            $view->with('linkedCompanies', $linkedCompanies);
         });
     }
 }

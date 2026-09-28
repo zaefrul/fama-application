@@ -12,22 +12,7 @@
             <x-qr-preview :value="$publicUrl" />
         @endif
         <x-card class="px-5">
-            <dl>
-                @if ($application->export_date)
-                    <x-data-row label="Tarikh eksport" :value="$application->export_date->toDateString()" />
-                @endif
-                <x-data-row label="Jenis keluaran" :value="$application->produceType?->name" />
-                <x-data-row label="Gred" :value="$application->grade" />
-                <x-data-row label="Saiz" :value="$application->size" />
-                <x-data-row label="Nama Syarikat" :value="$application->company?->name" />
-                <x-data-row label="Alamat syarikat" :value="$application->company?->address" />
-                <x-data-row label="Nama ladang" :value="$application->farm_name" />
-                <x-data-row label="No. Lot" :value="$application->lot_no" />
-                <x-data-row label="Lokasi ladang" :value="$application->farm_location" />
-                <x-data-row label="Pengimport" :value="$application->importer_name" />
-                <x-data-row label="Alamat pengimport" :value="$application->importer_address" />
-                <x-data-row label="No. Sijil CoC" :value="$application->coc_number" />
-            </dl>
+            <x-application-facts :application="$application" />
         </x-card>
         @if ($canDecide)
             <x-card class="space-y-4 px-5 py-5">

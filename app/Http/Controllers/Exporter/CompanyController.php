@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Exporter;
 
+use App\Domain\ProductKind;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\Company;
@@ -21,6 +22,18 @@ class CompanyController extends Controller
         private readonly JejakService $jejak,
         private readonly UploadService $uploads,
     ) {}
+
+    public function switchCompany(Request $request): RedirectResponse
+    {
+        $companyId = trim((string) $request->input('company_id'));
+        $user = $request->user();
+        abort_unless($user->companies()->where('companies.id', $companyId)->exists(), 403);
+
+        $user->company_id = $companyId;
+        $user->save();
+
+        return redirect()->route('exporter.dashboard');
+    }
 
     public function show(Request $request): View
     {
@@ -60,8 +73,12 @@ class CompanyController extends Controller
         $companyId = $request->user()->company_id;
 
         return view('exporter.company.produce', [
-            'types' => ProduceType::query()->orderBy('name')->get(),
-            'produce' => CompanyProduce::query()->with('produceType')->where('company_id', $companyId)->get(),
+            'types' => ProduceType::query()->where('category', ProductKind::Produce->value)->orderBy('name')->get(),
+            'produce' => CompanyProduce::query()
+                ->with('produceType')
+                ->where('company_id', $companyId)
+                ->whereHas('produceType', fn ($query) => $query->where('category', ProductKind::Produce->value))
+                ->get(),
         ]);
     }
 
@@ -71,6 +88,7 @@ class CompanyController extends Controller
             $resolved = $this->jejak->withResolvedProduceType([
                 'produce_type_id' => (string) $request->input('produceTypeId', ''),
                 'new_produce_name' => (string) $request->input('newProduceName', ''),
+                'produce_category' => ProductKind::Produce->value,
             ]);
             $this->jejak->addCompanyProduce($request->user()->company_id, (string) $resolved['produce_type_id']);
         } catch (RuntimeException $e) {

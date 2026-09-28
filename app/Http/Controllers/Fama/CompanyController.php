@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Fama;
 
+use App\Domain\ProductKind;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\Company;
@@ -13,6 +14,7 @@ use App\Services\UploadService;
 use App\Support\ApplicationInput;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use RuntimeException;
 
@@ -91,10 +93,13 @@ class CompanyController extends Controller
     {
         $company = Company::query()->findOrFail($id);
 
+        $kind = ProductKind::fromQuery($request->query('kind'));
+
         return view('fama.companies.qr-create', [
             'company' => $company,
+            'kind' => $kind,
             'companyName' => $company->name,
-            'produceTypes' => ProduceType::query()->orderBy('name')->get(),
+            'produceTypes' => $this->typesFor($kind),
             'certificates' => Certificate::query()->where('company_id', $id)->get(),
             'error' => $request->query('error'),
         ]);
@@ -109,7 +114,13 @@ class CompanyController extends Controller
                 $request->user(),
             );
         } catch (RuntimeException $e) {
-            return redirect()->route('fama.companies.qr.create', ['id' => $id, 'error' => $e->getMessage()]);
+            $kind = ProductKind::tryFrom((string) $request->input('productKind', '')) ?? ProductKind::Produce;
+
+            return redirect()->route('fama.companies.qr.create', [
+                'id' => $id,
+                'kind' => $kind->query(),
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return redirect()->route('fama.companies.qr.edit', [
@@ -129,7 +140,7 @@ class CompanyController extends Controller
             'companyName' => $company->name,
             'application' => $application,
             'qr' => $application->qrCode,
-            'produceTypes' => ProduceType::query()->orderBy('name')->get(),
+            'produceTypes' => ProduceType::query()->where('category', $application->product_kind->value)->orderBy('name')->get(),
             'certificates' => Certificate::query()->where('company_id', $id)->get(),
             'publicUrl' => $application->qrCode ? $qrImage->traceUrl($application->qrCode->qr_code) : '',
             'error' => $request->query('error'),
@@ -200,6 +211,18 @@ class CompanyController extends Controller
         }
 
         return $input;
+    }
+
+    /**
+     * @return Collection<int, ProduceType>
+     */
+    private function typesFor(?ProductKind $kind): Collection
+    {
+        if (! $kind) {
+            return collect();
+        }
+
+        return ProduceType::query()->where('category', $kind->value)->orderBy('name')->get();
     }
 
     /**

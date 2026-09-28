@@ -1,5 +1,5 @@
 @php
-    $t = \App\Support\TraceCopy::shared($lang);
+    $t = \App\Support\TraceCopy::forPage($lang, (bool) $application?->isLivestock());
     $productTitle = trim(($application?->produceType?->name ?? '').(($application?->variety) ? ' · '.$application->variety : ''));
     $langUrl = fn (string $code) => url('/trace/'.$qrCode).'?lang='.$code;
 @endphp

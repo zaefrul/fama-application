@@ -17,7 +17,7 @@ class FamaDashboardTest extends TestCase
 
         $stats = app(JejakService::class)->dashboardFama();
 
-        $this->assertSame(2, $stats['activeCompanies']);
+        $this->assertSame(4, $stats['activeCompanies']);
         $this->assertSame(2, $stats['exporters']);
         $this->assertSame(5, $stats['qrRequests']);
         $this->assertSame(2, $stats['qrActive']);

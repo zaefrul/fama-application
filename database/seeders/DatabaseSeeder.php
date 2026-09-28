@@ -29,10 +29,21 @@ class DatabaseSeeder extends Seeder
             ['id' => 'pt_nanas', 'name' => 'Nanas'],
             ['id' => 'pt_pisang', 'name' => 'Pisang'],
             ['id' => 'pt_betik', 'name' => 'Betik'],
-            ['id' => 'pt_mangga', 'name' => 'Mangga'],
+            ['id' => 'pt_mangga', 'name' => 'Mangga', 'category' => 'PRODUCE'],
         ];
         foreach ($produce as $row) {
             ProduceType::query()->create($row);
+        }
+        foreach ([
+            ['id' => 'pt_lembu', 'name' => 'Lembu'],
+            ['id' => 'pt_kambing', 'name' => 'Kambing'],
+            ['id' => 'pt_ayam', 'name' => 'Ayam'],
+            ['id' => 'pt_kerbau', 'name' => 'Kerbau'],
+        ] as $row) {
+            ProduceType::query()->firstOrCreate(
+                ['id' => $row['id']],
+                ['name' => $row['name'], 'category' => 'LIVESTOCK'],
+            );
         }
 
         Company::query()->create([
@@ -71,6 +82,42 @@ class DatabaseSeeder extends Seeder
             'created_at' => '2024-03-02 00:00:00',
             'updated_at' => '2024-03-02 00:00:00',
         ]);
+        Company::query()->firstOrCreate(
+            ['external_account_no' => 'H0B00003'],
+            [
+                'id' => 'co_demo_utara',
+                'registration_no' => 'DU30003',
+                'name' => 'Ladang Demo Utara Sdn. Bhd.',
+                'email' => 'demo.utara@example.com',
+                'phone' => '04-111 2233',
+                'address' => 'Lot 12, Jalan Ladang, Alor Setar, Kedah',
+                'state' => 'Kedah',
+                'district' => 'Kota Setar',
+                'postcode' => '05000',
+                'website' => 'https://demoutara.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+            ],
+        );
+        Company::query()->firstOrCreate(
+            ['external_account_no' => 'H0B00004'],
+            [
+                'id' => 'co_demo_selatan',
+                'registration_no' => 'SF40004',
+                'name' => 'Selatan Fresh Sdn. Bhd.',
+                'email' => 'selatan.fresh@example.com',
+                'phone' => '07-444 5566',
+                'address' => '88, Jalan Segget, Johor Bahru, Johor',
+                'state' => 'Johor',
+                'district' => 'Johor Bahru',
+                'postcode' => '80000',
+                'website' => 'https://selatanfresh.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+            ],
+        );
 
         User::query()->create([
             'id' => 'user_ali',
@@ -108,6 +155,9 @@ class DatabaseSeeder extends Seeder
             'created_at' => '2026-01-05 00:00:00',
             'updated_at' => '2026-01-05 00:00:00',
         ]);
+
+        User::query()->findOrFail('user_ali')->companies()->sync(['co_abc']);
+        User::query()->findOrFail('user_siti')->companies()->sync(['co_mts']);
 
         foreach ([
             ['id' => 'cp_abc_durian', 'company_id' => 'co_abc', 'produce_type_id' => 'pt_durian', 'variety' => 'Musang King', 'active' => true],

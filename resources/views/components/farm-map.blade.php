@@ -4,6 +4,8 @@
     'interactive' => false,
     'latName' => 'farmLat',
     'lngName' => 'farmLng',
+    'mapTitle' => 'Lokasi ladang',
+    'markerHint' => 'Klik peta untuk menanda lokasi ladang. Medan latitud dan longitud dikemaskini secara automatik.',
 ])
 
 @php
@@ -22,7 +24,7 @@
 <div {{ $attributes->class('space-y-2') }}>
     @if ($interactive)
         <div id="{{ $mapId }}" class="farm-map h-48 w-full overflow-hidden rounded-xl border border-border" data-interactive="1" data-lat="{{ $mapLat }}" data-lng="{{ $mapLng }}" data-lat-input="{{ $latName }}" data-lng-input="{{ $lngName }}"></div>
-        <p class="text-xs text-muted">Klik peta untuk menanda lokasi ladang. Medan latitud dan longitud dikemaskini secara automatik.</p>
+        <p class="text-xs text-muted">{{ $markerHint }}</p>
         @once
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -51,7 +53,7 @@
         @endonce
     @else
         <iframe
-            title="Lokasi ladang"
+            title="{{ $mapTitle }}"
             class="farm-map h-48 w-full rounded-xl border border-border"
             src="{{ $embed }}"
         ></iframe>

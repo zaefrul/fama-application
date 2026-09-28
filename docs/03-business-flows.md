@@ -4,7 +4,7 @@
 
 ```text
 Open Registration
-→ Enter usahawan/company identifier
+→ Enter one or more usahawan/company identifiers
 → Query Mock DagangNet
 → Record found?
    ├─ No → show "Tiada rekod dijumpai"

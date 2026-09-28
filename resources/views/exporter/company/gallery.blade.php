@@ -1,6 +1,6 @@
 <x-layouts.exporter title="Galeri">
     <div class="space-y-4">
-        <x-page-title title="Galeri" subtitle="Muat naik gambar kebun, lot atau buah (JPG/PNG/WEBP, maksimum 5MB)." />
+        <x-page-title title="Galeri" subtitle="Muat naik gambar kebun, lot atau buah (JPG/PNG/WEBP, maksimum {{ \App\Services\UploadService::maxLabel() }})." />
         <x-company-nav />
         <x-card>
             <form action="{{ route('exporter.gallery') }}" method="post" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">

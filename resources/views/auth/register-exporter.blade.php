@@ -7,22 +7,24 @@
             @endfor
         </div>
         <div id="step-1" class="space-y-4">
-            <x-field label="Nombor Akaun" hint="Carian mock DagangNet. Cuba H0B00001" required>
+            <x-field label="Nombor Akaun" hint="Boleh tambah lebih daripada satu. H0B00003 dan H0B00004 masih kosong. H0B00001 sudah ada akaun demo." required>
                 <x-input id="identifier" />
             </x-field>
-            <p id="lookup-error" class="text-sm text-danger">{{ $error === 'notfound' ? 'Tiada rekod dijumpai' : '' }}</p>
-            <x-button type="button" class="w-full" onclick="lookupCompany()">Seterusnya</x-button>
+            <ul id="company-list" class="space-y-2"></ul>
+            <p id="lookup-error" class="text-sm text-danger">{{ $errorMessage }}</p>
+            <div class="grid grid-cols-2 gap-2">
+                <x-button type="button" variant="secondary" class="w-full" onclick="addCompany()">Tambah</x-button>
+                <x-button type="button" class="w-full" onclick="nextFromLookup()">Seterusnya</x-button>
+            </div>
         </div>
         <div id="step-2" class="hidden space-y-3">
             <h2 class="font-semibold">Maklumat Syarikat</h2>
-            <x-field label="Nama Syarikat"><x-input id="company-name" readonly /></x-field>
-            <x-field label="Emel syarikat"><x-input id="company-email" readonly /></x-field>
-            <x-field label="Status"><x-input id="company-status" readonly /></x-field>
+            <ul id="company-summary" class="space-y-2"></ul>
             <x-button type="button" class="w-full" onclick="setStep(3)">Seterusnya</x-button>
         </div>
         <form id="register-form" action="{{ url('/auth/register/exporter') }}" method="post" class="hidden space-y-3">
             @csrf
-            <input type="hidden" name="identifier" id="identifier-hidden">
+            <div id="identifier-fields"></div>
             <div id="step-3" class="space-y-3">
                 <h2 class="font-semibold">Maklumat Pengguna</h2>
                 <x-field label="No Kad Pengenalan Pengguna" required>
@@ -35,20 +37,39 @@
             </div>
             <div id="step-4" class="hidden space-y-3">
                 <h2 class="font-semibold">Kata Laluan</h2>
+                <p class="text-sm text-muted">Emel log masuk ialah emel syarikat pertama: <span id="login-email" class="font-semibold text-ink"></span></p>
                 <x-field label="Kata Laluan" required>
                     <x-input name="password" type="password" required minlength="8" />
                 </x-field>
                 <x-field label="Sahkan Kata Laluan" required>
                     <x-input name="confirmPassword" type="password" required minlength="8" />
                 </x-field>
-                @if ($error === 'validation')
-                    <x-error-text>Sila semak kata laluan dan maklumat pengguna.</x-error-text>
-                @endif
+                <p id="password-error" class="text-sm text-danger"></p>
                 <x-button type="submit" class="w-full">Daftar</x-button>
             </div>
         </form>
     </x-card>
     <script>
+        const companies = [];
+
+        document.getElementById('identifier').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addCompany();
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', (event) => {
+            const password = event.target.password.value;
+            const confirm = event.target.confirmPassword.value;
+            const error = document.getElementById('password-error');
+            error.textContent = '';
+            if (companies.length === 0 || password.length < 8 || password !== confirm) {
+                event.preventDefault();
+                error.textContent = 'Sila semak kata laluan dan maklumat pengguna.';
+            }
+        });
+
         function setStep(step) {
             for (let i = 1; i <= 4; i++) {
                 document.getElementById('bar-' + i).className = 'h-1.5 rounded-full ' + (i <= step ? 'bg-brand' : 'bg-border');
@@ -58,17 +79,92 @@
             document.getElementById('step-label').textContent = step;
             document.getElementById('register-form').classList.toggle('hidden', step < 3);
         }
-        async function lookupCompany() {
-            const identifier = document.getElementById('identifier').value.trim();
+
+        function renderCompanies() {
+            const list = document.getElementById('company-list');
+            const summary = document.getElementById('company-summary');
+            const fields = document.getElementById('identifier-fields');
+            list.replaceChildren();
+            summary.replaceChildren();
+            fields.replaceChildren();
+            companies.forEach((company, index) => {
+                list.append(companyRow(company, true, index));
+                summary.append(companyRow(company, false, index));
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'identifiers[]';
+                input.value = company.identifier;
+                fields.append(input);
+            });
+            const email = document.getElementById('login-email');
+            if (email) email.textContent = companies[0]?.email ?? '';
+        }
+
+        function companyRow(company, removable, index) {
+            const item = document.createElement('li');
+            item.className = 'rounded-xl border border-border bg-surface-muted px-3 py-2 text-sm';
+            const title = document.createElement('p');
+            title.className = 'font-semibold';
+            title.textContent = company.name;
+            const meta = document.createElement('p');
+            meta.className = 'text-muted';
+            meta.textContent = company.identifier + ' · ' + company.email + ' · ' + company.status;
+            item.append(title, meta);
+            if (removable) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'mt-1 text-xs font-semibold text-danger';
+                button.textContent = 'Buang';
+                button.addEventListener('click', () => {
+                    companies.splice(index, 1);
+                    renderCompanies();
+                });
+                item.append(button);
+            }
+            return item;
+        }
+
+        async function addCompany() {
+            const input = document.getElementById('identifier');
+            const identifier = input.value.trim();
             const error = document.getElementById('lookup-error');
             error.textContent = '';
+            if (!identifier) {
+                error.textContent = 'Masukkan nombor akaun.';
+                return false;
+            }
+            if (companies.some((company) => company.identifier.toLowerCase() === identifier.toLowerCase())) {
+                error.textContent = 'Nombor akaun ini sudah ditambah.';
+                return false;
+            }
             const response = await fetch('/api/integrations/dagangnet/company/' + encodeURIComponent(identifier));
-            if (!response.ok) { error.textContent = 'Tiada rekod dijumpai'; return; }
+            if (!response.ok) {
+                error.textContent = 'Tiada rekod dijumpai';
+                return false;
+            }
             const data = await response.json();
-            document.getElementById('company-name').value = data.name;
-            document.getElementById('company-email').value = data.email;
-            document.getElementById('company-status').value = data.status;
-            document.getElementById('identifier-hidden').value = identifier;
+            companies.push({
+                identifier: data.identifier,
+                name: data.name,
+                email: data.email,
+                status: data.status,
+            });
+            input.value = '';
+            renderCompanies();
+            return true;
+        }
+
+        async function nextFromLookup() {
+            const identifier = document.getElementById('identifier').value.trim();
+            if (identifier) {
+                const added = await addCompany();
+                if (!added) return;
+            }
+            if (companies.length === 0) {
+                document.getElementById('lookup-error').textContent = 'Tambah sekurang-kurangnya satu nombor akaun.';
+                return;
+            }
+            renderCompanies();
             setStep(2);
         }
     </script>
