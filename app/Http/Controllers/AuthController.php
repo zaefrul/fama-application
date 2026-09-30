@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\PartyType;
 use App\Domain\Role;
 use App\Integrations\MockDagangNet;
 use App\Integrations\MockIfama;
@@ -77,12 +78,14 @@ class AuthController extends Controller
             'taken' => 'Nombor akaun sudah didaftarkan'.($account !== '' ? ': '.$account.'.' : '.'),
             'email' => 'Emel syarikat pertama sudah digunakan untuk akaun lain.',
             'validation' => 'Sila semak kata laluan dan maklumat pengguna.',
+            'party' => 'Pilih peranan rantaian. Nama lapisan diperlukan untuk Lain-lain.',
             default => '',
         };
 
         return view('auth.register-exporter', [
             'error' => $error,
             'errorMessage' => $message,
+            'partyTypes' => PartyType::cases(),
         ]);
     }
 
@@ -100,6 +103,20 @@ class AuthController extends Controller
 
         if ($identifiers->isEmpty() || $name === '' || $identity === '' || strlen($password) < 8 || $password !== $confirm) {
             return redirect()->route('register.exporter', ['error' => 'validation']);
+        }
+
+        $partyRaw = $request->input('party_type');
+        if ($partyRaw === null || $partyRaw === '') {
+            $party = PartyType::Exporter;
+        } else {
+            $party = PartyType::tryFrom((string) $partyRaw);
+            if (! $party) {
+                return redirect()->route('register.exporter', ['error' => 'party']);
+            }
+        }
+        $partyLabel = trim((string) $request->input('party_label', ''));
+        if ($party === PartyType::Other && $partyLabel === '') {
+            return redirect()->route('register.exporter', ['error' => 'party']);
         }
 
         $companies = [];
@@ -123,6 +140,12 @@ class AuthController extends Controller
         $email = $companies[0]->email;
         if (User::query()->where('email', $email)->exists()) {
             return redirect()->route('register.exporter', ['error' => 'email']);
+        }
+
+        foreach ($companies as $company) {
+            $company->party_type = $party;
+            $company->party_label = $party === PartyType::Other ? $partyLabel : null;
+            $company->save();
         }
 
         $user = $this->jejak->createExporterUser([

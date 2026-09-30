@@ -112,7 +112,25 @@ Scan/open QR URL
       → active?
          ├─ No → QR Belum Diaktifkan
          └─ Yes → display public traceability record
+                  (product, farm, and certificates come from the root application)
+                  → show this chunk and the ancestor chain back to the trunk
 ```
+
+## Flow J — Lot breakdown
+
+```text
+Holder opens an ACTIVE lot they currently hold
+→ remaining quantity > 0 and disposition is HOLDING?
+   ├─ No → split and sale are blocked
+   └─ Yes
+      → split into chunks for registered companies
+         → each chunk gets its own ACTIVE QR
+         → parent remaining quantity decreases by the sum
+      → or sell the whole remainder (this QR becomes SOLD, no child)
+      → or sell part of the remainder (terminal SOLD child QR, no login)
+```
+
+Only the active company on the login may split or sell that lot. FAMA sees the tree on the application and does not split on behalf of a holder.
 
 ## Public traceability content suggested by wireframe
 

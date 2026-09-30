@@ -33,6 +33,18 @@
                 <x-field label="Nama Pengguna" required>
                     <x-input name="name" required value="Ali bin Abu" />
                 </x-field>
+                <x-field label="Peranan dalam rantaian" hint="Lapisan ini disimpan pada syarikat yang didaftarkan." required>
+                    <x-select name="party_type" id="party-type" required>
+                        @foreach ($partyTypes as $type)
+                            <option value="{{ $type->value }}" @selected($type->value === 'EXPORTER')>{{ $type->label() }}</option>
+                        @endforeach
+                    </x-select>
+                </x-field>
+                <div id="party-label-field" class="hidden">
+                    <x-field label="Nama lapisan" hint="Contoh: Pengumpul atau Pemborong." required>
+                        <x-input name="party_label" id="party-label" />
+                    </x-field>
+                </div>
                 <x-button type="button" class="w-full" onclick="setStep(4)">Seterusnya</x-button>
             </div>
             <div id="step-4" class="hidden space-y-3">
@@ -63,12 +75,28 @@
             const password = event.target.password.value;
             const confirm = event.target.confirmPassword.value;
             const error = document.getElementById('password-error');
+            const party = document.getElementById('party-type').value;
+            const label = document.getElementById('party-label').value.trim();
             error.textContent = '';
             if (companies.length === 0 || password.length < 8 || password !== confirm) {
                 event.preventDefault();
                 error.textContent = 'Sila semak kata laluan dan maklumat pengguna.';
+                return;
+            }
+            if (party === 'OTHER' && label === '') {
+                event.preventDefault();
+                error.textContent = 'Nama lapisan diperlukan untuk Lain-lain.';
             }
         });
+
+        document.getElementById('party-type').addEventListener('change', togglePartyLabel);
+        togglePartyLabel();
+
+        function togglePartyLabel() {
+            const other = document.getElementById('party-type').value === 'OTHER';
+            document.getElementById('party-label-field').classList.toggle('hidden', !other);
+            document.getElementById('party-label').required = other;
+        }
 
         function setStep(step) {
             for (let i = 1; i <= 4; i++) {

@@ -22,20 +22,20 @@ class QrController extends Controller
 
     public function show(string $id, Request $request, QrImageService $qrImage): View
     {
-        $qr = QrCode::query()->with('application.produceType')->findOrFail($id);
-        abort_unless($qr->application?->company_id === $request->user()->company_id, 404);
+        $qr = QrCode::query()->with(['application.produceType', 'parent', 'rootApplication.produceType'])->findOrFail($id);
+        abort_unless($qr->accessibleByCompany($request->user()->company_id), 404);
 
         return view('exporter.qr.show', [
             'qr' => $qr,
-            'application' => $qr->application,
+            'application' => $qr->application ?? $qr->rootApplication,
             'publicUrl' => $qrImage->traceUrl($qr->qr_code),
         ]);
     }
 
     public function downloadPage(string $id, Request $request, QrImageService $qrImage): View
     {
-        $qr = QrCode::query()->with('application')->findOrFail($id);
-        abort_unless($qr->application?->company_id === $request->user()->company_id, 404);
+        $qr = QrCode::query()->with(['application', 'parent', 'rootApplication'])->findOrFail($id);
+        abort_unless($qr->accessibleByCompany($request->user()->company_id), 404);
 
         return view('exporter.qr.download', [
             'qr' => $qr,
@@ -46,10 +46,8 @@ class QrController extends Controller
     public function download(string $id, Request $request, QrImageService $qrImage): Response
     {
         $user = $request->user();
-        $qr = QrCode::query()->with('application')->findOrFail($id);
-        $application = $qr->application;
-        abort_unless($application, 404);
-        if ($user->role === Role::Exporter && $application->company_id !== $user->company_id) {
+        $qr = QrCode::query()->with(['application', 'parent'])->findOrFail($id);
+        if ($user->role === Role::Exporter && ! $qr->accessibleByCompany($user->company_id)) {
             abort(403);
         }
 

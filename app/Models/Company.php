@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\PartyType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,28 @@ class Company extends Model
         'logo_path',
         'external_source',
         'external_status',
+        'party_type',
+        'party_label',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'party_type' => PartyType::class,
+        ];
+    }
+
+    public function partyLabel(): string
+    {
+        $type = $this->party_type;
+        if ($type === PartyType::Other) {
+            $label = trim((string) $this->party_label);
+
+            return $label !== '' ? $label : $type->label();
+        }
+
+        return $type?->label() ?? PartyType::Exporter->label();
+    }
 
     public function isFamaSourced(): bool
     {

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Exporter\ApplicationController as ExporterApplicationController;
 use App\Http\Controllers\Exporter\CompanyController as ExporterCompanyController;
 use App\Http\Controllers\Exporter\DashboardController as ExporterDashboardController;
+use App\Http\Controllers\Exporter\LotController as ExporterLotController;
 use App\Http\Controllers\Exporter\QrController as ExporterQrController;
 use App\Http\Controllers\Fama\ApplicationController as FamaApplicationController;
 use App\Http\Controllers\Fama\CompanyController as FamaCompanyController;
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'role:EXPORTER'])->group(function () {
     Route::post('/exporter/applications/{id}', [ExporterApplicationController::class, 'update']);
     Route::post('/exporter/applications/{id}/submit', [ExporterApplicationController::class, 'submit'])->name('exporter.applications.submit');
     Route::post('/exporter/applications/{id}/qr', [ExporterApplicationController::class, 'generateQr']);
+    Route::get('/exporter/lots', [ExporterLotController::class, 'index'])->name('exporter.lots');
+    Route::get('/exporter/lots/{id}', [ExporterLotController::class, 'show'])->name('exporter.lots.show');
+    Route::post('/exporter/lots/{id}/split', [ExporterLotController::class, 'split'])->name('exporter.lots.split');
+    Route::post('/exporter/lots/{id}/sell', [ExporterLotController::class, 'sell'])->name('exporter.lots.sell');
     Route::get('/exporter/qr', [ExporterQrController::class, 'index'])->name('exporter.qr');
     Route::get('/exporter/qr/{id}', [ExporterQrController::class, 'show'])->name('exporter.qr.show');
     Route::get('/exporter/qr/{id}/download', [ExporterQrController::class, 'downloadPage'])->name('exporter.qr.download');

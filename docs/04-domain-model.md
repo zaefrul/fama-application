@@ -36,11 +36,15 @@ User
             ├── Certificate
             ├── GalleryItem
             └── ExportApplication
-                  ├── QRCode
+                  ├── QRCode (root)
+                  │    ├── child QRCode
+                  │    │    └── holder Company
                   │    └── QrAccess
                   ├── Approval
                   └── AuditLog
 ```
+
+`Company.partyType` records the chain layer for ADR-022. Child QR rows share the root application and do not each have their own `ExportApplication`.
 
 ## User — suggested fields
 
@@ -141,11 +145,23 @@ Observed categories:
 - createdAt
 - updatedAt
 
+## Company — chain layer (ADR-022)
+
+- partyType: `SUPPLIER`, `EXPORTER`, `MARKETER`, `RETAILER`, `OTHER`
+- partyLabel: required when partyType is `OTHER`
+
 ## QRCode — suggested fields
 
 - id
 - qrCode
-- applicationId
+- applicationId (root only; null on a child)
+- parentId (null on the root)
+- rootApplicationId
+- holderCompanyId (null on a consumer sale)
+- quantity
+- quantityRemaining
+- disposition: `HOLDING` or `SOLD`
+- soldAt
 - publicToken / publicSlug
 - status
 - generatedAt

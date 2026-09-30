@@ -19,7 +19,10 @@ class TraceController extends Controller
         if ($qr) {
             $jejak->recordQrAccess($qr);
         }
-        $application = $qr ? ExportApplication::query()->with(['company.gallery', 'company.certificates', 'produceType'])->find($qr->application_id) : null;
+        $applicationId = $qr?->root_application_id ?: $qr?->application_id;
+        $application = $applicationId
+            ? ExportApplication::query()->with(['company.gallery', 'company.certificates', 'produceType'])->find($applicationId)
+            : null;
         $certificates = $application ? $application->company->certificates : collect();
         $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
         $gallery = $application?->company?->gallery ?? collect();
@@ -27,6 +30,7 @@ class TraceController extends Controller
             ?: $gallery->firstWhere('category', 'BUAH')?->file_path
             ?: $gallery->first()?->file_path
             ?: asset('placeholders/gallery-buah.svg');
+        $chain = $qr ? $qr->lineage() : collect();
 
         return view('trace.show', [
             'qrCode' => $qrCode,
@@ -38,7 +42,8 @@ class TraceController extends Controller
             'heroImage' => $heroImage,
             'accessCount' => $qr ? $qr->accesses()->count() : 0,
             'publicUrl' => $qr ? $qrImage->traceUrl($qr->qr_code) : '',
-            'active' => $qr?->status === QrStatus::Active,
+            'active' => $qr?->status === QrStatus::Active && $application !== null,
+            'chain' => $chain,
         ]);
     }
 
@@ -56,7 +61,7 @@ class TraceController extends Controller
             ]);
         }
 
-        $application = ExportApplication::query()->with(['company', 'produceType'])->find($qr->application_id);
+        $application = ExportApplication::query()->with(['company', 'produceType'])->find($qr->root_application_id ?: $qr->application_id);
         if (! $application) {
             return response()->json(['error' => 'invalid'], 404);
         }
@@ -68,8 +73,11 @@ class TraceController extends Controller
             'produce' => $application->produceType?->name,
             'grade' => $application->grade,
             'size' => $application->size,
-            'quantity' => $application->quantity,
+            'quantity' => $qr->quantity ?? $application->quantity,
             'quantityUnit' => $application->quantity_unit,
+            'trunkQuantity' => $application->quantity,
+            'disposition' => $qr->disposition?->value,
+            'chain' => $qr->traceChain(),
             'destinationCountry' => $application->destination_country,
             'exportDate' => $application->export_date?->toDateString(),
             'companyName' => $application->company?->name,

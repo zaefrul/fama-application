@@ -5,6 +5,7 @@
         ['href' => '/exporter', 'label' => 'Utama', 'icon' => 'home'],
         ['href' => '/exporter/applications', 'label' => 'Permohonan', 'icon' => 'applications'],
         ['href' => '/exporter/qr', 'label' => 'Kod QR', 'icon' => 'qr'],
+        ['href' => '/exporter/lots', 'label' => 'Pecahan', 'icon' => 'layers'],
         ['href' => '/exporter/company/certificates', 'label' => 'Sijil', 'icon' => 'certificate'],
         ['href' => '/exporter/company', 'label' => 'Profil', 'icon' => 'user'],
     ];
@@ -60,7 +61,7 @@
             </div>
         </div>
         <nav class="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white px-1 py-1.5 md:hidden">
-            <ul class="grid grid-cols-5 text-center text-[10px] leading-tight">
+            <ul class="grid grid-cols-6 text-center text-[10px] leading-tight">
                 @foreach ($items as $item)
                     <li class="min-w-0">
                         <a href="{{ $item['href'] }}" class="flex flex-col items-center gap-0.5 px-0.5 py-1 {{ Nav::active($path, $item['href'], $items) ? 'font-bold text-brand' : 'text-muted' }}">

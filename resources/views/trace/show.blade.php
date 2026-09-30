@@ -141,6 +141,10 @@
                         @include('trace.partials.product-dl')
                     </section>
 
+                    @if ($chain->isNotEmpty())
+                        @include('trace.partials.chain')
+                    @endif
+
                     <section class="trace-pamphlet overflow-hidden rounded-sm">
                         <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['export'] }}</h2>
                         @include('trace.partials.export-dl')
@@ -223,6 +227,9 @@
                             <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['product'] }}</h2>
                             @include('trace.partials.product-dl')
                         </section>
+                        @if ($chain->isNotEmpty())
+                            @include('trace.partials.chain')
+                        @endif
                         <section class="trace-pamphlet overflow-hidden rounded-sm">
                             <h2 class="bg-surface-dark px-4 py-2.5 text-sm font-bold tracking-wide text-white">{{ $t['export'] }}</h2>
                             @include('trace.partials.export-dl')

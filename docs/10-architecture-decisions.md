@@ -68,7 +68,7 @@ Do not create standalone master modules until stakeholder confirmation. Store re
 **Status:** Temporary prototype decision  
 **Date:** 2026-08-19
 
-Prototype V1 uses a 1:1 relationship between `ExportApplication` and `QRCode`. QR stock, bulk generation, and official FAMA label layouts remain open questions and are not implemented.
+Prototype V1 uses a 1:1 relationship between `ExportApplication` and the root `QRCode`. Child lots from a later breakdown are separate QR rows (ADR-022). QR stock, bulk generation, and official FAMA label layouts remain open questions and are not implemented.
 
 ## ADR-010 — UI-first fixture repository
 
@@ -217,6 +217,21 @@ Jenis ternakan lives on `produce_types.category = LIVESTOCK`. The keluaran scree
 **Reason:** The demo needs a livestock QR without replacing the buah and sayur application.
 
 **Consequences:** This does not put livestock inside Peraturan GPL. Official field ownership stays open in `docs/09-open-questions.md`. The FAMA dashboard chart “10 buah paling kerap” still counts keluaran pertanian only.
+
+## ADR-022 — Lot breakdown into child QR codes
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-09-29
+
+A verified export application still has one root QR. After that QR is `ACTIVE`, the company that holds a lot may split the remaining quantity into child QR codes. Each child is its own scannable code, points at its parent, and keeps `root_application_id` so the public page can show the original product, farm, and certificates.
+
+The holder is the active company on the user (`users.company_id`). External logins stay `EXPORTER`. The layer — Pembekal, Pengeksport, Pemasar, Peruncit, or a named Lain-lain — is `companies.party_type` / `party_label`. There is no required sequence of parties. Depth is not fixed.
+
+Child QR codes are created `ACTIVE`. FAMA does not approve each chunk. Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder creates terminal child QR codes with no holder login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors. Downstream buyers stay on the holder screen and the FAMA application tree.
+
+**Reason:** A single trunk, such as a banana lot, is broken into smaller lots as it moves along the chain, and each piece must stay traceable.
+
+**Consequences:** `qr_codes.application_id` is unique only for the root in practice; the database unique constraint is removed so children can store null. Official per-child approval, public downstream lists, and unit conversion stay open in `docs/09-open-questions.md`.
 
 ## Adding a decision
 

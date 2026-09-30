@@ -17,10 +17,10 @@ class FamaDashboardTest extends TestCase
 
         $stats = app(JejakService::class)->dashboardFama();
 
-        $this->assertSame(4, $stats['activeCompanies']);
-        $this->assertSame(2, $stats['exporters']);
-        $this->assertSame(5, $stats['qrRequests']);
-        $this->assertSame(2, $stats['qrActive']);
+        $this->assertSame(8, $stats['activeCompanies']);
+        $this->assertSame(6, $stats['exporters']);
+        $this->assertSame(6, $stats['qrRequests']);
+        $this->assertSame(6, $stats['qrActive']);
         $this->assertSame(2, $stats['qrInactive']);
         $this->assertSame(5, $stats['uniqueFruits']);
         $this->assertSame(4, $stats['uniqueDestinations']);

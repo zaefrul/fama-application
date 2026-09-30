@@ -42,5 +42,17 @@
                 @endforeach
             </x-card>
         @endif
+        @if ($lotRoot)
+            <x-card>
+                <h2 class="font-semibold">Pecahan lot</h2>
+                <x-lot-timeline
+                    class="is-inset"
+                    :nodes="collect([$lotRoot])"
+                    :unit="$application->quantity_unit"
+                    :nested="true"
+                    :show-balance="true"
+                />
+            </x-card>
+        @endif
     </div>
 </x-layouts.fama>

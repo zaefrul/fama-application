@@ -4,8 +4,8 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 
 ## QR
 
-- Is one QR generated per shipment, batch, pallet, box, package or individual product?
-- Can one application generate multiple QRs?
+- Is one QR generated per shipment, batch, pallet, box, package or individual product? *(Prototype assumption ADR-022: one root QR per application. Each later breakdown is its own child QR.)*
+- Can one application generate multiple QRs? *(Prototype assumption ADR-022: yes, as child QR codes of the active root. The root row stays one per application.)*
 - Can an active QR be revoked?
 - Can a QR expire?
 - Can a QR be reactivated?
@@ -13,6 +13,13 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Who is officially authorized to activate QR?
 - Is serialized physical label management required?
 - Is there an official mandatory FAMA label design?
+
+## Lot breakdown
+
+- Must FAMA approve each child QR, or does an active parent authorize its chunks? *(Prototype assumption ADR-022: children of an active parent are created active. The root application remains the verified record.)*
+- Should the public page list downstream buyers? *(Prototype assumption ADR-022: the public page shows this chunk and its ancestors only.)*
+- Is quantity converted between units when a lot is split? *(Prototype assumption ADR-022: every node uses the root integer unit. No kg-to-carton conversion.)*
+- Is a fixed party sequence required (supplier, then exporter, then marketer, then retailer)? *(Prototype assumption ADR-022: no. Any registered company can receive a chunk, including an extra named layer.)*
 
 ## Application
 

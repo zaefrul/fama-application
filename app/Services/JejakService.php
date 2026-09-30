@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Domain\ApplicationStatus;
 use App\Domain\Ids;
+use App\Domain\LotDisposition;
 use App\Domain\ProductKind;
 use App\Domain\QrStatus;
 use App\Domain\Role;
@@ -81,7 +82,11 @@ class JejakService
         ];
     }
 
-    public function writeAudit(User $actor, string $action, string $objectType, string $objectId, ?string $remarks = null): void
+    /**
+     * @param  array<string, mixed>|null  $before
+     * @param  array<string, mixed>|null  $after
+     */
+    public function writeAudit(User $actor, string $action, string $objectType, string $objectId, ?string $remarks = null, ?array $before = null, ?array $after = null): void
     {
         AuditLog::query()->create([
             'id' => Ids::create('audit'),
@@ -90,8 +95,8 @@ class JejakService
             'action' => $action,
             'object_type' => $objectType,
             'object_id' => $objectId,
-            'before_json' => null,
-            'after_json' => null,
+            'before_json' => $before === null ? null : json_encode($before),
+            'after_json' => $after === null ? null : json_encode($after),
             'remarks' => $remarks,
         ]);
     }
@@ -515,8 +520,15 @@ class JejakService
 
     public function generateQr(string $applicationId, User $actor): QrCode
     {
+        $application = ExportApplication::query()->find($applicationId);
+        if (! $application) {
+            throw new RuntimeException('Permohonan tidak dijumpai');
+        }
+
         $existing = QrCode::query()->where('application_id', $applicationId)->first();
         if ($existing) {
+            $this->fillRootLot($existing, $application);
+
             return $existing;
         }
 
@@ -525,6 +537,11 @@ class JejakService
             'id' => Ids::create('qr'),
             'qr_code' => $code,
             'application_id' => $applicationId,
+            'root_application_id' => $applicationId,
+            'holder_company_id' => $application->company_id,
+            'quantity' => $application->quantity,
+            'quantity_remaining' => $application->quantity,
+            'disposition' => LotDisposition::Holding,
             'public_slug' => $code,
             'status' => QrStatus::GeneratedInactive,
             'generated_at' => now(),
@@ -532,6 +549,31 @@ class JejakService
         $this->writeAudit($actor, 'QR_GENERATED', 'QRCode', $row->id);
 
         return $row;
+    }
+
+    private function fillRootLot(QrCode $qr, ExportApplication $application): void
+    {
+        $dirty = false;
+        if ($qr->root_application_id === null) {
+            $qr->root_application_id = $application->id;
+            $dirty = true;
+        }
+        if ($qr->holder_company_id === null) {
+            $qr->holder_company_id = $application->company_id;
+            $dirty = true;
+        }
+        if ($qr->quantity === null) {
+            $qr->quantity = $application->quantity;
+            $qr->quantity_remaining = $application->quantity;
+            $dirty = true;
+        }
+        if ($qr->disposition === null) {
+            $qr->disposition = LotDisposition::Holding;
+            $dirty = true;
+        }
+        if ($dirty) {
+            $qr->save();
+        }
     }
 
     public function submitApplication(string $id, User $actor): ExportApplication
@@ -654,7 +696,12 @@ class JejakService
 
     public function listQrCodes(?string $companyId = null): Collection
     {
-        $query = QrCode::query()->with('application.produceType', 'application.company')->withCount('accesses');
+        $query = QrCode::query()->with([
+            'application.produceType',
+            'application.company',
+            'holder',
+            'rootApplication',
+        ])->withCount('accesses');
         if ($companyId) {
             $query->whereHas('application', fn ($q) => $q->where('company_id', $companyId));
         }
@@ -702,7 +749,12 @@ class JejakService
     public function dashboardExporter(string $companyId): array
     {
         $apps = ExportApplication::query()->where('company_id', $companyId)->get();
-        $qrs = QrCode::query()->whereIn('application_id', $apps->pluck('id'))->get();
+        $qrs = QrCode::query()
+            ->where(function ($query) use ($apps, $companyId) {
+                $query->whereIn('application_id', $apps->pluck('id'))
+                    ->orWhere('holder_company_id', $companyId);
+            })
+            ->get();
 
         return [
             'qrActive' => $qrs->where('status', QrStatus::Active)->count(),
@@ -845,7 +897,7 @@ class JejakService
 
         $topCounts = $recent->countBy('qr_id')->sortDesc()->take(3);
         $topQr = QrCode::query()
-            ->with('application.produceType', 'application.company')
+            ->with('application.produceType', 'application.company', 'rootApplication.produceType', 'holder')
             ->whereIn('id', $topCounts->keys())
             ->get()
             ->keyBy('id');
@@ -855,8 +907,10 @@ class JejakService
             $qr = $topQr->get($qrId);
             $topQrAccess[] = [
                 'qrCode' => $qr?->qr_code ?? (string) $qrId,
-                'produce' => $qr?->application?->produceType?->name ?? '—',
-                'company' => $qr?->application?->company?->name ?? '—',
+                'produce' => $qr?->application?->produceType?->name
+                    ?? $qr?->rootApplication?->produceType?->name
+                    ?? '—',
+                'company' => $qr?->holder?->name ?? $qr?->application?->company?->name ?? '—',
                 'count' => $count,
                 'percent' => (int) round(($count / $maxTop) * 100),
             ];

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Domain\ApplicationStatus;
+use App\Domain\LotDisposition;
+use App\Domain\PartyType;
 use App\Domain\QrStatus;
 use App\Domain\Role;
 use App\Models\AppNotification;
@@ -192,10 +194,10 @@ class DatabaseSeeder extends Seeder
         }
 
         foreach ([
-            ['id' => 'qr_123', 'qr_code' => 'GPL-QR-000123', 'application_id' => 'app_123', 'public_slug' => 'GPL-QR-000123', 'status' => QrStatus::GeneratedInactive, 'generated_at' => '2026-04-18 00:00:00', 'activated_at' => null],
-            ['id' => 'qr_109', 'qr_code' => 'GPL-QR-000109', 'application_id' => 'app_109', 'public_slug' => 'GPL-QR-000109', 'status' => QrStatus::Active, 'generated_at' => '2026-03-08 00:00:00', 'activated_at' => '2026-03-12 00:00:00'],
-            ['id' => 'qr_015', 'qr_code' => 'GPL-QR-000015', 'application_id' => 'app_015', 'public_slug' => 'GPL-QR-000015', 'status' => QrStatus::Active, 'generated_at' => '2026-03-04 00:00:00', 'activated_at' => '2026-03-08 00:00:00'],
-            ['id' => 'qr_011', 'qr_code' => 'GPL-QR-000011', 'application_id' => 'app_011', 'public_slug' => 'GPL-QR-000011', 'status' => QrStatus::GeneratedInactive, 'generated_at' => '2026-03-01 00:00:00', 'activated_at' => null],
+            ['id' => 'qr_123', 'qr_code' => 'GPL-QR-000123', 'application_id' => 'app_123', 'root_application_id' => 'app_123', 'holder_company_id' => 'co_abc', 'quantity' => 1000, 'quantity_remaining' => 1000, 'disposition' => LotDisposition::Holding, 'public_slug' => 'GPL-QR-000123', 'status' => QrStatus::GeneratedInactive, 'generated_at' => '2026-04-18 00:00:00', 'activated_at' => null],
+            ['id' => 'qr_109', 'qr_code' => 'GPL-QR-000109', 'application_id' => 'app_109', 'root_application_id' => 'app_109', 'holder_company_id' => 'co_mts', 'quantity' => 900, 'quantity_remaining' => 900, 'disposition' => LotDisposition::Holding, 'public_slug' => 'GPL-QR-000109', 'status' => QrStatus::Active, 'generated_at' => '2026-03-08 00:00:00', 'activated_at' => '2026-03-12 00:00:00'],
+            ['id' => 'qr_015', 'qr_code' => 'GPL-QR-000015', 'application_id' => 'app_015', 'root_application_id' => 'app_015', 'holder_company_id' => 'co_abc', 'quantity' => 400, 'quantity_remaining' => 400, 'disposition' => LotDisposition::Holding, 'public_slug' => 'GPL-QR-000015', 'status' => QrStatus::Active, 'generated_at' => '2026-03-04 00:00:00', 'activated_at' => '2026-03-08 00:00:00'],
+            ['id' => 'qr_011', 'qr_code' => 'GPL-QR-000011', 'application_id' => 'app_011', 'root_application_id' => 'app_011', 'holder_company_id' => 'co_abc', 'quantity' => 220, 'quantity_remaining' => 220, 'disposition' => LotDisposition::Holding, 'public_slug' => 'GPL-QR-000011', 'status' => QrStatus::GeneratedInactive, 'generated_at' => '2026-03-01 00:00:00', 'activated_at' => null],
         ] as $row) {
             QrCode::query()->create($row);
         }
@@ -258,6 +260,156 @@ class DatabaseSeeder extends Seeder
             'created_at' => '2026-03-12 00:00:00',
         ]);
 
+        $this->seedBananaLots();
+
         $this->call(QrAccessSeeder::class);
+    }
+
+    private function seedBananaLots(): void
+    {
+        $companies = [
+            [
+                'id' => 'co_supplier_pisang',
+                'registration_no' => 'PS11011',
+                'external_account_no' => 'H0B00011',
+                'name' => 'Ladang Pisang Pontian',
+                'email' => 'supplier.pisang@example.com',
+                'phone' => '07-111 2200',
+                'address' => 'Lot 8, Jalan Pisang, Pontian, Johor',
+                'state' => 'Johor',
+                'district' => 'Pontian',
+                'postcode' => '82000',
+                'website' => 'https://pisangpontian.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+                'party_type' => PartyType::Supplier,
+            ],
+            [
+                'id' => 'co_exporter_pisang',
+                'registration_no' => 'EP12012',
+                'external_account_no' => 'H0B00012',
+                'name' => 'Eksport Pisang Sdn. Bhd.',
+                'email' => 'eksport.pisang@example.com',
+                'phone' => '07-222 3300',
+                'address' => '12, Jalan Pelabuhan, Pasir Gudang, Johor',
+                'state' => 'Johor',
+                'district' => 'Pasir Gudang',
+                'postcode' => '81700',
+                'website' => 'https://eksportpisang.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+                'party_type' => PartyType::Exporter,
+            ],
+            [
+                'id' => 'co_marketer_pisang',
+                'registration_no' => 'MP13013',
+                'external_account_no' => 'H0B00013',
+                'name' => 'Pemasar Buah Sdn. Bhd.',
+                'email' => 'pemasar.pisang@example.com',
+                'phone' => '03-555 4400',
+                'address' => '40, Jalan Tun Razak, Kuala Lumpur',
+                'state' => 'Kuala Lumpur',
+                'district' => 'Kuala Lumpur',
+                'postcode' => '50400',
+                'website' => 'https://pemasarbuah.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+                'party_type' => PartyType::Marketer,
+            ],
+            [
+                'id' => 'co_retailer_pisang',
+                'registration_no' => 'RP14014',
+                'external_account_no' => 'H0B00014',
+                'name' => 'Runcit Segar Sdn. Bhd.',
+                'email' => 'peruncit.pisang@example.com',
+                'phone' => '03-666 5500',
+                'address' => '8, Jalan Imbi, Kuala Lumpur',
+                'state' => 'Kuala Lumpur',
+                'district' => 'Kuala Lumpur',
+                'postcode' => '55100',
+                'website' => 'https://runcitsegar.example',
+                'logo_path' => '/logos/logo-fama.png',
+                'external_source' => 'DAGANGNET',
+                'external_status' => 'Aktif',
+                'party_type' => PartyType::Retailer,
+            ],
+        ];
+        foreach ($companies as $row) {
+            Company::query()->create($row);
+        }
+
+        $users = [
+            ['id' => 'user_supplier_pisang', 'name' => 'Hassan Pisang', 'email' => 'supplier.pisang@example.com', 'company_id' => 'co_supplier_pisang', 'identity_reference' => '700101011111'],
+            ['id' => 'user_eksport_pisang', 'name' => 'Nora Eksport', 'email' => 'eksport.pisang@example.com', 'company_id' => 'co_exporter_pisang', 'identity_reference' => '800202022222'],
+            ['id' => 'user_pemasar_pisang', 'name' => 'Daniel Pemasar', 'email' => 'pemasar.pisang@example.com', 'company_id' => 'co_marketer_pisang', 'identity_reference' => '810303033333'],
+            ['id' => 'user_peruncit_pisang', 'name' => 'Aina Runcit', 'email' => 'peruncit.pisang@example.com', 'company_id' => 'co_retailer_pisang', 'identity_reference' => '820404044444'],
+        ];
+        foreach ($users as $row) {
+            $user = User::query()->create([
+                ...$row,
+                'password' => 'Exporter123!',
+                'role' => Role::Exporter,
+                'status' => 'ACTIVE',
+            ]);
+            $user->companies()->sync([$row['company_id']]);
+        }
+
+        ExportApplication::query()->create([
+            'id' => 'app_pisang',
+            'application_no' => 'FAMA-2026-000201',
+            'company_id' => 'co_supplier_pisang',
+            'produce_type_id' => 'pt_pisang',
+            'variety' => 'Berangan',
+            'grade' => 'A',
+            'size' => 'L',
+            'quantity' => 1000,
+            'quantity_unit' => 'kg',
+            'destination_country' => 'Singapura',
+            'coc_certificate_id' => null,
+            'coc_number' => 'STB-PISANG-DEMO',
+            'export_date' => '2026-09-01',
+            'lot_no' => 'LOT-PISANG-01',
+            'farm_location' => 'Pontian, Johor',
+            'farm_lat' => 1.4860000,
+            'farm_lng' => 103.3890000,
+            'display_image_path' => null,
+            'farm_name' => 'Ladang Pisang Pontian',
+            'importer_name' => 'Harbour Fresh Pte Ltd',
+            'importer_address' => '12 Pasir Panjang Road, Singapore',
+            'status' => ApplicationStatus::Approved,
+            'submitted_at' => '2026-08-20 00:00:00',
+            'reviewed_at' => '2026-08-22 00:00:00',
+            'created_at' => '2026-08-18 00:00:00',
+            'updated_at' => '2026-08-22 00:00:00',
+        ]);
+
+        foreach ([
+            ['id' => 'qr_pisang_root', 'qr_code' => 'GPL-QR-000201', 'application_id' => 'app_pisang', 'parent_id' => null, 'holder_company_id' => 'co_supplier_pisang', 'quantity' => 1000, 'quantity_remaining' => 0],
+            ['id' => 'qr_pisang_exp_400', 'qr_code' => 'GPL-QR-000202', 'application_id' => null, 'parent_id' => 'qr_pisang_root', 'holder_company_id' => 'co_exporter_pisang', 'quantity' => 400, 'quantity_remaining' => 150],
+            ['id' => 'qr_pisang_exp_600', 'qr_code' => 'GPL-QR-000203', 'application_id' => null, 'parent_id' => 'qr_pisang_root', 'holder_company_id' => 'co_exporter_pisang', 'quantity' => 600, 'quantity_remaining' => 600],
+            ['id' => 'qr_pisang_mkt_250', 'qr_code' => 'GPL-QR-000204', 'application_id' => null, 'parent_id' => 'qr_pisang_exp_400', 'holder_company_id' => 'co_marketer_pisang', 'quantity' => 250, 'quantity_remaining' => 250],
+        ] as $row) {
+            QrCode::query()->create([
+                ...$row,
+                'root_application_id' => 'app_pisang',
+                'disposition' => LotDisposition::Holding,
+                'public_slug' => $row['qr_code'],
+                'status' => QrStatus::Active,
+                'generated_at' => '2026-08-22 00:00:00',
+                'activated_at' => '2026-08-22 00:00:00',
+            ]);
+        }
+
+        Approval::query()->create([
+            'id' => 'appr_pisang',
+            'application_id' => 'app_pisang',
+            'officer_user_id' => 'user_fama',
+            'decision' => 'APPROVED',
+            'remarks' => 'Lot pisang diluluskan untuk dipecahkan.',
+            'decided_at' => '2026-08-22 00:00:00',
+        ]);
     }
 }

@@ -44,6 +44,11 @@ class TraceCopy
                 'contactLink' => 'www.fama.gov.my',
                 'profileTitle' => 'Profil Keluaran Pertanian',
                 'exporterAddress' => 'Alamat Syarikat',
+                'chain' => 'Jejak pecahan',
+                'thisChunk' => 'Kuantiti kod ini',
+                'currentStop' => 'Kod ini',
+                'sold' => 'Dijual',
+                'soldToPublic' => 'Pengguna',
             ],
             'en' => [
                 'inactiveTitle' => 'QR Not Activated',
@@ -79,6 +84,11 @@ class TraceCopy
                 'contactLink' => 'www.fama.gov.my',
                 'profileTitle' => 'Agricultural produce profile',
                 'exporterAddress' => 'Company address',
+                'chain' => 'Breakdown trace',
+                'thisChunk' => 'Quantity on this code',
+                'currentStop' => 'This code',
+                'sold' => 'Sold',
+                'soldToPublic' => 'Consumer',
             ],
             'zh' => [
                 'inactiveTitle' => 'QR 尚未激活',
@@ -114,6 +124,11 @@ class TraceCopy
                 'contactLink' => 'www.fama.gov.my',
                 'profileTitle' => '农产品档案',
                 'exporterAddress' => '公司地址',
+                'chain' => '拆分追溯',
+                'thisChunk' => '此码数量',
+                'currentStop' => '此码',
+                'sold' => '已售',
+                'soldToPublic' => '消费者',
             ],
         ];
 

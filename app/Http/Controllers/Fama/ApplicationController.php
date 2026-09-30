@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Fama;
 use App\Domain\ApplicationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ExportApplication;
+use App\Models\QrCode;
 use App\Services\JejakService;
 use App\Services\QrImageService;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +40,7 @@ class ApplicationController extends Controller
             'application' => $application,
             'publicUrl' => $application->qrCode ? $qrImage->traceUrl($application->qrCode->qr_code) : '',
             'error' => $request->query('error'),
+            'lotRoot' => QrCode::treeForApplication($application->id),
         ]);
     }
 
