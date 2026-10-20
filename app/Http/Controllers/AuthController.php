@@ -85,7 +85,7 @@ class AuthController extends Controller
         return view('auth.register-exporter', [
             'error' => $error,
             'errorMessage' => $message,
-            'partyTypes' => PartyType::cases(),
+            'partyTypes' => PartyType::choices(),
         ]);
     }
 

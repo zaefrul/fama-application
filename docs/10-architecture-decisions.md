@@ -225,9 +225,9 @@ Jenis ternakan lives on `produce_types.category = LIVESTOCK`. The keluaran scree
 
 A verified export application still has one root QR. After that QR is `ACTIVE`, the company that holds a lot may split the remaining quantity into child QR codes. Each child is its own scannable code, points at its parent, and keeps `root_application_id` so the public page can show the original product, farm, and certificates.
 
-The holder is the active company on the user (`users.company_id`). External logins stay `EXPORTER`. The layer — Pembekal, Pengeksport, Pemasar, Peruncit, or a named Lain-lain — is `companies.party_type` / `party_label`. There is no required sequence of parties. Depth is not fixed.
+The holder is the active company on the user (`users.company_id`). External logins stay `EXPORTER`. Each company has a chain role on `companies.party_type`: Pengeluar, Pemborong, Peruncit, or a named Lain-lain. The public checkpoint line prints those roles in order, and a consumer sale ends the line with Consumer. There is no required sequence of parties. Depth is not fixed.
 
-Child QR codes are created `ACTIVE`. FAMA does not approve each chunk. Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder creates terminal child QR codes with no holder login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors. Downstream buyers stay on the holder screen and the FAMA application tree.
+Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAMA does not approve each chunk. The receiving company activates that QR by opening its public URL while logged in. That scan sets the holder and status `ACTIVE`. Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder to a consumer creates a terminal child QR immediately, with no company login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors after the QR is active. Downstream buyers stay on the holder screen and the FAMA application tree.
 
 **Reason:** A single trunk, such as a banana lot, is broken into smaller lots as it moves along the chain, and each piece must stay traceable.
 

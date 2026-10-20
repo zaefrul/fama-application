@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Exporter;
 
+use App\Domain\PartyType;
 use App\Domain\ProductKind;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
@@ -41,6 +42,7 @@ class CompanyController extends Controller
 
         return view('exporter.company.show', [
             'company' => $company,
+            'partyTypes' => PartyType::choices(),
             'error' => $request->query('error'),
         ]);
     }
@@ -54,7 +56,7 @@ class CompanyController extends Controller
             return redirect()->route('exporter.company', ['error' => $e->getMessage()]);
         }
 
-        $this->jejak->updateCompany($companyId, [
+        $patch = [
             'address' => (string) $request->input('address', ''),
             'state' => (string) $request->input('state', ''),
             'district' => (string) $request->input('district', ''),
@@ -63,7 +65,18 @@ class CompanyController extends Controller
             'email' => (string) $request->input('email', ''),
             'website' => (string) $request->input('website', ''),
             'logo_path' => $logoPath,
-        ]);
+        ];
+        $party = PartyType::tryFrom((string) $request->input('party_type', ''));
+        if ($party !== null) {
+            $label = trim((string) $request->input('party_label', ''));
+            if ($party === PartyType::Other && $label === '') {
+                return redirect()->route('exporter.company', ['error' => 'Nama lapisan diperlukan untuk Lain-lain.']);
+            }
+            $patch['party_type'] = $party;
+            $patch['party_label'] = $label;
+        }
+
+        $this->jejak->updateCompany($companyId, $patch);
 
         return redirect()->route('exporter.company');
     }

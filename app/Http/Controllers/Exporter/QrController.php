@@ -15,8 +15,20 @@ class QrController extends Controller
 {
     public function index(Request $request, JejakService $jejak): View
     {
+        $companyId = $request->user()->company_id;
+        $with = ['application.produceType', 'rootApplication.produceType', 'pendingHolder'];
+
         return view('exporter.qr.index', [
-            'qrs' => $jejak->listQrCodes($request->user()->company_id),
+            'ownQrs' => $jejak->listQrCodes($companyId),
+            'receivedQrs' => QrCode::query()
+                ->with($with)
+                ->whereNotNull('parent_id')
+                ->where(function ($query) use ($companyId) {
+                    $query->where('holder_company_id', $companyId)
+                        ->orWhere('pending_holder_company_id', $companyId);
+                })
+                ->orderByDesc('generated_at')
+                ->get(),
         ]);
     }
 

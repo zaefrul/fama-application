@@ -9,6 +9,13 @@
                 @csrf
                 <x-field label="No. Pendaftaran"><x-input readonly :value="$company->registration_no" /></x-field>
                 <x-field label="Nama Syarikat"><x-input readonly :value="$company->name" /></x-field>
+                <x-field label="Jenis dalam rantaian" hint="Jenis ini keluar pada jejak pecahan bila lot sampai ke syarikat ini.">
+                    <x-select name="party_type">
+                        @foreach ($partyTypes as $type)
+                            <option value="{{ $type->value }}" @selected($company->party_type === $type || ($company->party_type === null && $type->value === 'EXPORTER'))>{{ $type->label() }}</option>
+                        @endforeach
+                    </x-select>
+                </x-field>
                 <x-field label="Alamat" required><x-input name="address" :value="$company->address" /></x-field>
                 <x-field label="Negeri"><x-input name="state" :value="$company->state" /></x-field>
                 <x-field label="Daerah"><x-input name="district" :value="$company->district" /></x-field>

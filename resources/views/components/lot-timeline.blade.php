@@ -8,9 +8,15 @@
     'showBalance' => false,
     'currentLabel' => 'Kod ini',
     'soldLabel' => 'Dijual',
-    'publicLabel' => 'Pengguna',
+    'publicLabel' => 'Consumer',
+    'showPath' => true,
 ])
 <ol {{ $attributes->merge(['class' => 'trace-checkpoints']) }}>
+    @if ($showPath)
+        <li class="mb-3 list-none text-sm font-semibold tracking-wide text-ink">
+            {{ collect($nodes)->map(fn ($node) => $node->trackingRole())->implode(' → ') }}
+        </li>
+    @endif
     @foreach ($nodes as $node)
         @php
             $current = (string) $node->id === (string) $currentId;
@@ -20,13 +26,19 @@
             <span class="trace-checkpoint-mark" aria-hidden="true"></span>
             <div class="min-w-0">
                 <p class="trace-checkpoint-kicker">
-                    {{ $node->holder?->partyLabel() ?? $publicLabel }}
+                    @if ($node->holder)
+                        {{ $node->holder->partyLabel() }}
+                    @elseif ($node->pendingHolder)
+                        Menunggu penerimaan
+                    @else
+                        {{ $publicLabel }}
+                    @endif
                     @if ($current)
                         · {{ $currentLabel }}
                     @endif
                 </p>
                 <p class="text-sm {{ $current ? 'font-semibold' : '' }} text-ink">
-                    {{ $node->holder?->name ?? $publicLabel }}
+                    {{ $node->holder?->name ?? $node->pendingHolder?->name ?? $publicLabel }}
                 </p>
                 <p class="text-xs text-muted">
                     {{ $node->qr_code }}
@@ -57,6 +69,7 @@
                     :current-label="$currentLabel"
                     :sold-label="$soldLabel"
                     :public-label="$publicLabel"
+                    :show-path="false"
                     class="is-branch"
                 />
             @endif

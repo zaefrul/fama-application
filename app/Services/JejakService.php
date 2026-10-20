@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Domain\ApplicationStatus;
 use App\Domain\Ids;
 use App\Domain\LotDisposition;
+use App\Domain\PartyType;
 use App\Domain\ProductKind;
 use App\Domain\QrStatus;
 use App\Domain\Role;
@@ -187,6 +188,12 @@ class JejakService
             'website' => $patch['website'] ?? $company->website,
             'logo_path' => $patch['logo_path'] ?? $company->logo_path,
         ]);
+        if (array_key_exists('party_type', $patch) && $patch['party_type'] instanceof PartyType) {
+            $company->party_type = $patch['party_type'];
+            $company->party_label = $patch['party_type'] === PartyType::Other
+                ? ($patch['party_label'] ?? null)
+                : null;
+        }
         $company->save();
 
         return $company;

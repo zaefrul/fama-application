@@ -13,11 +13,24 @@ enum PartyType: string
     public function label(): string
     {
         return match ($this) {
-            self::Supplier => 'Pembekal',
-            self::Exporter => 'Pengeksport',
-            self::Marketer => 'Pemasar',
+            self::Supplier => 'Pengeluar',
+            self::Exporter => 'Pemborong',
+            self::Marketer => 'Pemborong',
             self::Retailer => 'Peruncit',
             self::Other => 'Lain-lain',
         };
+    }
+
+    /**
+     * @return list<self>
+     */
+    public static function choices(): array
+    {
+        return [
+            self::Supplier,
+            self::Exporter,
+            self::Retailer,
+            self::Other,
+        ];
     }
 }

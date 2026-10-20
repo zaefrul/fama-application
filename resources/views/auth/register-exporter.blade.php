@@ -41,7 +41,7 @@
                     </x-select>
                 </x-field>
                 <div id="party-label-field" class="hidden">
-                    <x-field label="Nama lapisan" hint="Contoh: Pengumpul atau Pemborong." required>
+                    <x-field label="Nama lapisan" hint="Contoh: Pengumpul." required>
                         <x-input name="party_label" id="party-label" />
                     </x-field>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Domain\Ids;
 use App\Domain\LotDisposition;
 use App\Domain\QrStatus;
+use App\Domain\Transitions;
 use App\Models\Company;
 use App\Models\QrCode;
 use App\Models\User;
@@ -69,6 +70,7 @@ class LotSplitService
                     'qr_code' => $child->qr_code,
                     'quantity' => $child->quantity,
                     'holder_company_id' => $child->holder_company_id,
+                    'pending_holder_company_id' => $child->pending_holder_company_id,
                 ], $created),
             ]);
 
@@ -151,6 +153,39 @@ class LotSplitService
         });
     }
 
+    public function acceptIfRecipient(QrCode $qr, ?User $actor): QrCode
+    {
+        if ($actor === null || $actor->company_id === null || $qr->pending_holder_company_id !== $actor->company_id) {
+            return $qr;
+        }
+        if ($qr->status !== QrStatus::GeneratedInactive || $qr->holder_company_id !== null) {
+            return $qr;
+        }
+
+        return DB::transaction(function () use ($qr, $actor) {
+            $locked = $this->lockedLot($qr->id);
+            if ($locked->pending_holder_company_id !== $actor->company_id || $locked->status !== QrStatus::GeneratedInactive) {
+                return $locked;
+            }
+
+            Transitions::assertQrTransition($locked->status->value, QrStatus::Active->value);
+            $locked->holder_company_id = $locked->pending_holder_company_id;
+            $locked->status = QrStatus::Active;
+            $locked->activated_at = now();
+            $locked->accepted_at = now();
+            $locked->save();
+
+            $this->jejak->writeAudit($actor, 'LOT_ACCEPTED', 'QRCode', $locked->id, null, [
+                'status' => QrStatus::GeneratedInactive->value,
+            ], [
+                'status' => QrStatus::Active->value,
+                'holder_company_id' => $locked->holder_company_id,
+            ]);
+
+            return $locked->fresh(['holder', 'pendingHolder']) ?? $locked;
+        });
+    }
+
     private function lockedLot(string $lotId): QrCode
     {
         $lot = QrCode::query()->whereKey($lotId)->lockForUpdate()->first();
@@ -192,15 +227,16 @@ class LotSplitService
             'application_id' => null,
             'parent_id' => $parent->id,
             'root_application_id' => $parent->root_application_id ?: $parent->application_id,
-            'holder_company_id' => $sold ? null : $holderCompanyId,
+            'holder_company_id' => null,
+            'pending_holder_company_id' => $sold ? null : $holderCompanyId,
             'quantity' => $quantity,
             'quantity_remaining' => $sold ? 0 : $quantity,
             'disposition' => $disposition,
             'sold_at' => $sold ? now() : null,
             'public_slug' => $code,
-            'status' => QrStatus::Active,
+            'status' => $sold ? QrStatus::Active : QrStatus::GeneratedInactive,
             'generated_at' => now(),
-            'activated_at' => now(),
+            'activated_at' => $sold ? now() : null,
         ]);
     }
 }

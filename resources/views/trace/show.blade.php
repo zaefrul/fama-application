@@ -63,8 +63,8 @@
             @elseif (! $active)
                 <x-card class="mx-auto max-w-lg space-y-4 py-8 text-center">
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-warning text-4xl font-bold text-white">!</div>
-                    <h1 class="text-2xl font-bold">{{ $t['inactiveTitle'] }}</h1>
-                    <p class="text-sm text-muted">{{ $t['inactiveBody'] }}</p>
+                    <h1 class="text-2xl font-bold">{{ $awaitingAcceptance ? $t['pendingTitle'] : $t['inactiveTitle'] }}</h1>
+                    <p class="text-sm text-muted">{{ $awaitingAcceptance ? $t['pendingBody'] : $t['inactiveBody'] }}</p>
                     <p class="rounded-xl bg-surface-muted px-3 py-2 text-sm font-semibold">QR ID: {{ $qr->qr_code }}</p>
                 </x-card>
             @else

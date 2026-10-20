@@ -13,6 +13,8 @@ class TraceCopy
             'bm' => [
                 'inactiveTitle' => 'QR Belum Diaktifkan',
                 'inactiveBody' => 'QR ini telah dijana tetapi belum diaktifkan selepas kelulusan FAMA.',
+                'pendingTitle' => 'QR Menunggu Penerimaan',
+                'pendingBody' => 'Log masuk sebagai syarikat penerima, kemudian buka pautan ini semula. Imbasan itu menerima lot dan mengaktifkan QR.',
                 'invalid' => 'Kod QR tidak sah.',
                 'product' => 'Maklumat Keluaran Pertanian',
                 'export' => 'Maklumat Eksport',
@@ -48,11 +50,13 @@ class TraceCopy
                 'thisChunk' => 'Kuantiti kod ini',
                 'currentStop' => 'Kod ini',
                 'sold' => 'Dijual',
-                'soldToPublic' => 'Pengguna',
+                'soldToPublic' => 'Consumer',
             ],
             'en' => [
                 'inactiveTitle' => 'QR Not Activated',
                 'inactiveBody' => 'This QR has been generated but is not active until FAMA approval.',
+                'pendingTitle' => 'QR waiting for acceptance',
+                'pendingBody' => 'Sign in as the receiving company, then open this link again. That scan accepts the lot and activates the QR.',
                 'invalid' => 'Invalid QR code.',
                 'product' => 'Agricultural produce information',
                 'export' => 'Export information',
@@ -93,6 +97,8 @@ class TraceCopy
             'zh' => [
                 'inactiveTitle' => 'QR 尚未激活',
                 'inactiveBody' => '此二维码已生成，但尚未在 FAMA 批准后激活。',
+                'pendingTitle' => '二维码等待接收',
+                'pendingBody' => '请以接收公司登录后再打开此链接。该次扫码即接收批次并激活二维码。',
                 'invalid' => '无效的二维码。',
                 'product' => '农产品信息',
                 'export' => '出口信息',

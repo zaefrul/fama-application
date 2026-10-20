@@ -24,10 +24,12 @@ class QrCode extends Model
         'parent_id',
         'root_application_id',
         'holder_company_id',
+        'pending_holder_company_id',
         'quantity',
         'quantity_remaining',
         'disposition',
         'sold_at',
+        'accepted_at',
         'public_slug',
         'status',
         'generated_at',
@@ -44,6 +46,7 @@ class QrCode extends Model
             'generated_at' => 'datetime',
             'activated_at' => 'datetime',
             'sold_at' => 'datetime',
+            'accepted_at' => 'datetime',
         ];
     }
 
@@ -72,6 +75,11 @@ class QrCode extends Model
         return $this->belongsTo(Company::class, 'holder_company_id');
     }
 
+    public function pendingHolder(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'pending_holder_company_id');
+    }
+
     public function accesses(): HasMany
     {
         return $this->hasMany(QrAccess::class, 'qr_id');
@@ -83,6 +91,9 @@ class QrCode extends Model
             return false;
         }
         if ($this->holder_company_id === $companyId) {
+            return true;
+        }
+        if ($this->pending_holder_company_id === $companyId) {
             return true;
         }
         if ($this->application?->company_id === $companyId) {
@@ -107,7 +118,7 @@ class QrCode extends Model
 
         while ($current && ! isset($seen[$current->id])) {
             $seen[$current->id] = true;
-            $current->loadMissing('holder');
+            $current->loadMissing(['holder', 'pendingHolder']);
             $chain->prepend($current);
             if (! $current->parent_id) {
                 break;
@@ -120,6 +131,17 @@ class QrCode extends Model
         return $chain->values();
     }
 
+    public function trackingRole(): string
+    {
+        if ($this->disposition === LotDisposition::Sold && $this->holder_company_id === null) {
+            return 'Consumer';
+        }
+
+        return $this->holder?->partyLabel()
+            ?? $this->pendingHolder?->partyLabel()
+            ?? 'Consumer';
+    }
+
     /**
      * @return list<array{qrCode: string, quantity: int|null, holder: string|null, party: string|null, sold: bool}>
      */
@@ -128,7 +150,7 @@ class QrCode extends Model
         return $this->lineage()->map(fn (self $node) => [
             'qrCode' => $node->qr_code,
             'quantity' => $node->quantity,
-            'holder' => $node->holder?->name,
+            'holder' => $node->holder?->name ?? $node->pendingHolder?->name,
             'party' => $node->holder?->partyLabel(),
             'sold' => $node->disposition === LotDisposition::Sold,
         ])->all();
@@ -136,7 +158,7 @@ class QrCode extends Model
 
     public static function treeForApplication(string $applicationId): ?self
     {
-        $nodes = self::query()->with('holder')->where('root_application_id', $applicationId)->get();
+        $nodes = self::query()->with(['holder', 'pendingHolder'])->where('root_application_id', $applicationId)->get();
         if ($nodes->isEmpty()) {
             return null;
         }

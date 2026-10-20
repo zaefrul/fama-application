@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\QrStatus;
 use App\Models\ExportApplication;
 use App\Services\JejakService;
+use App\Services\LotSplitService;
 use App\Services\QrImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,10 +13,13 @@ use Illuminate\View\View;
 
 class TraceController extends Controller
 {
-    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage): View
+    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage, LotSplitService $lots): View
     {
         $lang = in_array($request->query('lang'), ['en', 'zh'], true) ? $request->query('lang') : 'bm';
         $qr = $jejak->getQrByCode($qrCode);
+        if ($qr && $request->user()) {
+            $qr = $lots->acceptIfRecipient($qr, $request->user());
+        }
         if ($qr) {
             $jejak->recordQrAccess($qr);
         }
@@ -43,6 +47,7 @@ class TraceController extends Controller
             'accessCount' => $qr ? $qr->accesses()->count() : 0,
             'publicUrl' => $qr ? $qrImage->traceUrl($qr->qr_code) : '',
             'active' => $qr?->status === QrStatus::Active && $application !== null,
+            'awaitingAcceptance' => $qr?->status !== QrStatus::Active && $qr?->pending_holder_company_id !== null,
             'chain' => $chain,
         ]);
     }

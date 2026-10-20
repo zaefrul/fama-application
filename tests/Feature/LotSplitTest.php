@@ -37,8 +37,9 @@ class LotSplitTest extends TestCase
 
         $this->assertCount(1, $under);
         $this->assertSame(500, $lot->fresh()->quantity_remaining);
-        $this->assertSame(QrStatus::Active, $under[0]->status);
-        $this->assertSame('co_retailer_pisang', $under[0]->holder_company_id);
+        $this->assertSame(QrStatus::GeneratedInactive, $under[0]->status);
+        $this->assertNull($under[0]->holder_company_id);
+        $this->assertSame('co_retailer_pisang', $under[0]->pending_holder_company_id);
         $this->assertNull($under[0]->application_id);
         $this->assertSame('app_pisang', $under[0]->root_application_id);
 
@@ -49,6 +50,55 @@ class LotSplitTest extends TestCase
 
         $this->assertSame(0, $lot->fresh()->quantity_remaining);
         $this->assertSame(LotDisposition::Holding, $lot->fresh()->disposition);
+    }
+
+    public function test_recipient_scan_activates_the_lot_for_that_company(): void
+    {
+        $child = app(LotSplitService::class)->split('qr_pisang_exp_600', User::query()->findOrFail('user_eksport_pisang'), [[
+            'quantity' => 80,
+            'recipient_company_id' => 'co_retailer_pisang',
+        ]])[0];
+
+        $this->get('/trace/'.$child->qr_code)
+            ->assertOk()
+            ->assertSee('QR Menunggu Penerimaan')
+            ->assertDontSee('Jejak pecahan');
+
+        $this->assertSame(QrStatus::GeneratedInactive, $child->fresh()->status);
+
+        $this->actingAs(User::query()->findOrFail('user_eksport_pisang'))
+            ->get('/trace/'.$child->qr_code)
+            ->assertOk()
+            ->assertSee('QR Menunggu Penerimaan');
+
+        $this->assertNull($child->fresh()->holder_company_id);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->get(route('exporter.qr'))
+            ->assertOk()
+            ->assertSee('QR pecahan')
+            ->assertSee('Menunggu penerimaan')
+            ->assertSee($child->qr_code);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->get('/trace/'.$child->qr_code)
+            ->assertOk()
+            ->assertSee('Pisang')
+            ->assertSee('Kod ini')
+            ->assertDontSee('QR Menunggu Penerimaan');
+
+        $accepted = $child->fresh();
+        $this->assertSame(QrStatus::Active, $accepted->status);
+        $this->assertSame('co_retailer_pisang', $accepted->holder_company_id);
+        $this->assertNotNull($accepted->accepted_at);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->get(route('exporter.qr'))
+            ->assertOk()
+            ->assertSee('QR pecahan')
+            ->assertDontSee('Menunggu penerimaan');
+
+        $this->assertNotNull(AuditLog::query()->where('action', 'LOT_ACCEPTED')->where('object_id', $child->id)->first());
     }
 
     public function test_split_over_remaining_quantity_is_rejected(): void
@@ -97,6 +147,7 @@ class LotSplitTest extends TestCase
             ->assertOk()
             ->assertSee('Pisang')
             ->assertSee('Jejak pecahan')
+            ->assertSee('Pengeluar → Pemborong → Pemborong')
             ->assertSee('trace-checkpoint', false)
             ->assertSee('GPL-QR-000201')
             ->assertSee('Ladang Pisang Pontian')

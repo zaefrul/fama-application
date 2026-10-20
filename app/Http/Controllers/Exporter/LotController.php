@@ -36,6 +36,7 @@ class LotController extends Controller
         $lot->load([
             'holder',
             'children.holder',
+            'children.pendingHolder',
             'parent.holder',
             'rootApplication.produceType',
         ]);

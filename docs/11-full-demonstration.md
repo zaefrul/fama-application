@@ -337,43 +337,38 @@ Say: “The first QR is the whole shipment. A new code is created only for the c
 1. Still logged in as Ali (**USAHAWAN**).
 2. Open **Pecahan**.
 3. Open the new Pisang row. It says **Lot asal**, quantity **500 kg**, baki **500**.
-4. Under **Jejak pecahan**, one green checkpoint says **Pengeksport · Kod ini** and ABC Fruits.
+4. Under **Jejak pecahan**, the line starts with the company role, for example **Pengeluar → Pemborong**. The current stop says **Kod ini**.
 5. Under **Pecahkan kepada syarikat**:
    - **Kuantiti**: `100`
-   - **Penerima**: **Pengeksport · MTS Fruits Sdn. Bhd.**
+   - **Penerima**: the company whose role should appear next, for example **Peruncit · Tan So Tiok & Sons Sdn Bhd** if that account is set to Peruncit under **Profil**
 6. Click **Simpan pecahan**.
-7. The page says **Lot dipecahkan.** Baki is **400**. A second checkpoint appears for MTS Fruits, **100 kg**, with **Muat turun** and **Jejak awam**.
+7. The page says **Lot dipecahkan.** Baki is **400**. A second checkpoint appears for MTS Fruits, **100 kg**, labelled **Menunggu penerimaan**, status **Belum Aktif**. Ali can still **Muat turun** that QR and hand the label over.
+8. Open **Pecahan** as a check: the new code is not Siti’s yet.
 
-Both companies show **Pengeksport** on this database. Ali and Siti were registered before chain roles were stored. A new registration can choose **Pembekal**, **Pengeksport**, **Pemasar**, **Peruncit**, or **Lain-lain** with a name such as Pengumpul. There is no required order of those roles.
+Set each company’s role under **Profil → Jenis dalam rantaian** before the split: Pengeluar, Pemborong, or Peruncit. The checkpoint line uses that role. A sale to a buyer with no login ends the line with **Consumer**. There is no required order.
 
-Do not click **Jual semua baki**. That marks this whole QR sold and blocks further splits. **Jual pek** is the other sale: it creates a consumer QR for the quantity you type, with no login on that code.
+Do not click **Jual semua baki**. That marks this whole QR sold and blocks further splits. **Jual pek** is the other sale: it creates a consumer QR for the quantity you type, with no login on that code. A consumer sale is active immediately. A company assignment waits for that company to scan.
 
-### Siti sees only the chunk she holds
+### Siti scans to accept
 
-1. Log out. Log in as Siti (**USAHAWAN**): `siti@mtsfruits.example` / `Exporter123!`.
-2. Open **Pecahan**.
-3. Open the new row. It says **Dari Pengeksport · ABC Fruits Sdn. Bhd.**, baki **100 / 100 kg**.
-4. **Jejak pecahan** shows two stops: ABC Fruits (the batch), then MTS Fruits marked **Kod ini**.
+1. In the **incognito** window, open the new child QR first. The page says **QR Menunggu Penerimaan**. The product page is not shown yet. Close that tab or leave it.
+2. In the normal window, log out. Log in as Siti (**USAHAWAN**): `siti@mtsfruits.example` / `Exporter123!`.
+3. Open **Kod QR**. Under **QR pecahan** the new code is listed as **Belum Aktif** and **Menunggu penerimaan**. It is not under **QR permohonan sendiri**. **Pecahan** still does not list it, because she has not accepted it.
+4. Still logged in as Siti, open that QR from **Kod QR**, then open **Jejak awam**. That visit is the acceptance.
+5. The public page becomes the product page. **Jejak pecahan** shows ABC Fruits, then MTS Fruits marked **Kod ini**.
+6. Go back to **Pecahan** and **Kod QR**. The chunk is in both: **Pecahan** shows baki **100 / 100 kg**, and **Kod QR** lists it under **QR pecahan** as **Aktif**.
 
-Say: “Siti can split only this 100 kg. She cannot split Ali’s remaining 400 kg.”
-
-### Public checkpoint line
-
-1. In the incognito window, open **Jejak awam** from Siti’s screen, or type the child QR (the new code, not the original Pisang QR).
-2. **Jejak pecahan** is a line of two stops:
-   - gold ring: ABC Fruits, 500 kg (the batch)
-   - green dot **Kod ini**: MTS Fruits, 100 kg (this label)
-3. Refresh the original Pisang QR. It still shows one checkpoint, ABC Fruits as **Kod ini**. The public page does not list who received the chunks. That list is on **Pecahan** for the holder, and on **Pecahan lot** for FAMA.
+Say: “Siti’s scan accepts the lot. Only then is the QR active for her. She can split only this 100 kg.”
 
 ### FAMA sees the tree
 
 1. Log in as Pegawai FAMA.
 2. Open **Kelulusan QR** and the Pisang application you approved.
-3. **Pecahan lot** uses the same line: the batch, then the 100 kg chunk, each with **baki**.
+3. **Pecahan lot** uses the same line: the batch, then the 100 kg chunk, each with **baki**. Before Siti scans, the chunk says **Menunggu penerimaan**.
 
-Say: “FAMA can see where the batch went. The officer does not split it for the holder.”
+Say: “FAMA can see where the batch went. The officer does not accept it for the holder.”
 
-The audit action for the split is `LOT_SPLIT`, on `/fama/audit` or `/exporter/audit`.
+The audit actions are `LOT_SPLIT` when Ali saves the split, and `LOT_ACCEPTED` when Siti scans. Both are on `/fama/audit` or `/exporter/audit`.
 
 ## Optional — show registration without creating an account
 
