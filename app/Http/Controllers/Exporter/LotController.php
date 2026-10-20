@@ -41,9 +41,12 @@ class LotController extends Controller
             'rootApplication.produceType',
         ]);
 
+        $rootId = $lot->root_application_id ?: $lot->application_id;
+        $root = $rootId ? QrCode::treeForApplication($rootId) : null;
+
         return view('exporter.lots.show', [
             'lot' => $lot,
-            'lineage' => $lot->lineage(),
+            'lineage' => $root ? collect([$root]) : $lot->lineage(),
             'companies' => Company::query()->orderBy('name')->get(),
             'publicUrl' => $qrImage->traceUrl($lot->qr_code),
             'unit' => $lot->rootApplication?->quantity_unit ?? $lot->application?->quantity_unit ?? '',

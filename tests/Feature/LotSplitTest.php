@@ -153,6 +153,11 @@ class LotSplitTest extends TestCase
             ->assertSee('Ladang Pisang Pontian')
             ->assertSee('Pontian, Johor');
 
+        $this->get('/trace/GPL-QR-000201')
+            ->assertOk()
+            ->assertSee('GPL-QR-000204')
+            ->assertSee('Pengeluar → Pemborong → Pemborong');
+
         $this->getJson('/api/public/trace/GPL-QR-000204')
             ->assertOk()
             ->assertJsonPath('produce', 'Pisang')
@@ -225,10 +230,11 @@ class LotSplitTest extends TestCase
     public function test_holder_can_open_the_lot_screen_and_fama_sees_the_tree(): void
     {
         $this->actingAs(User::query()->findOrFail('user_supplier_pisang'))
-            ->get(route('exporter.lots'))
+            ->get(route('exporter.lots.show', 'qr_pisang_root'))
             ->assertOk()
             ->assertSee('GPL-QR-000201')
-            ->assertSee('Lot asal');
+            ->assertSee('GPL-QR-000204')
+            ->assertSee('Pengeluar → Pemborong → Pemborong');
 
         $this->actingAs(User::query()->findOrFail('user_eksport_pisang'))
             ->get(route('exporter.lots.show', 'qr_pisang_exp_400'))

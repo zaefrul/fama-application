@@ -4,6 +4,7 @@
         :nodes="$chain"
         :current-id="$qr->id"
         :unit="$application?->quantity_unit ?? ''"
+        :nested="true"
         :current-label="$t['currentStop']"
         :sold-label="$t['sold']"
         :public-label="$t['soldToPublic']"

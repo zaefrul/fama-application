@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\QrStatus;
 use App\Models\ExportApplication;
+use App\Models\QrCode;
 use App\Services\JejakService;
 use App\Services\LotSplitService;
 use App\Services\QrImageService;
@@ -35,6 +36,8 @@ class TraceController extends Controller
             ?: $gallery->first()?->file_path
             ?: asset('placeholders/gallery-buah.svg');
         $chain = $qr ? $qr->lineage() : collect();
+        $root = $application ? QrCode::treeForApplication($application->id) : null;
+        $timeline = $root ? collect([$root]) : $chain;
 
         return view('trace.show', [
             'qrCode' => $qrCode,
@@ -48,7 +51,7 @@ class TraceController extends Controller
             'publicUrl' => $qr ? $qrImage->traceUrl($qr->qr_code) : '',
             'active' => $qr?->status === QrStatus::Active && $application !== null,
             'awaitingAcceptance' => $qr?->status !== QrStatus::Active && $qr?->pending_holder_company_id !== null,
-            'chain' => $chain,
+            'chain' => $timeline,
         ]);
     }
 

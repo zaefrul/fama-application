@@ -143,6 +143,31 @@ class QrCode extends Model
     }
 
     /**
+     * @return list<string>
+     */
+    public function trackingPaths(): array
+    {
+        $walk = function (self $node, array $prefix) use (&$walk): array {
+            $prefix[] = $node->trackingRole();
+            $children = $node->relationLoaded('children') ? $node->children : collect();
+            if ($children->isEmpty()) {
+                return [implode(' → ', $prefix)];
+            }
+
+            $paths = [];
+            foreach ($children as $child) {
+                foreach ($walk($child, $prefix) as $path) {
+                    $paths[] = $path;
+                }
+            }
+
+            return $paths;
+        };
+
+        return $walk($this, []);
+    }
+
+    /**
      * @return list<array{qrCode: string, quantity: int|null, holder: string|null, party: string|null, sold: bool}>
      */
     public function traceChain(): array

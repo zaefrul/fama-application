@@ -10,12 +10,24 @@
     'soldLabel' => 'Dijual',
     'publicLabel' => 'Consumer',
     'showPath' => true,
+    'pathLabel' => null,
 ])
+@php
+    if ($showPath) {
+        if (filled($pathLabel)) {
+            $paths = [$pathLabel];
+        } elseif (collect($nodes)->count() === 1 && collect($nodes)->first()?->relationLoaded('children')) {
+            $paths = collect($nodes)->first()->trackingPaths();
+        } else {
+            $paths = [collect($nodes)->map(fn ($node) => $node->trackingRole())->implode(' → ')];
+        }
+    }
+@endphp
 <ol {{ $attributes->merge(['class' => 'trace-checkpoints']) }}>
     @if ($showPath)
-        <li class="mb-3 list-none text-sm font-semibold tracking-wide text-ink">
-            {{ collect($nodes)->map(fn ($node) => $node->trackingRole())->implode(' → ') }}
-        </li>
+        @foreach ($paths as $path)
+            <li class="mb-1 list-none text-sm font-semibold tracking-wide text-ink">{{ $path }}</li>
+        @endforeach
     @endif
     @foreach ($nodes as $node)
         @php
