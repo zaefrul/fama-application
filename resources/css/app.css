@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './trace.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -66,6 +67,21 @@
   --color-flag-red: var(--flag-red);
   --color-flag-blue: var(--flag-blue);
   --color-flag-yellow: var(--flag-yellow);
+  --color-forest-50: #eff6f0;
+  --color-forest-100: #dfece0;
+  --color-forest-200: #c8ddc9;
+  --color-forest-500: #49754f;
+  --color-forest-600: #32633d;
+  --color-forest-700: #214e31;
+  --color-forest-800: #153d29;
+  --color-forest-900: #102e21;
+  --color-gpl-ink: #202c25;
+  --color-gpl-muted: #637067;
+  --color-line: #e3e8df;
+  --color-paper: #f6f7f2;
+  --color-gold-50: #fff7de;
+  --color-gold-100: #f8ebbd;
+  --color-gold-600: #87621b;
   --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
 }
 

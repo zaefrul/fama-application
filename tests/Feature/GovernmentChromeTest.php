@@ -36,23 +36,23 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('Maklumat Keluaran Pertanian')
             ->assertSee('Jenis Keluaran Pertanian')
             ->assertSee('Nama Syarikat')
-            ->assertSee('Hubungi Kami')
+            ->assertSee('Perlukan maklumat lanjut?')
             ->assertSee('www.fama.gov.my')
             ->assertSee('LOT-B07')
             ->assertSee('Kuala Selangor, Selangor')
             ->assertSee('/products/produce-tembikai-demo-01.jpg')
             ->assertSee('openstreetmap.org')
             ->assertSee('Profil Keluaran Pertanian')
-            ->assertSee('trace-produce-hero')
-            ->assertSee('trace-profile')
-            ->assertSee('trace-produce-portrait')
+            ->assertSee('trace-page')
+            ->assertDontSee('Imej ilustrasi konsep')
             ->assertSee('/certificates/sijil-haccp-demo.svg')
             ->assertSee('/certificates/sijil-coc-demo.svg')
             ->assertSee('CONTOH')
             ->assertSee('/logos/logo-jata-negara.png')
             ->assertSee('/logos/logo-fama.png')
-            ->assertSee('/logos/fama-jejak-gpl-logo-hd-1kpx.png')
-            ->assertSee('Hak cipta terpelihara');
+            ->assertSee('Hak cipta terpelihara')
+            ->assertSee('900')
+            ->assertDontSee('Pecahan kod ini');
     }
 
     public function test_public_trace_hides_certificate_section_when_empty(): void
@@ -131,6 +131,23 @@ class GovernmentChromeTest extends TestCase
             ->assertOk()
             ->assertDontSee('openstreetmap.org')
             ->assertDontSee('farm-map');
+    }
+
+    public function test_public_trace_switches_language(): void
+    {
+        $this->seed();
+
+        $this->get('/trace/GPL-QR-000109?lang=en')
+            ->assertOk()
+            ->assertSee('Agricultural produce profile')
+            ->assertSee('Company name')
+            ->assertSee('All rights reserved.')
+            ->assertDontSee('Profil Keluaran Pertanian');
+
+        $this->get('/trace/GPL-QR-000109?lang=zh')
+            ->assertOk()
+            ->assertSee('农产品档案')
+            ->assertSee('公司名称');
     }
 
     public function test_inactive_public_trace_does_not_claim_verification(): void

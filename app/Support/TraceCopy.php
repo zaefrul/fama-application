@@ -146,7 +146,7 @@ class TraceCopy
      */
     public static function forPage(string $lang, bool $livestock): array
     {
-        $copy = self::shared($lang);
+        $copy = array_merge(self::shared($lang), self::passport($lang));
         if (! $livestock) {
             return $copy;
         }
@@ -166,6 +166,8 @@ class TraceCopy
                 'abattoir' => 'Rumah sembelih',
                 'pamphletTitle' => 'Jejak Haiwan Ternakan',
                 'profileTitle' => 'Profil Ternakan',
+                'farmOrigin' => 'Asal premis',
+                'viewFarm' => 'Lihat lokasi premis',
             ],
             'en' => [
                 'product' => 'Livestock information',
@@ -181,6 +183,8 @@ class TraceCopy
                 'abattoir' => 'Abattoir',
                 'pamphletTitle' => 'Livestock trace',
                 'profileTitle' => 'Livestock profile',
+                'farmOrigin' => 'Premises origin',
+                'viewFarm' => 'View premises location',
             ],
             'zh' => [
                 'product' => '牲畜信息',
@@ -196,9 +200,252 @@ class TraceCopy
                 'abattoir' => '屠宰场',
                 'pamphletTitle' => '牲畜溯源',
                 'profileTitle' => '牲畜档案',
+                'farmOrigin' => '场所来源',
+                'viewFarm' => '查看场所位置',
             ],
         ];
 
         return array_merge($copy, $overrides[$lang] ?? $overrides['bm']);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function passport(string $lang): array
+    {
+        $bundle = [
+            'bm' => [
+                'knowYourProduce' => 'KENALI ASAL HASIL ANDA',
+                'agencyName' => 'Lembaga Pemasaran Pertanian Persekutuan',
+                'ministry' => 'Kementerian Pertanian dan Keterjaminan Makanan',
+                'breadcrumb' => 'Jejak keluaran',
+                'viewJourney' => 'Lihat jejak produk',
+                'share' => 'Kongsi',
+                'shareRecord' => 'Kongsi rekod',
+                'navSummary' => 'Ringkasan',
+                'navJourney' => 'Jejak produk',
+                'navDocs' => 'Dokumen',
+                'navMore' => 'Maklumat lanjut',
+                'journeyTitle' => 'Dari sumber ke tangan anda',
+                'journeySubtitle' => 'Jejak pecahan produk bagi kod ini.',
+                'relatedCount' => ':count rekod berkaitan',
+                'relatedCountOne' => '1 rekod berkaitan',
+                'parentLot' => 'Lot :role',
+                'thisPortion' => 'Pecahan kod ini',
+                'lotQuantity' => 'Kuantiti lot',
+                'portionNote' => 'Pecahan :current :unit ini ialah sebahagian daripada lot :role :parent :unit.',
+                'farmOrigin' => 'Asal ladang',
+                'exportDestination' => 'Destinasi eksport',
+                'gradeLabel' => 'Gred',
+                'sizeLabel' => 'Saiz',
+                'gradeSize' => 'Gred / Saiz',
+                'currentHolder' => 'Pemegang kod ini',
+                'cocRecord' => 'No. sijil CoC rekod',
+                'docsTitle' => 'Dokumen & sijil',
+                'docsSubtitle' => 'Galeri dokumen syarikat.',
+                'productSubtitle' => 'Butiran keluaran dan rekod pengendali.',
+                'viewSample' => 'Lihat dokumen contoh',
+                'viewDocument' => 'Lihat dokumen',
+                'sampleOnly' => 'CONTOH SAHAJA',
+                'certDialogReal' => 'Dokumen yang dimuat naik oleh syarikat. Halaman ini tidak menambah status pengesahan.',
+                'certWord' => 'Sijil',
+                'originTitle' => 'Asal & eksport',
+                'viewFarm' => 'Lihat lokasi ladang',
+                'exportDate' => 'Tarikh eksport',
+                'issued' => 'Tarikh dikeluarkan',
+                'expires' => 'Tarikh luput',
+                'qrTitle' => 'Kod QR produk',
+                'qrHint' => 'Imbas untuk membuka rekod ini.',
+                'shareEyebrow' => 'Kongsi rekod',
+                'shareTitle' => 'Asal produk, dalam satu pautan.',
+                'shareBody' => 'Pautan dan kod QR ini membuka rekod :code.',
+                'copyLink' => 'Salin pautan',
+                'copied' => 'Pautan berjaya disalin.',
+                'openRecord' => 'Buka rekod',
+                'nutritionNote' => 'Nilai daripada rekod produk. Asas hidangan tidak dinyatakan.',
+                'helpTitle' => 'Perlukan maklumat lanjut?',
+                'helpLink' => 'Kunjungi portal rasmi FAMA',
+                'rights' => 'Hak cipta terpelihara.',
+                'conceptCaption' => 'Imej ilustrasi konsep',
+                'conceptAlt' => 'Ilustrasi konsep produk',
+                'close' => 'Tutup',
+                'langLabel' => 'Bahasa',
+                'sectionsLabel' => 'Bahagian rekod',
+                'originAside' => 'Asal produk dan perkongsian',
+                'noImage' => 'Tiada gambar produk',
+                'skip' => 'Terus ke kandungan',
+                'journeyLabel' => 'Jejak pemegang kod ini',
+            ],
+            'en' => [
+                'knowYourProduce' => 'KNOW THE ORIGIN OF YOUR PRODUCE',
+                'agencyName' => 'Federal Agricultural Marketing Authority',
+                'ministry' => 'Ministry of Agriculture and Food Security',
+                'breadcrumb' => 'Produce trace',
+                'viewJourney' => 'View product trace',
+                'share' => 'Share',
+                'shareRecord' => 'Share record',
+                'navSummary' => 'Overview',
+                'navJourney' => 'Product trace',
+                'navDocs' => 'Documents',
+                'navMore' => 'More details',
+                'journeyTitle' => 'From source to you',
+                'journeySubtitle' => 'Breakdown trace for this code.',
+                'relatedCount' => ':count related records',
+                'relatedCountOne' => '1 related record',
+                'parentLot' => ':role lot',
+                'thisPortion' => 'This code’s portion',
+                'lotQuantity' => 'Lot quantity',
+                'portionNote' => 'This :current :unit portion is part of the :role lot of :parent :unit.',
+                'farmOrigin' => 'Farm origin',
+                'exportDestination' => 'Export destination',
+                'gradeLabel' => 'Grade',
+                'sizeLabel' => 'Size',
+                'gradeSize' => 'Grade / size',
+                'currentHolder' => 'Holder of this code',
+                'cocRecord' => 'Record CoC no.',
+                'docsTitle' => 'Documents & certificates',
+                'docsSubtitle' => 'Company document gallery.',
+                'productSubtitle' => 'Produce details and the operator record.',
+                'viewSample' => 'View sample document',
+                'viewDocument' => 'View document',
+                'sampleOnly' => 'SAMPLE ONLY',
+                'certDialogReal' => 'Document uploaded by the company. This page does not add a verification status.',
+                'certWord' => 'Certificate',
+                'originTitle' => 'Origin & export',
+                'viewFarm' => 'View farm location',
+                'exportDate' => 'Export date',
+                'issued' => 'Issue date',
+                'expires' => 'Expiry date',
+                'qrTitle' => 'Product QR code',
+                'qrHint' => 'Scan to open this record.',
+                'shareEyebrow' => 'Share record',
+                'shareTitle' => 'The product origin, in one link.',
+                'shareBody' => 'This link and QR code open record :code.',
+                'copyLink' => 'Copy link',
+                'copied' => 'Link copied.',
+                'openRecord' => 'Open record',
+                'nutritionNote' => 'Values from the product record. A serving basis is not stated.',
+                'helpTitle' => 'Need more information?',
+                'helpLink' => 'Visit the official FAMA portal',
+                'rights' => 'All rights reserved.',
+                'conceptCaption' => 'Illustrative concept image',
+                'conceptAlt' => 'Concept illustration of the product',
+                'close' => 'Close',
+                'langLabel' => 'Language',
+                'sectionsLabel' => 'Record sections',
+                'originAside' => 'Product origin and sharing',
+                'noImage' => 'No product image',
+                'skip' => 'Skip to content',
+                'journeyLabel' => 'Holders of this code',
+            ],
+            'zh' => [
+                'knowYourProduce' => '了解您的产品来源',
+                'agencyName' => '联邦农业营销局',
+                'ministry' => '农业与粮食安全部',
+                'breadcrumb' => '产品溯源',
+                'viewJourney' => '查看产品溯源',
+                'share' => '分享',
+                'shareRecord' => '分享记录',
+                'navSummary' => '概览',
+                'navJourney' => '产品溯源',
+                'navDocs' => '文件',
+                'navMore' => '更多信息',
+                'journeyTitle' => '从源头到您手中',
+                'journeySubtitle' => '此码的拆分追溯。',
+                'relatedCount' => ':count 条相关记录',
+                'relatedCountOne' => '1 条相关记录',
+                'parentLot' => ':role批次',
+                'thisPortion' => '此码分量',
+                'lotQuantity' => '批次数量',
+                'portionNote' => '此 :current :unit 分量属于 :role 批次 :parent :unit。',
+                'farmOrigin' => '农场来源',
+                'exportDestination' => '出口目的地',
+                'gradeLabel' => '等级',
+                'sizeLabel' => '规格',
+                'gradeSize' => '等级 / 规格',
+                'currentHolder' => '此码持有者',
+                'cocRecord' => '记录 CoC 编号',
+                'docsTitle' => '文件与证书',
+                'docsSubtitle' => '公司文件图库。',
+                'productSubtitle' => '产品详情与经营者记录。',
+                'viewSample' => '查看样例文件',
+                'viewDocument' => '查看文件',
+                'sampleOnly' => '仅样例',
+                'certDialogReal' => '由公司上传的文件。本页不另加核验状态。',
+                'certWord' => '证书',
+                'originTitle' => '来源与出口',
+                'viewFarm' => '查看农场位置',
+                'exportDate' => '出口日期',
+                'issued' => '签发日期',
+                'expires' => '到期日期',
+                'qrTitle' => '产品二维码',
+                'qrHint' => '扫描以打开此记录。',
+                'shareEyebrow' => '分享记录',
+                'shareTitle' => '一个链接，看清产品来源。',
+                'shareBody' => '此链接和二维码打开记录 :code。',
+                'copyLink' => '复制链接',
+                'copied' => '链接已复制。',
+                'openRecord' => '打开记录',
+                'nutritionNote' => '数值来自产品记录。未注明食用份量基准。',
+                'helpTitle' => '需要更多信息？',
+                'helpLink' => '访问 FAMA 官方网站',
+                'rights' => '版权所有。',
+                'conceptCaption' => '概念插图',
+                'conceptAlt' => '产品概念插图',
+                'close' => '关闭',
+                'langLabel' => '语言',
+                'sectionsLabel' => '记录部分',
+                'originAside' => '产品来源与分享',
+                'noImage' => '暂无产品图片',
+                'skip' => '跳到内容',
+                'journeyLabel' => '此码的持有链',
+            ],
+        ];
+
+        return $bundle[$lang] ?? $bundle['bm'];
+    }
+
+    public static function roleLabel(string $lang, string $label): string
+    {
+        $map = [
+            'en' => [
+                'Pengeluar' => 'Producer',
+                'Pemborong' => 'Wholesaler',
+                'Peruncit' => 'Retailer',
+                'Lain-lain' => 'Other',
+                'Consumer' => 'Consumer',
+            ],
+            'zh' => [
+                'Pengeluar' => '生产商',
+                'Pemborong' => '批发商',
+                'Peruncit' => '零售商',
+                'Lain-lain' => '其他',
+                'Consumer' => '消费者',
+            ],
+        ];
+
+        return $map[$lang][$label] ?? $label;
+    }
+
+    public static function formatDate(?\DateTimeInterface $date, string $lang): string
+    {
+        if ($date === null) {
+            return '';
+        }
+
+        $day = (int) $date->format('j');
+        $month = (int) $date->format('n');
+        $year = $date->format('Y');
+        if ($lang === 'zh') {
+            return $year.'年'.$month.'月'.$day.'日';
+        }
+
+        $names = [
+            'bm' => [1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun', 7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember'],
+            'en' => [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'],
+        ];
+        $monthName = ($names[$lang] ?? $names['bm'])[$month];
+
+        return $day.' '.$monthName.' '.$year;
     }
 }

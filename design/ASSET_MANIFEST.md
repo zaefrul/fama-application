@@ -226,6 +226,26 @@ Used for:
 Final or placeholder:
 ```
 
+### Public trace passport
+
+```text
+File: public/fonts/manrope.woff2
+Source: docs/Jejak_GPL_Tailwind_Mockup/assets/manrope.woff2
+Owner: Manrope project
+License/permission: SIL Open Font License, bundled with the approved trace redesign
+Used for: public /trace page typography
+Final or placeholder: approved design font
+```
+
+```text
+File: public/products/durian-concept.webp
+Source: docs/Jejak_GPL_Tailwind_Mockup/assets/durian-concept.webp
+Owner: project design concept
+License/permission: supplied with the approved trace redesign
+Used for: public trace hero only when a durian record has no approved photograph
+Final or placeholder: illustrative concept image, labelled on the page; not evidence of a batch
+```
+
 ## Missing asset behavior
 
 If an approved original is unavailable:

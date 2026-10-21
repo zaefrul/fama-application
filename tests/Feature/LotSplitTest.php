@@ -147,16 +147,24 @@ class LotSplitTest extends TestCase
             ->assertOk()
             ->assertSee('Pisang')
             ->assertSee('Jejak pecahan')
-            ->assertSee('Pengeluar → Pemborong → Pemborong')
-            ->assertSee('trace-checkpoint', false)
+            ->assertSee('Kod ini')
+            ->assertSee('Pecahan kod ini')
             ->assertSee('GPL-QR-000201')
+            ->assertSee('GPL-QR-000202')
+            ->assertSee('GPL-QR-000204')
+            ->assertSee('1,000')
+            ->assertSee('400')
+            ->assertSee('250')
             ->assertSee('Ladang Pisang Pontian')
-            ->assertSee('Pontian, Johor');
+            ->assertSee('Pontian, Johor')
+            ->assertDontSee('trace-checkpoint');
 
         $this->get('/trace/GPL-QR-000201')
             ->assertOk()
-            ->assertSee('GPL-QR-000204')
-            ->assertSee('Pengeluar → Pemborong → Pemborong');
+            ->assertSee('GPL-QR-000201')
+            ->assertSee('Kod ini')
+            ->assertSee('1,000')
+            ->assertDontSee('Pecahan kod ini');
 
         $this->getJson('/api/public/trace/GPL-QR-000204')
             ->assertOk()

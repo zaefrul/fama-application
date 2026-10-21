@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\QrStatus;
 use App\Models\ExportApplication;
-use App\Models\QrCode;
 use App\Services\JejakService;
 use App\Services\LotSplitService;
 use App\Services\QrImageService;
@@ -28,16 +27,23 @@ class TraceController extends Controller
         $application = $applicationId
             ? ExportApplication::query()->with(['company.gallery', 'company.certificates', 'produceType'])->find($applicationId)
             : null;
-        $certificates = $application ? $application->company->certificates : collect();
+        $certificates = $application?->company?->certificates ?? collect();
         $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
         $gallery = $application?->company?->gallery ?? collect();
-        $heroImage = $application?->display_image_path
+        $photo = $application?->display_image_path
             ?: $gallery->firstWhere('category', 'BUAH')?->file_path
-            ?: $gallery->first()?->file_path
-            ?: asset('placeholders/gallery-buah.svg');
-        $chain = $qr ? $qr->lineage() : collect();
-        $root = $application ? QrCode::treeForApplication($application->id) : null;
-        $timeline = $root ? collect([$root]) : $chain;
+            ?: $gallery->first()?->file_path;
+        $heroIllustrated = false;
+        if (is_string($photo) && $photo !== '') {
+            $heroImage = str_starts_with($photo, 'http://') || str_starts_with($photo, 'https://') || str_starts_with($photo, '/')
+                ? $photo
+                : asset($photo);
+        } elseif ($application?->produce_type_id === 'pt_durian') {
+            $heroImage = asset('products/durian-concept.webp');
+            $heroIllustrated = true;
+        } else {
+            $heroImage = null;
+        }
 
         return view('trace.show', [
             'qrCode' => $qrCode,
@@ -47,11 +53,11 @@ class TraceController extends Controller
             'certificates' => $certificates,
             'nutrition' => $nutrition,
             'heroImage' => $heroImage,
-            'accessCount' => $qr ? $qr->accesses()->count() : 0,
+            'heroIllustrated' => $heroIllustrated,
             'publicUrl' => $qr ? $qrImage->traceUrl($qr->qr_code) : '',
             'active' => $qr?->status === QrStatus::Active && $application !== null,
             'awaitingAcceptance' => $qr?->status !== QrStatus::Active && $qr?->pending_holder_company_id !== null,
-            'chain' => $timeline,
+            'journey' => $qr ? $qr->lineage() : collect(),
         ]);
     }
 

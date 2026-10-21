@@ -52,6 +52,15 @@ class JejakService
         };
     }
 
+    public static function certificateIsSample(?string $documentPath): bool
+    {
+        $path = (string) $documentPath;
+
+        return $path === ''
+            || str_contains($path, '/placeholders/')
+            || str_contains($path, '/certificates/sijil-');
+    }
+
     public static function produceImagePath(?string $produceTypeId): ?string
     {
         return match ($produceTypeId) {
