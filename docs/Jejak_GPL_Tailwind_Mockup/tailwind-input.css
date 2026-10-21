@@ -1,0 +1,32 @@
+@import "tailwindcss" source(none);
+@source "./index.html";
+
+    @theme {
+      --color-forest-50: #eff6f0;
+      --color-forest-100: #dfece0;
+      --color-forest-200: #c8ddc9;
+      --color-forest-500: #49754f;
+      --color-forest-600: #32633d;
+      --color-forest-700: #214e31;
+      --color-forest-800: #153d29;
+      --color-forest-900: #102e21;
+      --color-ink: #202c25;
+      --color-muted: #637067;
+      --color-line: #e3e8df;
+      --color-paper: #f6f7f2;
+      --color-gold-50: #fff7de;
+      --color-gold-100: #f8ebbd;
+      --color-gold-600: #87621b;
+      --font-sans: "Manrope", "Arial", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, monospace;
+    }
+    @layer base {
+      button, a, summary { -webkit-tap-highlight-color: transparent; }
+      button, summary { cursor: pointer; }
+      a, button, summary { touch-action: manipulation; }
+      button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #91bca0; outline-offset: 4px; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; }
+      [hidden] { display: none !important; }
+    }
+  

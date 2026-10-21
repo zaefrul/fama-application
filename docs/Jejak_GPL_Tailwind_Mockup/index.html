@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Konsep reka bentuk responsif Jejak GPL. Berdasarkan rekod GPL-QR-000215.">
+  <title>Jejak GPL — Product Passport Concept</title>
+  <link rel="stylesheet" href="assets/tailwind-compiled.css">
+  <style id="product-css">
+    @font-face{font-family:Manrope;src:url(assets/manrope.woff2) format('woff2');font-weight:200 800;font-display:swap}
+    #gpl-design {font-family:Manrope,Arial,sans-serif;color:#202c25;line-height:1.55;color-scheme:light;background:#e8ece6;padding:0 28px 28px;--gpl-forest:#214e31;--gpl-muted:#637067}
+    #gpl-design *{box-sizing:border-box}
+    #gpl-design .preview-tools{max-width:1280px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;color:#3e4d43}
+    #gpl-design .preview-switch{display:flex;gap:4px;background:#dce3d9;padding:4px;border-radius:11px}
+    #gpl-design .preview-switch button{font:600 12px Manrope,Arial,sans-serif;display:flex;align-items:center;gap:8px;padding:9px 14px;border:0;border-radius:8px;background:transparent;color:#4e5f53;min-height:38px}
+    #gpl-design .preview-switch button[aria-pressed=true]{background:#fff;color:#214e31;box-shadow:0 2px 5px #1a382512}
+    #gpl-design .preview-frame{container:trace / inline-size;max-width:1440px;width:100%;margin:auto;background:#f6f7f2;box-shadow:0 8px 44px #1e352015;overflow:clip;border-radius:14px}
+    #gpl-design .page-shell{width:100%;max-width:1200px;margin-inline:auto;padding-inline:40px}
+    #gpl-design .gpl-header{height:90px;background:#fff;border-bottom:1px solid #e3e8df;display:flex;align-items:center}
+    #gpl-design .gpl-logo{width:54px;height:54px;object-fit:contain}
+    #gpl-design .jata-logo{width:61px;height:46px;object-fit:contain}
+    #gpl-design .brand-title{font-size:22px;line-height:1.1;font-weight:800;letter-spacing:-1px;color:#214e31}
+    #gpl-design .brand-subtitle{font-size:10px;letter-spacing:1.25px;color:#637067;margin-top:5px;font-weight:600}
+    #gpl-design .header-description{display:block;max-width:220px;padding-left:22px;margin-left:22px;border-left:1px solid #e3e8df;font-size:11px;line-height:1.6;color:#637067}
+    #gpl-design .language{display:flex;padding:4px;gap:2px;border:1px solid #e3e8df;border-radius:9px}
+    #gpl-design .language a{display:grid;place-items:center;min-width:37px;min-height:35px;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;color:#637067}
+    #gpl-design .language a[aria-current=true]{color:#214e31;background:#eff6f0}
+    #gpl-design .breadcrumb-row{padding-block:24px 19px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:#637067}
+    #gpl-design .hero-grid{display:grid;grid-template-columns:43% 57%;overflow:hidden;border-radius:24px;background:#fff;border:1px solid #e3e8df}
+    #gpl-design .hero-image{position:relative;min-height:408px;background:#f3eee0}
+    #gpl-design .hero-image>img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:51% 54%}
+    #gpl-design .image-origin{position:absolute;top:22px;left:22px;display:flex;align-items:center;gap:7px;background:#fffffff2;border:1px solid #ffffff88;border-radius:100px;padding:7px 11px;font-size:10px;font-weight:700;color:#38543c}
+    #gpl-design .image-caption{position:absolute;bottom:16px;left:20px;color:#515b4b;background:#ffffffe8;padding:4px 8px;border-radius:5px;font-size:9px}
+    #gpl-design .hero-content{padding:32px 35px 30px}
+    #gpl-design .eyebrow{font-size:10px;letter-spacing:1.8px;font-weight:700;color:#637067;text-transform:uppercase}
+    #gpl-design .product-title{font-size:43px;line-height:1.13;letter-spacing:-1.8px;font-weight:800;color:#163e29;margin:11px 0 16px}
+    #gpl-design .product-title span{font-weight:500}
+    #gpl-design .pill{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:5px 9px;font-size:10px;line-height:1.35;font-weight:700}
+    #gpl-design .hero-meta{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:21px}
+    #gpl-design .meta-label{color:#637067;font-size:12px;margin:0 0 4px}
+    #gpl-design .meta-value{font-weight:700;font-size:14px;color:#24372a;margin:0}
+    #gpl-design .hero-actions{display:flex;gap:10px;margin-top:22px;align-items:center}
+    #gpl-design .primary-action,#gpl-design .secondary-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 16px;border-radius:9px;font:700 11px Manrope,Arial,sans-serif;text-decoration:none;border:1px solid #214e31}
+    #gpl-design .primary-action{background:#214e31;color:#fff}
+    #gpl-design .primary-action:hover{background:#153d29}
+    #gpl-design .secondary-action{background:#fff;color:#3d5543;border-color:#dce4d8}
+    #gpl-design .secondary-action:hover{background:#f6f7f2}
+    #gpl-design .section-nav{display:flex;align-items:center;gap:27px;border-bottom:1px solid #dfe5da;margin:12px 0 25px;min-height:58px}
+    #gpl-design .section-nav a{display:flex;align-items:center;gap:7px;align-self:stretch;justify-content:center;border-bottom:2px solid transparent;font-size:12px;font-weight:600;text-decoration:none;color:#637067;white-space:nowrap}
+    #gpl-design .section-nav a.active{color:#214e31;border-color:#214e31}
+    #gpl-design .content-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+    #gpl-design .main-stack,#gpl-design .side-stack{display:grid;gap:21px;min-width:0}
+    #gpl-design .product-panel{background:#fff;border:1px solid #e3e8df;border-radius:17px;padding:25px}
+    #gpl-design .section-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:20px}
+    #gpl-design .section-heading h2{font-size:17px;font-weight:800;letter-spacing:-.35px;margin:0;color:#203b28}
+    #gpl-design .section-heading p{font-size:11px;color:#637067;margin:5px 0 0}
+    #gpl-design .icon{width:17px;height:17px;flex:0 0 auto;display:inline-block;vertical-align:middle;stroke-width:1.8}
+    #gpl-design .journey-nodes{display:grid;grid-template-columns:1fr 32px 1fr;align-items:center;gap:0}
+    #gpl-design .journey-node{border:1px solid #e3e8df;border-radius:12px;padding:17px;background:#fafbf8;min-width:0;min-height:162px}
+    #gpl-design .journey-node.current{background:#f1f7f0;border-color:#b2ceae}
+    #gpl-design .node-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    #gpl-design .node-role{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:#637067}
+    #gpl-design .node-name{font-size:13px;font-weight:700;line-height:1.5;margin-top:13px;min-height:36px;color:#203b28}
+    #gpl-design .node-id{font-family:Consolas,monospace;font-size:10px;color:#637067;margin-top:8px}
+    #gpl-design .node-weight{font-size:20px;line-height:1.2;letter-spacing:-.5px;font-weight:800;color:#214e31;margin-top:8px}
+    #gpl-design .journey-link{display:flex;align-items:center;justify-content:center;color:#779773}
+    #gpl-design .journey-footnote{display:flex;align-items:flex-start;gap:8px;font-size:10px;color:#637067;margin:15px 0 0;line-height:1.7}
+    #gpl-design .detail-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+    #gpl-design .detail-grid>div{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:13px 0;border-top:1px solid #edf0e9;min-width:0}
+    #gpl-design .detail-grid dt{font-size:12px;color:#637067;flex:0 0 auto}
+    #gpl-design .detail-grid dd{font-size:12px;font-weight:700;text-align:right;color:#283d2e;overflow-wrap:anywhere;margin:0}
+    #gpl-design .certificate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    #gpl-design .cert-button{border:1px solid #e3e8df;border-radius:10px;background:#fff;text-align:left;padding:15px;min-height:130px;color:#203b28;position:relative;font-family:inherit}
+    #gpl-design .cert-button:hover{border-color:#9db89d;background:#f9fbf6}
+    #gpl-design .cert-file-icon{display:grid;place-items:center;width:34px;height:39px;background:#f1f4eb;color:#667a58;border-radius:6px;margin-bottom:11px}
+    #gpl-design .cert-type{font-size:11px;font-weight:800;display:block}
+    #gpl-design .cert-sub{font-size:9px;color:#637067;display:block;margin-top:4px}
+    #gpl-design .sample-tag{display:inline-flex;align-items:center;gap:4px;background:#fff7de;color:#87621b;border-radius:4px;padding:3px 6px;font-size:8px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+    #gpl-design .origin-panel{background:#eff4e9;border-color:#dce6d2}
+    #gpl-design .origin-section{border-top:1px solid #dbe5d1;padding-top:17px;margin-top:17px}
+    #gpl-design .origin-item{display:flex;align-items:flex-start;gap:11px;margin-top:15px}
+    #gpl-design .origin-item .icon{color:#5c7d4c;margin-top:1px}
+    #gpl-design .origin-item p{margin:0}
+    #gpl-design .origin-item .origin-label{font-size:10px;color:#637067;margin-bottom:4px}
+    #gpl-design .origin-item .origin-value{font-size:11px;font-weight:700;color:#2c4431;line-height:1.65;overflow-wrap:anywhere}
+    #gpl-design .qr-details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:800;color:#203b28}
+    #gpl-design summary::-webkit-details-marker{display:none}
+    #gpl-design .qr-chevron{display:none}
+    #gpl-design .qr-body{padding-top:18px;text-align:center}
+    #gpl-design .qr-image{width:143px;height:143px;border:1px solid #e3e8df;padding:9px;border-radius:11px;background:#fff;display:block;margin:0 auto 14px}
+    #gpl-design .qr-id{font:700 10px Consolas,monospace;letter-spacing:.3px;color:#3e5d40}
+    #gpl-design .gpl-footer{margin-top:32px;border-top:1px solid #e3e8df;padding-block:27px;background:#f6f7f2}
+    #gpl-design .footer-grid{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    #gpl-design .nutrition>summary{display:flex;align-items:center;gap:10px;list-style:none;font-weight:700;font-size:13px;min-height:25px;color:#203b28}
+    #gpl-design .nutrition[open] .nutrition-arrow{transform:rotate(180deg)}
+    #gpl-design .nutrition-table{border-collapse:collapse;width:100%;font-size:11px;margin-top:18px}
+    #gpl-design .nutrition-table td{padding:9px 0;border-top:1px solid #e3e8df}
+    #gpl-design .nutrition-table td:last-child{text-align:right;font-weight:600}
+    #gpl-design .gpl-dialog{padding:0;border:1px solid #d5dfd0;border-radius:20px;max-width:min(92vw,440px);width:440px;color:#202c25;background:#fff;font-family:Manrope,Arial,sans-serif;box-shadow:0 22px 80px #102e2129}
+    #gpl-design .gpl-dialog::backdrop{background:#102e2177;backdrop-filter:blur(3px)}
+    #gpl-design .dialog-inner{padding:28px}
+    #gpl-design .dialog-title{font-size:22px;font-weight:800;letter-spacing:-.6px;margin:16px 0 8px;color:#214e31}
+    #gpl-design .dialog-text{font-size:13px;color:#637067;line-height:1.75}
+    #gpl-design .dialog-close{border:0;background:#f3f5ef;border-radius:8px;width:38px;height:38px;color:#3d5543;display:grid;place-items:center}
+    #gpl-design .demo-note{font-size:9px;color:#637067;display:flex;align-items:center;gap:5px}
+    @container trace (max-width:899px){
+      #gpl-design .page-shell{padding-inline:27px}
+      #gpl-design .header-description{display:none}
+      #gpl-design .gpl-header{height:80px}
+      #gpl-design .hero-grid{grid-template-columns:42% 58%;border-radius:20px}
+      #gpl-design .hero-content{padding:28px}
+      #gpl-design .product-title{font-size:36px;letter-spacing:-1.4px}
+      #gpl-design .hero-image{min-height:384px}
+      #gpl-design .hero-meta{column-gap:12px}
+      #gpl-design .hero-meta .meta-value{font-size:12px}
+      #gpl-design .hero-actions{gap:8px}
+      #gpl-design .primary-action,#gpl-design .secondary-action{font-size:10px;padding-inline:12px}
+      #gpl-design .content-grid{grid-template-columns:1fr}
+      #gpl-design .side-stack{grid-template-columns:1fr 1fr}
+      #gpl-design .help-panel{grid-column:1/-1}
+      #gpl-design .origin-panel{grid-row:span 2}
+      #gpl-design .qr-details{height:100%}
+      #gpl-design .qr-body{padding-block:15px 0}
+      #gpl-design .gpl-logo{width:47px;height:47px}
+      #gpl-design .brand-title{font-size:21px}
+    }
+    @container trace (max-width:599px){
+      #gpl-design .page-shell{padding-inline:18px}
+      #gpl-design .gpl-header{height:72px}
+      #gpl-design .jata-logo{display:none}
+      #gpl-design .gpl-logo{width:43px;height:43px}
+      #gpl-design .brand-title{font-size:19px;letter-spacing:-.8px}
+      #gpl-design .brand-subtitle{font-size:8px;letter-spacing:.8px;margin-top:4px}
+      #gpl-design .brand-divider{display:none}
+      #gpl-design .language{padding:3px}
+      #gpl-design .language a{min-width:31px;min-height:36px;font-size:10px}
+      #gpl-design .breadcrumb-row{padding-block:19px 15px;font-size:10px}
+      #gpl-design .breadcrumb-row>.demo-note{display:none}
+      #gpl-design .hero-grid{grid-template-columns:1fr;border-radius:18px}
+      #gpl-design .hero-image{min-height:235px;height:235px}
+      #gpl-design .hero-image>img{object-position:50% 58%}
+      #gpl-design .image-origin{top:15px;left:15px;font-size:9px;padding:6px 9px}
+      #gpl-design .image-caption{left:15px;bottom:12px;font-size:8px}
+      #gpl-design .hero-content{padding:24px}
+      #gpl-design .eyebrow{font-size:9px;letter-spacing:1.6px}
+      #gpl-design .product-title{font-size:36px;margin-block:10px 15px;letter-spacing:-1.5px}
+      #gpl-design .product-title br{display:none}
+      #gpl-design .product-title span{display:block;font-size:21px;letter-spacing:-.5px;line-height:1.5;font-weight:600}
+      #gpl-design .hero-meta{gap:19px 12px;margin-top:20px}
+      #gpl-design .meta-label{font-size:10px}
+      #gpl-design .meta-value{font-size:12px}
+      #gpl-design .hero-actions{margin-top:22px;gap:9px}
+      #gpl-design .hero-actions>.primary-action{flex:1}
+      #gpl-design .hero-actions>.secondary-action{width:46px;height:46px;padding:0}
+      #gpl-design .hero-actions>.secondary-action>span{display:none}
+      #gpl-design .primary-action,#gpl-design .secondary-action{font-size:11px;min-height:46px}
+      #gpl-design .section-nav{gap:0;justify-content:space-between;margin:10px 0 20px;min-height:53px}
+      #gpl-design .section-nav a{font-size:11px;gap:5px}
+      #gpl-design .section-nav a>.icon{display:none}
+      #gpl-design .product-panel{border-radius:15px;padding:20px}
+      #gpl-design .section-heading{margin-bottom:19px}
+      #gpl-design .section-heading h2{font-size:15px}
+      #gpl-design .section-heading p{font-size:10px}
+      #gpl-design .section-heading>.journey-count{display:none}
+      #gpl-design .journey-nodes{grid-template-columns:1fr;gap:0;padding-left:19px;position:relative}
+      #gpl-design .journey-nodes:before{content:"";position:absolute;left:3px;top:20px;bottom:20px;width:1px;background:#c3d4bb}
+      #gpl-design .journey-node{min-height:146px;padding:15px 17px;position:relative}
+      #gpl-design .journey-node:before{content:"";position:absolute;left:-22px;top:19px;width:10px;height:10px;border:3px solid #f7f9f4;background:#8cab80;border-radius:50%;box-shadow:0 0 0 1px #8cab80}
+      #gpl-design .journey-node.current:before{background:#214e31;box-shadow:0 0 0 1px #214e31}
+      #gpl-design .journey-link{height:24px;justify-content:flex-start;padding-left:18px}
+      #gpl-design .journey-link .icon{width:14px;height:14px;transform:rotate(90deg)}
+      #gpl-design .node-name{font-size:13px;margin-top:10px;min-height:unset}
+      #gpl-design .node-id{font-size:10px;margin-top:6px}
+      #gpl-design .node-weight{font-size:20px;margin-top:8px}
+      #gpl-design .detail-grid{grid-template-columns:1fr}
+      #gpl-design .detail-grid>div{padding-block:12px}
+      #gpl-design .detail-grid dt,#gpl-design .detail-grid dd{font-size:12px}
+      #gpl-design .certificate-grid{grid-template-columns:1fr 1fr;gap:10px}
+      #gpl-design .cert-button{padding:13px;min-height:127px}
+      #gpl-design .side-stack{grid-template-columns:1fr}
+      #gpl-design .help-panel{grid-column:auto}
+      #gpl-design .origin-panel{grid-row:auto}
+      #gpl-design .qr-body{display:grid;grid-template-columns:100px 1fr;gap:0 15px;text-align:left;align-items:center}
+      #gpl-design .qr-image{grid-row:span 4;width:100px;height:100px;padding:6px;margin:0}
+      #gpl-design .qr-body .qr-id{align-self:end;font-size:9px}
+      #gpl-design .qr-body .qr-copy{margin-top:5px;font-size:10px}
+      #gpl-design .qr-body .secondary-action{font-size:10px;min-height:40px;margin-top:10px}
+      #gpl-design .qr-chevron{display:block}
+      #gpl-design .qr-details[open] .qr-chevron{transform:rotate(180deg)}
+      #gpl-design .footer-grid{flex-direction:column;align-items:flex-start;gap:17px}
+      #gpl-design .gpl-footer{padding-block:25px;margin-top:26px}
+    }
+    @media(max-width:640px){#gpl-design{padding:0 0 18px}#gpl-design .preview-frame{border-radius:0}#gpl-design .preview-tools{padding:12px;gap:8px}#gpl-design .preview-tools>.preview-label{display:none}#gpl-design .preview-switch{margin:auto}#gpl-design .preview-switch button{padding:8px 13px}.preview-resolution{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    @media print{#gpl-design{padding:0;background:#fff}#gpl-design .preview-tools,#gpl-design .section-nav,#gpl-design .hero-actions,#gpl-design .help-panel{display:none}#gpl-design .preview-frame{box-shadow:none;border-radius:0}#gpl-design .page-shell{padding-inline:20px}.product-panel,.hero-grid{break-inside:avoid}#gpl-design .gpl-footer{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<div id="gpl-design">
+  <div class="preview-tools" aria-label="Responsive design preview">
+    <div class="preview-label"><strong style="font-size:12px;letter-spacing:-.2px">JEJAK GPL</strong><span style="font-size:11px;color:#72806f;margin-left:10px">Product passport · Design concept</span></div>
+    <div class="preview-switch" role="group" aria-label="Preview screen size">
+      <button type="button" data-device="desktop" aria-pressed="true"><i data-lucide="monitor" class="icon" aria-hidden="true"></i> PC</button>
+      <button type="button" data-device="tablet" aria-pressed="false"><i data-lucide="tablet" class="icon" aria-hidden="true"></i> Tablet</button>
+      <button type="button" data-device="phone" aria-pressed="false"><i data-lucide="smartphone" class="icon" aria-hidden="true"></i> Phone</button>
+    </div>
+    <span class="preview-resolution" style="font-size:10px;color:#72806f;min-width:62px;text-align:right" aria-live="polite">Fluid layout</span>
+  </div>
+  <div class="preview-frame" data-view="desktop">
+    <header class="gpl-header">
+      <div class="page-shell flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <img class="jata-logo" src="assets/jata.png" alt="Kerajaan Malaysia">
+          <span class="brand-divider h-9 w-px bg-line" aria-hidden="true"></span>
+          <img class="gpl-logo" src="assets/fama.png" alt="FAMA">
+          <div><div class="brand-title">jejak<span style="font-weight:500">GPL</span><span style="color:#8eae64">.</span></div><div class="brand-subtitle">KENALI ASAL HASIL ANDA</div></div>
+          <p class="header-description">Lembaga Pemasaran<br>Pertanian Persekutuan</p>
+        </div>
+        <nav class="language" aria-label="Bahasa halaman asal">
+          <a aria-current="true" href="https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215?lang=bm" lang="ms" aria-label="Bahasa Melayu pada halaman asal">BM</a>
+          <a href="https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215?lang=en" lang="en" aria-label="English on original page">EN</a>
+          <a href="https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215?lang=zh" lang="zh" aria-label="中文：原始页面">中文</a>
+        </nav>
+      </div>
+    </header>
+    <main class="page-shell">
+      <div class="breadcrumb-row">
+        <div class="flex items-center gap-2.5"><i data-lucide="scan-line" class="icon" aria-hidden="true"></i><span>Jejak keluaran</span><span class="text-forest-200" aria-hidden="true">/</span><span class="font-mono text-forest-700">GPL-QR-000215</span></div>
+        <span class="demo-note"><i data-lucide="circle-info" class="icon" style="width:13px;height:13px" aria-hidden="true"></i> Konsep reka bentuk · Rekod demonstrasi</span>
+      </div>
+      <article class="hero-grid" id="gpl-overview" aria-labelledby="gpl-product-title">
+        <div class="hero-image">
+          <img src="assets/durian-concept.webp" alt="Ilustrasi konsep: durian terbuka dengan isi kuning keemasan" width="1448" height="1086">
+          <span class="image-origin"><i data-lucide="sprout" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> HASIL MALAYSIA</span>
+          <span class="image-caption">Imej ilustrasi konsep</span>
+        </div>
+        <div class="hero-content">
+          <div class="flex items-center justify-between gap-3"><span class="eyebrow">Profil keluaran pertanian</span><i data-lucide="leaf" class="icon text-forest-500" aria-hidden="true"></i></div>
+          <h1 class="product-title" id="gpl-product-title">Durian<br> <span>Musang King</span></h1>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="pill bg-gold-50 text-gold-600"><i data-lucide="sparkles" class="icon" style="width:12px;height:12px" aria-hidden="true"></i> Gred Premium</span>
+            <span class="pill bg-paper text-muted">Saiz L</span>
+            <span class="pill bg-forest-50 text-forest-700"><i data-lucide="globe" class="icon" style="width:12px;height:12px" aria-hidden="true"></i> Malaysia</span>
+          </div>
+          <dl class="hero-meta">
+            <div><dt class="meta-label">Asal ladang</dt><dd class="meta-value">Raub, Pahang</dd></div>
+            <div><dt class="meta-label">Destinasi eksport</dt><dd class="meta-value">China</dd></div>
+            <div><dt class="meta-label">Lot pembekal</dt><dd class="meta-value">800 <span class="font-medium text-muted">kg</span></dd></div>
+            <div><dt class="meta-label">Pecahan kod ini</dt><dd class="meta-value">200 <span class="font-medium text-muted">kg</span><span class="ml-1.5 text-[9px] font-medium text-muted">· Peruncit</span></dd></div>
+          </dl>
+          <div class="hero-actions">
+            <a href="#gpl-journey" class="primary-action"><i data-lucide="route" class="icon" aria-hidden="true"></i> Lihat jejak produk<i data-lucide="arrow-down" class="icon" style="width:14px;height:14px" aria-hidden="true"></i></a>
+            <button class="secondary-action" type="button" data-open="share" aria-label="Kongsi rekod produk"><i data-lucide="share-2" class="icon" aria-hidden="true"></i><span>Kongsi</span></button>
+          </div>
+        </div>
+      </article>
+      <nav class="section-nav" aria-label="Bahagian rekod">
+        <a href="#gpl-overview" class="active"><i data-lucide="layout-grid" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> Ringkasan</a>
+        <a href="#gpl-journey"><i data-lucide="route" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> Jejak produk</a>
+        <a href="#gpl-certificates"><i data-lucide="files" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> Dokumen</a>
+        <a href="#gpl-details"><i data-lucide="list-filter" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> Maklumat lanjut</a>
+      </nav>
+      <div class="content-grid">
+        <div class="main-stack">
+          <section class="product-panel" id="gpl-journey" aria-labelledby="gpl-journey-title">
+            <div class="section-heading"><div><h2 id="gpl-journey-title">Dari sumber ke tangan anda</h2><p>Jejak pecahan produk bagi kod ini.</p></div><span class="journey-count pill bg-forest-50 text-forest-700"><i data-lucide="git-branch" class="icon" style="width:12px;height:12px" aria-hidden="true"></i> 2 rekod berkaitan</span></div>
+            <ol class="journey-nodes" aria-label="Pembekal kepada peruncit">
+              <li class="journey-node"><div class="node-top"><span class="node-role">Pembekal</span><i data-lucide="package" class="icon text-forest-500" aria-hidden="true"></i></div><p class="node-name">ABC Fruits Sdn. Bhd.</p><p class="node-id">GPL-QR-000213</p><p class="node-weight">800 <span class="text-[11px] font-medium text-muted">kg</span></p></li>
+              <li class="journey-link" aria-hidden="true"><i data-lucide="arrow-right" class="icon"></i></li>
+              <li class="journey-node current"><div class="node-top"><span class="node-role text-forest-700">Peruncit</span><span class="pill bg-forest-700 text-white" style="font-size:8px;padding:3px 6px">KOD INI</span></div><p class="node-name">Tan So Tiok &amp; Sons Sdn Bhd</p><p class="node-id">GPL-QR-000215</p><p class="node-weight">200 <span class="text-[11px] font-medium text-muted">kg</span></p></li>
+            </ol>
+            <p class="journey-footnote"><i data-lucide="git-branch" class="icon" style="width:13px;height:13px;margin-top:2px" aria-hidden="true"></i> Pecahan 200 kg ini ialah sebahagian daripada lot pembekal 800 kg.</p>
+          </section>
+          <section class="product-panel" id="gpl-details" aria-labelledby="gpl-details-title">
+            <div class="section-heading" style="margin-bottom:5px"><div><h2 id="gpl-details-title">Maklumat produk</h2><p>Butiran keluaran dan rekod pengendali.</p></div><i data-lucide="package-search" class="icon text-forest-500" aria-hidden="true"></i></div>
+            <dl class="detail-grid">
+              <div><dt>Jenis keluaran</dt><dd>Durian</dd></div><div><dt>Gred / Saiz</dt><dd>Premium / L</dd></div>
+              <div><dt>Syarikat pembekal</dt><dd>ABC Fruits Sdn. Bhd.</dd></div><div><dt>Peruncit kod ini</dt><dd>Tan So Tiok &amp; Sons Sdn Bhd</dd></div>
+              <div><dt>No. lot</dt><dd class="font-mono" style="font-size:10px">LOT-DURIAN-CHAIN</dd></div><div><dt>No. sijil CoC rekod</dt><dd class="font-mono" style="font-size:10px">STB-CHAIN-DEMO</dd></div>
+            </dl>
+          </section>
+          <section class="product-panel" id="gpl-certificates" aria-labelledby="gpl-certificates-title">
+            <div class="section-heading"><div><h2 id="gpl-certificates-title">Dokumen &amp; sijil</h2><p>Galeri contoh dokumen pada halaman sumber.</p></div><span class="sample-tag">CONTOH</span></div>
+            <div class="certificate-grid">
+              <button class="cert-button" type="button" data-certificate="CoC"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">Sijil CoC</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+              <button class="cert-button" type="button" data-certificate="Fitosanitasi"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">Fitosanitasi</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+              <button class="cert-button" type="button" data-certificate="HACCP"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">HACCP</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+              <button class="cert-button" type="button" data-certificate="Halal"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">Halal</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+              <button class="cert-button" type="button" data-certificate="ISO 22000"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">ISO 22000</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+              <button class="cert-button" type="button" data-certificate="MyGAP"><span class="absolute top-3 right-3 text-muted"><i data-lucide="arrow-up-right" class="icon" style="width:13px;height:13px" aria-hidden="true"></i></span><span class="cert-file-icon"><i data-lucide="file-check-2" class="icon" aria-hidden="true"></i></span><span class="cert-type">MyGAP</span><span class="cert-sub">Lihat dokumen contoh</span></button>
+            </div>
+            <p class="journey-footnote"><i data-lucide="circle-info" class="icon" style="width:13px;height:13px;margin-top:2px" aria-hidden="true"></i> Dokumen bertanda CONTOH bukan pengesahan rasmi bagi rekod ini.</p>
+          </section>
+          <details class="product-panel nutrition" id="gpl-nutrition"><summary><i data-lucide="wheat" class="icon text-forest-500" aria-hidden="true"></i> Maklumat pemakanan<i data-lucide="chevron-down" class="icon nutrition-arrow ml-auto" aria-hidden="true"></i></summary><p class="mt-3 text-[11px] text-muted">Nilai dipaparkan semula daripada halaman sumber. Asas hidangan dan rujukan nutrisi tidak dinyatakan.</p><table class="nutrition-table"><caption class="sr-only">Nilai nutrisi daripada rekod sumber</caption><tbody><tr><td>Kalori</td><td>147 kcal</td></tr><tr><td>Lemak jumlah</td><td>5.3 g</td></tr><tr><td>Kolesterol</td><td>0 mg</td></tr><tr><td>Natrium</td><td>1 mg</td></tr><tr><td>Kalium</td><td>436 mg</td></tr><tr><td>Karbohidrat</td><td>27.1 g</td></tr><tr><td>Serat</td><td>3.8 g</td></tr><tr><td>Protein</td><td>1.5 g</td></tr><tr><td>Vitamin C</td><td>19.7 mg</td></tr></tbody></table></details>
+        </div>
+        <aside class="side-stack" aria-label="Asal produk dan perkongsian">
+          <section class="product-panel origin-panel" aria-labelledby="gpl-origin-title">
+            <div class="flex items-center justify-between"><h2 id="gpl-origin-title" class="text-[15px] font-extrabold tracking-[-0.3px] text-forest-800">Asal &amp; eksport</h2><i data-lucide="sprout" class="icon text-forest-500" style="width:22px;height:22px" aria-hidden="true"></i></div>
+            <div class="origin-item"><i data-lucide="trees" class="icon" aria-hidden="true"></i><div><p class="origin-label">Ladang asal</p><p class="origin-value">DEF Durian Farm<br><span class="font-medium text-muted">Raub, Pahang, Malaysia</span></p></div></div>
+            <a href="https://www.openstreetmap.org/?mlat=3.793&amp;mlon=101.857#map=14/3.793/101.857" target="_blank" rel="noopener noreferrer" class="mt-3 ml-7 inline-flex items-center gap-1.5 text-[10px] font-bold text-forest-700 underline decoration-forest-200 underline-offset-4">Lihat lokasi ladang<i data-lucide="arrow-up-right" class="icon" style="width:12px;height:12px" aria-hidden="true"></i></a>
+            <div class="origin-section"><div class="flex items-center gap-3 text-[12px] font-extrabold text-forest-700"><span>Malaysia</span><span class="flex-1 h-px bg-forest-200"></span><i data-lucide="plane" class="icon" style="width:15px;height:15px" aria-hidden="true"></i><span class="flex-1 h-px bg-forest-200"></span><span>China</span></div>
+              <div class="origin-item"><i data-lucide="calendar-days" class="icon" aria-hidden="true"></i><div><p class="origin-label">Tarikh eksport</p><p class="origin-value">15 Oktober 2026</p></div></div>
+              <div class="origin-item"><i data-lucide="building-2" class="icon" aria-hidden="true"></i><div><p class="origin-label">Alamat syarikat</p><p class="origin-value">No. 3, Jalan Sultan,<br>Klang, Selangor</p></div></div>
+            </div>
+          </section>
+          <details class="product-panel qr-details" open>
+            <summary><span class="flex items-center gap-2"><i data-lucide="qr-code" class="icon text-forest-500" aria-hidden="true"></i> Kod QR produk</span><i data-lucide="chevron-down" class="icon qr-chevron" aria-hidden="true"></i></summary>
+            <div class="qr-body"><img src="assets/record-qr.png" class="qr-image" alt="Kod QR ke halaman asal GPL-QR-000215" width="360" height="360"><p class="qr-id">GPL-QR-000215</p><p class="qr-copy mt-2 text-[10px] text-muted">Imbas untuk membuka rekod asal.</p><button class="secondary-action w-full mt-4" data-open="share" type="button"><i data-lucide="share-2" class="icon" style="width:14px;height:14px" aria-hidden="true"></i> Kongsi rekod</button></div>
+          </details>
+          <section class="help-panel flex items-start gap-3 px-1"><i data-lucide="circle-help" class="icon text-forest-500 mt-0.5" aria-hidden="true"></i><div><p class="text-[11px] font-bold text-forest-800">Perlukan maklumat lanjut?</p><a href="https://www.fama.gov.my" target="_blank" rel="noopener noreferrer" class="text-[10px] text-muted inline-flex items-center gap-1.5 mt-1 underline underline-offset-4 decoration-line">Kunjungi portal rasmi FAMA<i data-lucide="arrow-up-right" class="icon" style="width:11px;height:11px" aria-hidden="true"></i></a></div></section>
+        </aside>
+      </div>
+    </main>
+    <footer class="gpl-footer"><div class="page-shell footer-grid"><div class="flex items-center gap-3"><img src="assets/fama.png" alt="FAMA" width="37" height="37" class="h-9 w-9 object-contain"><div><p class="text-[11px] font-bold text-forest-800">Lembaga Pemasaran Pertanian Persekutuan</p><p class="text-[9px] text-muted mt-0.5">Kementerian Pertanian dan Keterjaminan Makanan</p></div></div><div class="text-[9px] text-muted"><p>© 2026 FAMA. Hak cipta terpelihara.</p><p class="mt-0.5">Konsep paparan · Data demonstrasi</p></div></div></footer>
+  </div>
+  <dialog class="gpl-dialog" id="gpl-share-dialog" aria-labelledby="gpl-share-title"><div class="dialog-inner"><div class="flex justify-between items-center"><span class="eyebrow">Kongsi rekod</span><button type="button" class="dialog-close" data-close aria-label="Tutup"><i data-lucide="x" class="icon" aria-hidden="true"></i></button></div><h2 class="dialog-title" id="gpl-share-title">Asal produk, dalam satu pautan.</h2><p class="dialog-text">Pautan dan kod QR ini membuka rekod asal GPL-QR-000215.</p><img src="assets/record-qr.png" alt="Kod QR rekod asal" width="180" height="180" class="mx-auto my-6"><p class="font-mono text-center text-[12px] text-forest-700">GPL-QR-000215</p><div class="flex flex-wrap gap-2 mt-6"><button type="button" class="primary-action flex-1" id="gpl-copy-link"><i data-lucide="copy" class="icon" aria-hidden="true"></i> Salin pautan</button><a href="https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215" class="secondary-action" target="_blank" rel="noopener noreferrer">Buka rekod<i data-lucide="arrow-up-right" class="icon" aria-hidden="true"></i></a></div><p id="gpl-copy-status" role="status" class="text-[11px] text-forest-700 mt-3"></p></div></dialog>
+  <dialog class="gpl-dialog" id="gpl-certificate-dialog" aria-labelledby="gpl-certificate-title"><div class="dialog-inner"><div class="flex items-center justify-between"><span class="sample-tag">CONTOH SAHAJA</span><button type="button" class="dialog-close" data-close aria-label="Tutup"><i data-lucide="x" class="icon" aria-hidden="true"></i></button></div><div class="my-7 grid place-items-center rounded-xl bg-paper h-36 text-forest-500"><i data-lucide="file-check-2" style="width:52px;height:52px;stroke-width:1.2" aria-hidden="true"></i></div><h2 class="dialog-title" id="gpl-certificate-title">Sijil CoC</h2><p class="dialog-text">Galeri pada rekod asal memaparkan dokumen contoh. Dokumen ini bukan bukti pengesahan atau pensijilan bagi kelompok produk ini.</p><p class="font-mono text-[11px] text-forest-700 mt-4" id="gpl-certificate-reference"></p><a class="primary-action mt-6 w-full" href="https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215" target="_blank" rel="noopener noreferrer">Rujuk halaman asal<i data-lucide="arrow-up-right" class="icon" aria-hidden="true"></i></a></div></dialog>
+</div>
+<script src="assets/lucide.js"></script>
+<script id="product-js">
+(() => {
+ const root=document.getElementById('gpl-design');
+ const frame=root.querySelector('.preview-frame');
+ const modes={desktop:'1440px',tablet:'834px',phone:'390px'};
+ function setDevice(mode){
+   if(!modes[mode])return;
+   frame.style.maxWidth=modes[mode];frame.dataset.view=mode;
+   root.querySelectorAll('[data-device]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.device===mode)));
+   root.querySelector('.preview-resolution').textContent=mode==='desktop'?'Fluid layout':mode==='tablet'?'834 px':'390 px';
+ }
+ root.querySelectorAll('[data-device]').forEach(b=>b.addEventListener('click',()=>setDevice(b.dataset.device)));
+ root.querySelectorAll('[data-open="share"]').forEach(b=>b.addEventListener('click',()=>root.querySelector('#gpl-share-dialog').showModal()));
+ root.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+ root.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+ const certRefs={'CoC':'STB181019EJ100436','Fitosanitasi':'FITO-ABC-2026-09','HACCP':'HACCP-ABC-2025-01','Halal':'JAKIM-HALAL-DEMO-2026','ISO 22000':'ISO22000-DEMO-2025','MyGAP':'MYGAP-ABC-2025-04'};
+ root.querySelectorAll('[data-certificate]').forEach(b=>b.addEventListener('click',()=>{const type=b.dataset.certificate;root.querySelector('#gpl-certificate-title').textContent='Sijil '+type;root.querySelector('#gpl-certificate-reference').textContent=certRefs[type];root.querySelector('#gpl-certificate-dialog').showModal();}));
+ root.querySelectorAll('.section-nav a').forEach(a=>a.addEventListener('click',()=>{root.querySelectorAll('.section-nav a').forEach(b=>b.classList.remove('active'));a.classList.add('active');}));
+ root.querySelector('#gpl-copy-link').addEventListener('click',async()=>{const url='https://jejakgpl.metadatasystem.my/trace/GPL-QR-000215';const status=root.querySelector('#gpl-copy-status');try{await navigator.clipboard.writeText(url);status.textContent='Pautan berjaya disalin.';}catch(e){status.textContent=url;}});
+ if(typeof lucide!=='undefined')lucide.createIcons({attrs:{'stroke-width':1.8}});
+ const initial=new URLSearchParams(location.search).get('view');if(initial)setDevice(initial);
+})();
+</script>
+</body>
+</html>
