@@ -1,6 +1,7 @@
 @php
     use App\Domain\LotDisposition;
     use App\Services\JejakService;
+    use App\Support\PublicFile;
     use App\Support\TraceCopy;
 
     $t = TraceCopy::forPage($lang, (bool) $application?->isLivestock());
@@ -122,7 +123,7 @@
             'title' => trim($t['certWord'].' '.$certificate->type),
             'ref' => (string) $certificate->certificate_no,
             'sample' => JejakService::certificateIsSample($certificate->document_path),
-            'href' => $preview,
+            'href' => PublicFile::url($preview),
             'image' => (bool) preg_match('/\.(jpe?g|png|webp)(\?|$)/i', $preview),
             'issued' => TraceCopy::formatDate($certificate->issue_date, $lang),
             'expires' => TraceCopy::formatDate($certificate->expiry_date, $lang),

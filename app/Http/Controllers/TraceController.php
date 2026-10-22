@@ -8,13 +8,14 @@ use App\Models\ExportApplication;
 use App\Services\JejakService;
 use App\Services\LotSplitService;
 use App\Services\QrImageService;
+use App\Support\PublicFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\Response;
 
 class TraceController extends Controller
 {
-    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage, LotSplitService $lots): View
+    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage, LotSplitService $lots): Response
     {
         $lang = in_array($request->query('lang'), ['en', 'zh'], true) ? $request->query('lang') : 'bm';
         $qr = $jejak->getQrByCode($qrCode);
@@ -44,17 +45,15 @@ class TraceController extends Controller
             ?: $gallery->first()?->file_path;
         $heroIllustrated = false;
         if (is_string($photo) && $photo !== '') {
-            $heroImage = str_starts_with($photo, 'http://') || str_starts_with($photo, 'https://') || str_starts_with($photo, '/')
-                ? $photo
-                : asset($photo);
+            $heroImage = PublicFile::url($photo);
         } elseif ($application?->produce_type_id === 'pt_durian') {
-            $heroImage = asset('products/durian-concept.webp');
+            $heroImage = PublicFile::url('products/durian-concept.webp');
             $heroIllustrated = true;
         } else {
             $heroImage = null;
         }
 
-        return view('trace.show', [
+        return response()->view('trace.show', [
             'qrCode' => $qrCode,
             'lang' => $lang,
             'qr' => $qr,
@@ -67,7 +66,7 @@ class TraceController extends Controller
             'active' => $qr?->status === QrStatus::Active && $application !== null,
             'awaitingAcceptance' => $qr?->status !== QrStatus::Active && $qr?->pending_holder_company_id !== null,
             'journey' => $qr ? $qr->lineage() : collect(),
-        ]);
+        ])->header('Cache-Control', 'no-cache, must-revalidate');
     }
 
     public function api(string $qrCode, JejakService $jejak): JsonResponse
@@ -110,7 +109,7 @@ class TraceController extends Controller
             'farmLocation' => $application->farm_location,
             'farmLat' => $application->farm_lat,
             'farmLng' => $application->farm_lng,
-            'displayImage' => $application->display_image_path,
+            'displayImage' => PublicFile::url($application->display_image_path),
             'farmName' => $application->farm_name,
             'productKind' => $application->product_kind->value,
             'breed' => $application->variety,

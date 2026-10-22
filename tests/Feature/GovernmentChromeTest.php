@@ -26,7 +26,8 @@ class GovernmentChromeTest extends TestCase
     {
         $this->seed();
 
-        $this->get('/trace/GPL-QR-000109')
+        $response = $this->get('/trace/GPL-QR-000109');
+        $response
             ->assertOk()
             ->assertDontSee('LAMAN RASMI FAMA')
             ->assertDontSee('Produk Disahkan Tulen')
@@ -40,7 +41,7 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('www.fama.gov.my')
             ->assertSee('LOT-B07')
             ->assertSee('Kuala Selangor, Selangor')
-            ->assertSee('/products/produce-tembikai-demo-01.jpg')
+            ->assertSee('/products/produce-tembikai-demo-01.jpg?v=')
             ->assertSee('openstreetmap.org')
             ->assertSee('Profil Keluaran Pertanian')
             ->assertSee('trace-page')
@@ -53,6 +54,7 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('Hak cipta terpelihara')
             ->assertSee('900')
             ->assertDontSee('Pecahan kod ini');
+        $this->assertStringContainsString('no-cache', (string) $response->headers->get('Cache-Control'));
     }
 
     public function test_public_trace_hides_certificate_section_when_empty(): void
