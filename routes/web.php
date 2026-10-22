@@ -63,6 +63,7 @@ Route::middleware(['auth', 'role:EXPORTER'])->group(function () {
     Route::get('/exporter/lots/{id}', [ExporterLotController::class, 'show'])->name('exporter.lots.show');
     Route::post('/exporter/lots/{id}/split', [ExporterLotController::class, 'split'])->name('exporter.lots.split');
     Route::post('/exporter/lots/{id}/sell', [ExporterLotController::class, 'sell'])->name('exporter.lots.sell');
+    Route::post('/exporter/lots/{id}/accept', [ExporterLotController::class, 'accept'])->name('exporter.lots.accept');
     Route::get('/exporter/qr', [ExporterQrController::class, 'index'])->name('exporter.qr');
     Route::get('/exporter/qr/{id}', [ExporterQrController::class, 'show'])->name('exporter.qr.show');
     Route::get('/exporter/qr/{id}/download', [ExporterQrController::class, 'downloadPage'])->name('exporter.qr.download');

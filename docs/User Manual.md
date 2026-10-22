@@ -367,12 +367,12 @@ The page confirms the split. Your balance drops. Each new QR is **Belum Aktif** 
 ### The recipient accepts
 
 1. The recipient signs in as **USAHAWAN**.
-2. Under **Kod QR**, the new code is listed as waiting.
-3. They open **Jejak awam** for that QR, or open the public link while they are signed in.
+2. Open **Pecahan**. The waiting piece is under **Menunggu penerimaan**. The same row is also under **Kod QR → QR pecahan**.
+3. Press **Diterima**.
 
-That visit accepts the lot. The public page then shows the product, and **Jejak pecahan** marks their stop as **Kod ini**. The QR becomes **Aktif**. They can split only the quantity they accepted.
+That button accepts the lot. The page says **Lot diterima. QR kini Aktif.** The code moves into the held list, with its balance. **Jejak pecahan** marks their stop as **Kod ini**. They can split only the quantity they accepted.
 
-Before acceptance, a visitor who is not signed in as that company sees **QR Menunggu Penerimaan**. The product page stays hidden. The message asks the receiving company to sign in and open the link again.
+Before **Diterima**, a visitor sees **QR Menunggu Penerimaan**. The product page stays hidden.
 
 ### Sell to a consumer
 
@@ -403,7 +403,7 @@ Each row is an action, the record type, the date and time, and a remark when one
 | APPLICATION_APPROVED | The officer clicks **Sahkan** |
 | APPLICATION_REJECTED | The officer clicks **Tolak** |
 | LOT_SPLIT | A lot is split |
-| LOT_ACCEPTED | The receiving company opens the public link and accepts the lot |
+| LOT_ACCEPTED | The receiving company presses **Diterima** |
 
 ---
 
@@ -578,7 +578,7 @@ When the lot has been split, **Jejak pecahan** shows each stop, the role, the qu
 
 ### Waiting for the next company
 
-If a split has been saved and the receiving company has not opened the link while signed in, the public page says **QR Menunggu Penerimaan**. The product is hidden until that company accepts.
+If a split has been saved and the receiving company has not pressed **Diterima**, the public page says **QR Menunggu Penerimaan**. The product is hidden until that company accepts.
 
 ---
 

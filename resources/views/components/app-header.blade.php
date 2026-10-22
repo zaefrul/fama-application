@@ -22,6 +22,13 @@
                 <p class="truncate text-xs font-semibold text-ink">{{ $user->name }}</p>
                 <p class="text-[11px] text-muted">{{ $roleLabel }}</p>
             </div>
+            <form action="{{ route('logout') }}" method="post" class="md:hidden">
+                @csrf
+                <button type="submit" class="inline-flex h-9 shrink-0 items-center gap-1 rounded-lg border border-border px-2 text-xs font-semibold text-ink" aria-label="Log Keluar">
+                    <x-icon name="logout" class="h-4 w-4" />
+                    <span>Keluar</span>
+                </button>
+            </form>
         @endif
         <span class="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-ink" aria-label="Notifikasi">
             <x-icon name="bell" class="h-5 w-5" />

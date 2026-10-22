@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Exporter;
 
 use App\Domain\PartyType;
+use App\Domain\QrStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\QrCode;
@@ -25,9 +26,17 @@ class LotController extends Controller
             ->where('holder_company_id', $companyId)
             ->orderByDesc('generated_at')
             ->get();
+        $incoming = QrCode::query()
+            ->with(['parent.holder', 'rootApplication.produceType'])
+            ->where('pending_holder_company_id', $companyId)
+            ->whereNull('holder_company_id')
+            ->where('status', QrStatus::GeneratedInactive)
+            ->orderByDesc('generated_at')
+            ->get();
 
         return view('exporter.lots.index', [
             'lots' => $lots,
+            'incoming' => $incoming,
         ]);
     }
 
@@ -108,6 +117,24 @@ class LotController extends Controller
         }
 
         return redirect()->route('exporter.lots.show', $lot)->with('status', 'Jualan direkodkan.');
+    }
+
+    public function accept(string $id, Request $request): RedirectResponse
+    {
+        $lot = QrCode::query()->findOrFail($id);
+        abort_unless($lot->pending_holder_company_id === $request->user()->company_id, 404);
+
+        try {
+            $this->lots->acceptIfRecipient($lot, $request->user());
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        if ($lot->fresh()->status !== QrStatus::Active) {
+            return back()->with('error', 'Lot ini tidak boleh diterima.');
+        }
+
+        return redirect()->route('exporter.lots.show', $lot)->with('status', 'Lot diterima. QR kini Aktif.');
     }
 
     private function heldLot(string $id, Request $request): QrCode

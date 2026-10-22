@@ -33,18 +33,24 @@
                 <ul class="space-y-2">
                     @foreach ($receivedQrs as $qr)
                         <li>
-                            <a href="{{ route('exporter.qr.show', $qr) }}">
-                                <x-card class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <p class="font-semibold">{{ $qr->qr_code }}</p>
-                                        <p class="text-xs text-muted">{{ $qr->rootApplication?->produceType?->name ?? $qr->application?->produceType?->name ?? '—' }}</p>
-                                        @if ($qr->holder_company_id === null && $qr->pending_holder_company_id)
-                                            <p class="text-xs text-muted">Menunggu penerimaan</p>
-                                        @endif
-                                    </div>
+                            <x-card class="flex items-center justify-between gap-3">
+                                <a href="{{ route('exporter.qr.show', $qr) }}" class="min-w-0 flex-1">
+                                    <p class="font-semibold">{{ $qr->qr_code }}</p>
+                                    <p class="text-xs text-muted">{{ $qr->rootApplication?->produceType?->name ?? $qr->application?->produceType?->name ?? '—' }}</p>
+                                    @if ($qr->holder_company_id === null && $qr->pending_holder_company_id)
+                                        <p class="text-xs text-muted">Menunggu penerimaan</p>
+                                    @endif
+                                </a>
+                                <div class="flex shrink-0 items-center gap-2">
                                     <x-status-badge :qr="$qr->status" />
-                                </x-card>
-                            </a>
+                                    @if ($qr->holder_company_id === null && $qr->pending_holder_company_id)
+                                        <form method="post" action="{{ route('exporter.lots.accept', $qr) }}">
+                                            @csrf
+                                            <x-button type="submit">Diterima</x-button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </x-card>
                         </li>
                     @endforeach
                 </ul>

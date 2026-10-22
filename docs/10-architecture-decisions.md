@@ -227,7 +227,7 @@ A verified export application still has one root QR. After that QR is `ACTIVE`, 
 
 The holder is the active company on the user (`users.company_id`). External logins stay `EXPORTER`. Each company has a chain role on `companies.party_type`: Pengeluar, Pemborong, Peruncit, or a named Lain-lain. The public checkpoint line prints those roles in order, and a consumer sale ends the line with Consumer. There is no required sequence of parties. Depth is not fixed.
 
-Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAMA does not approve each chunk. The receiving company activates that QR by opening its public URL while logged in. That scan sets the holder and status `ACTIVE`. Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder to a consumer creates a terminal child QR immediately, with no company login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors after the QR is active. Downstream buyers stay on the holder screen and the FAMA application tree.
+Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAMA does not approve each chunk. The receiving company activates that QR with **Diterima** on Pecahan (ADR-026). Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder to a consumer creates a terminal child QR immediately, with no company login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors after the QR is active. Downstream buyers stay on the holder screen and the FAMA application tree.
 
 **Reason:** A single trunk, such as a banana lot, is broken into smaller lots as it moves along the chain, and each piece must stay traceable.
 
@@ -273,6 +273,17 @@ The public QR page lists certificates that belong to the root application compan
 **Reason:** Durian Queen’s HACCP sheet belongs to the exporter, while the durian application company is the pengeluar. The sheet would otherwise stay off the public durian record.
 
 **Consequences:** A scanned child lot can show a sijil uploaded by an earlier holder on the same chain. Sample sheets stay marked CONTOH. A covered certificate number is stored as DEMO, and a covered issue date is left blank.
+
+## ADR-026 — Penerima presses Diterima
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-22
+
+A company pecahan stays **Belum Aktif** until the receiving company presses **Diterima** on **Pecahan** or **Kod QR**. Opening the public trace while signed in does not accept the lot.
+
+**Reason:** Receipt needs a visible step. A scan was accepting the lot before the company could see that it was waiting.
+
+**Consequences:** The public page keeps showing **QR Menunggu Penerimaan** until **Diterima**. That button sets the holder and status `ACTIVE`, and writes `LOT_ACCEPTED`.
 
 ## Adding a decision
 

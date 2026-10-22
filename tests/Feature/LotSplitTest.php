@@ -83,14 +83,34 @@ class LotSplitTest extends TestCase
         $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
             ->get('/trace/'.$child->qr_code)
             ->assertOk()
-            ->assertSee('Pisang')
-            ->assertSee('Kod ini')
-            ->assertDontSee('QR Menunggu Penerimaan');
+            ->assertSee('QR Menunggu Penerimaan')
+            ->assertDontSee('Kod ini');
+
+        $this->assertSame(QrStatus::GeneratedInactive, $child->fresh()->status);
+        $this->assertNull($child->fresh()->holder_company_id);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->get(route('exporter.lots'))
+            ->assertOk()
+            ->assertSee('Menunggu penerimaan')
+            ->assertSee('Diterima')
+            ->assertSee($child->qr_code);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->post(route('exporter.lots.accept', $child))
+            ->assertRedirect(route('exporter.lots.show', $child));
 
         $accepted = $child->fresh();
         $this->assertSame(QrStatus::Active, $accepted->status);
         $this->assertSame('co_retailer_pisang', $accepted->holder_company_id);
         $this->assertNotNull($accepted->accepted_at);
+
+        $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
+            ->get('/trace/'.$child->qr_code)
+            ->assertOk()
+            ->assertSee('Pisang')
+            ->assertSee('Kod ini')
+            ->assertDontSee('QR Menunggu Penerimaan');
 
         $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
             ->get(route('exporter.qr'))

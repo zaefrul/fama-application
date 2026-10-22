@@ -6,7 +6,6 @@ use App\Domain\QrStatus;
 use App\Models\Certificate;
 use App\Models\ExportApplication;
 use App\Services\JejakService;
-use App\Services\LotSplitService;
 use App\Services\QrImageService;
 use App\Support\PublicFile;
 use Illuminate\Http\JsonResponse;
@@ -15,13 +14,10 @@ use Illuminate\Http\Response;
 
 class TraceController extends Controller
 {
-    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage, LotSplitService $lots): Response
+    public function show(string $qrCode, Request $request, JejakService $jejak, QrImageService $qrImage): Response
     {
         $lang = in_array($request->query('lang'), ['en', 'zh'], true) ? $request->query('lang') : 'bm';
         $qr = $jejak->getQrByCode($qrCode);
-        if ($qr && $request->user()) {
-            $qr = $lots->acceptIfRecipient($qr, $request->user());
-        }
         if ($qr) {
             $jejak->recordQrAccess($qr);
         }
