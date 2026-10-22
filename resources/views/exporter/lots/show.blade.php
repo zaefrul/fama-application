@@ -44,7 +44,10 @@
         @if ($open)
             <x-card class="space-y-3">
                 <h2 class="font-semibold">Pecahkan kepada syarikat</h2>
-                <p class="text-xs text-muted">Jumlah kuantiti tidak boleh melebihi baki. Unit kekal {{ $unit }}.</p>
+                <p class="text-xs text-muted">Jumlah kuantiti tidak boleh melebihi baki. Unit kekal {{ $unit }}. Penerima mestilah jenis yang sama atau ke hilir: Pengeluar, Pengeksport, Pemborong, Pengimport, Peruncit.</p>
+                @if ($companies->isEmpty())
+                    <p class="text-sm">Tiada syarikat pada jenis yang sama atau ke hilir.</p>
+                @else
                 <form method="post" action="{{ route('exporter.lots.split', $lot) }}" class="space-y-3">
                     @csrf
                     <div id="chunk-rows" class="space-y-3">
@@ -65,6 +68,7 @@
                     <x-button type="button" variant="secondary" onclick="addChunkRow()">Tambah pecahan</x-button>
                     <x-button type="submit" class="w-full">Simpan pecahan</x-button>
                 </form>
+                @endif
             </x-card>
 
             <x-card class="space-y-3">
@@ -85,16 +89,22 @@
                     <x-button type="submit" class="w-full">Jual pek</x-button>
                 </form>
             </x-card>
+            @if ($companies->isNotEmpty())
             <template id="company-options">
                 <option value="">Pilih syarikat</option>
                 @foreach ($companies as $company)
                     <option value="{{ $company->id }}">{{ $company->partyLabel() }} · {{ $company->name }}</option>
                 @endforeach
             </template>
+            @endif
             <script>
                 let chunkIndex = 1;
 
                 function addChunkRow() {
+                    const options = document.getElementById('company-options');
+                    if (!options) {
+                        return;
+                    }
                     const rows = document.getElementById('chunk-rows');
                     const wrap = document.createElement('div');
                     wrap.className = 'grid gap-2 sm:grid-cols-2';
@@ -106,7 +116,7 @@
                     const select = document.createElement('select');
                     select.name = 'chunks[' + chunkIndex + '][recipient_company_id]';
                     select.className = 'w-full min-w-0 max-w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm outline-none focus:border-brand';
-                    select.innerHTML = document.getElementById('company-options').innerHTML;
+                    select.innerHTML = options.innerHTML;
                     wrap.append(quantity, select);
                     rows.append(wrap);
                     chunkIndex += 1;

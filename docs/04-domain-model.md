@@ -147,8 +147,9 @@ Observed categories:
 
 ## Company — chain layer (ADR-022)
 
-- partyType: `SUPPLIER`, `EXPORTER`, `MARKETER`, `RETAILER`, `OTHER`
+- partyType: `SUPPLIER`, `EXPORTER`, `MARKETER`, `IMPORTER`, `RETAILER`, `OTHER`
 - partyLabel: required when partyType is `OTHER`
+- Pecahan order (ADR-023, ADR-024): Pengeluar, Pengeksport, Pemborong, Pengimport, Peruncit. Same role or a later role only. `OTHER` is outside the order.
 
 ## QRCode — suggested fields
 

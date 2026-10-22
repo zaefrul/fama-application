@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Domain\Ids;
 use App\Domain\LotDisposition;
+use App\Domain\PartyType;
 use App\Domain\QrStatus;
 use App\Domain\Transitions;
 use App\Models\Company;
@@ -31,6 +32,12 @@ class LotSplitService
                 throw new RuntimeException('Masukkan sekurang-kurangnya satu pecahan');
             }
 
+            $parent->loadMissing('holder');
+            $source = $parent->holder?->chainParty() ?? PartyType::Exporter;
+            if ($source->rank() === null) {
+                throw new RuntimeException('Jenis pemegang tidak berada dalam rantaian. Kemas kini jenis syarikat sebelum membuat pecahan.');
+            }
+
             $sum = 0;
             foreach ($chunks as $chunk) {
                 $quantity = (int) ($chunk['quantity'] ?? 0);
@@ -38,9 +45,11 @@ class LotSplitService
                 if ($quantity < 1) {
                     throw new RuntimeException('Kuantiti pecahan mestilah sekurang-kurangnya 1');
                 }
-                if (! Company::query()->whereKey($recipientId)->exists()) {
+                $recipient = Company::query()->find($recipientId);
+                if ($recipient === null) {
                     throw new RuntimeException('Syarikat penerima tidak dijumpai');
                 }
+                $this->assertDownstream($source, $recipient);
                 $sum += $quantity;
             }
 
@@ -201,6 +210,18 @@ class LotSplitService
         if ($actor->company_id === null || $lot->holder_company_id !== $actor->company_id) {
             throw new RuntimeException('Hanya pemegang lot semasa boleh memecahkan atau menjual lot ini');
         }
+    }
+
+    private function assertDownstream(PartyType $source, Company $recipient): void
+    {
+        if ($source->canPassTo($recipient->chainParty())) {
+            return;
+        }
+
+        throw new RuntimeException(
+            'Penerima mestilah '.$source->label().' atau ke hilir. '
+            .$recipient->name.' ('.$recipient->chainParty()->label().') tidak dibenarkan.'
+        );
     }
 
     private function assertOpen(QrCode $lot): void

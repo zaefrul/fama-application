@@ -48,7 +48,12 @@ class Company extends Model
             return $label !== '' ? $label : $type->label();
         }
 
-        return $type?->label() ?? 'Pemborong';
+        return $type?->label() ?? PartyType::Exporter->label();
+    }
+
+    public function chainParty(): PartyType
+    {
+        return $this->party_type ?? PartyType::Exporter;
     }
 
     public function isFamaSourced(): bool

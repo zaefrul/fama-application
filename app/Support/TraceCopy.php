@@ -410,14 +410,18 @@ class TraceCopy
         $map = [
             'en' => [
                 'Pengeluar' => 'Producer',
+                'Pengeksport' => 'Exporter',
                 'Pemborong' => 'Wholesaler',
+                'Pengimport' => 'Importer',
                 'Peruncit' => 'Retailer',
                 'Lain-lain' => 'Other',
                 'Consumer' => 'Consumer',
             ],
             'zh' => [
                 'Pengeluar' => '生产商',
+                'Pengeksport' => '出口商',
                 'Pemborong' => '批发商',
+                'Pengimport' => '进口商',
                 'Peruncit' => '零售商',
                 'Lain-lain' => '其他',
                 'Consumer' => '消费者',

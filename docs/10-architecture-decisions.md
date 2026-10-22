@@ -233,6 +233,36 @@ Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAM
 
 **Consequences:** `qr_codes.application_id` is unique only for the root in practice; the database unique constraint is removed so children can store null. Official per-child approval, public downstream lists, and unit conversion stay open in `docs/09-open-questions.md`.
 
+## ADR-023 — Pecahan stays on the same role or moves downstream
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-10-22
+
+A pecahan may be given only to a company on the same chain role or a later one:
+
+Pengeluar → Pengeksport → Pemborong → Peruncit
+
+The same role may repeat. A later role may be skipped. A recipient list on the lot screen shows only those companies. The server rejects any other recipient. Selling to a consumer is still allowed from any role and ends that chunk. Lain-lain has no rank, so it cannot send or receive a pecahan until the company picks one of the four roles. This replaces the ADR-022 note that there is no required sequence.
+
+**Reason:** Stock in the prototype was moving back upstream, for example from Peruncit to Pengeluar.
+
+**Consequences:** Stored roles are `SUPPLIER`, `EXPORTER`, `MARKETER`, and `RETAILER`. On screen those are Pengeluar, Pengeksport, Pemborong, and Peruncit. Companies already stored as `EXPORTER` now read as Pengeksport.
+
+## ADR-024 — Pengimport sits between Pemborong and Peruncit
+
+**Status:** Temporary prototype decision  
+**Date:** 2026-10-22
+
+The chain role `IMPORTER` is shown as **Pengimport**. Its rank is after Pemborong and before Peruncit:
+
+Pengeluar → Pengeksport → Pemborong → Pengimport → Peruncit
+
+A pecahan may still skip a role. Pemborong may pass straight to Peruncit. Pengeksport may pass straight to Pengimport.
+
+**Reason:** A durian lot needs an importer between the exporter and the retailer.
+
+**Consequences:** Profile and registration list Pengimport. Existing Pemborong → Peruncit lots stay valid.
+
 ## Adding a decision
 
 ```text

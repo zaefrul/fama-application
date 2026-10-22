@@ -19,7 +19,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Must FAMA approve each child QR, or does an active parent authorize its chunks? *(Prototype assumption ADR-022: FAMA does not approve each chunk. A company assignment stays inactive until that company opens the QR while logged in. A consumer sale is active immediately. The root application remains the verified record.)*
 - Should the public page list downstream buyers? *(Prototype assumption ADR-022: the public page shows this chunk and its ancestors only.)*
 - Is quantity converted between units when a lot is split? *(Prototype assumption ADR-022: every node uses the root integer unit. No kg-to-carton conversion.)*
-- Is a fixed party sequence required (supplier, then exporter, then marketer, then retailer)? *(Prototype assumption ADR-022: no. Any registered company can receive a chunk, including an extra named layer.)*
+- Is a fixed party sequence required (supplier, then exporter, then marketer, then retailer)? *(Decided ADR-023 and ADR-024: yes. A pecahan may stay on the same role or move downstream: Pengeluar, Pengeksport, Pemborong, Pengimport, Peruncit. It cannot move upstream. Lain-lain is outside this order.)*
 
 ## Application
 

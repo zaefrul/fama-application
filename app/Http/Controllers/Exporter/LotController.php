@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Exporter;
 
+use App\Domain\PartyType;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\QrCode;
@@ -43,11 +44,18 @@ class LotController extends Controller
 
         $rootId = $lot->root_application_id ?: $lot->application_id;
         $root = $rootId ? QrCode::treeForApplication($rootId) : null;
+        $source = $lot->holder?->chainParty() ?? PartyType::Exporter;
 
         return view('exporter.lots.show', [
             'lot' => $lot,
             'lineage' => $root ? collect([$root]) : $lot->lineage(),
-            'companies' => Company::query()->orderBy('name')->get(),
+            'companies' => Company::query()
+                ->where('id', '!=', $lot->holder_company_id)
+                ->orderBy('name')
+                ->get()
+                ->filter(fn (Company $company) => $source->canPassTo($company->chainParty()))
+                ->sortBy(fn (Company $company) => sprintf('%d-%s', $company->chainParty()->rank(), $company->name))
+                ->values(),
             'publicUrl' => $qrImage->traceUrl($lot->qr_code),
             'unit' => $lot->rootApplication?->quantity_unit ?? $lot->application?->quantity_unit ?? '',
         ]);

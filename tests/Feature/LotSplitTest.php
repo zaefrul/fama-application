@@ -242,13 +242,17 @@ class LotSplitTest extends TestCase
             ->assertOk()
             ->assertSee('GPL-QR-000201')
             ->assertSee('GPL-QR-000204')
-            ->assertSee('Pengeluar → Pemborong → Pemborong');
+            ->assertSee('Pengeluar → Pengeksport → Pemborong');
 
         $this->actingAs(User::query()->findOrFail('user_eksport_pisang'))
             ->get(route('exporter.lots.show', 'qr_pisang_exp_400'))
             ->assertOk()
             ->assertSee('GPL-QR-000204')
             ->assertSee('Jejak pecahan')
+            ->assertSee('Pemborong · Pemasar Buah Sdn. Bhd.')
+            ->assertSee('Peruncit · Runcit Segar Sdn. Bhd.')
+            ->assertSee('Pengeksport · MTS Fruits Sdn. Bhd.')
+            ->assertDontSee('Pengeluar · Ladang Pisang Pontian')
             ->assertSee('trace-checkpoint', false)
             ->assertSee('Baki');
 
@@ -264,6 +268,54 @@ class LotSplitTest extends TestCase
             ->assertSee('GPL-QR-000201')
             ->assertSee('GPL-QR-000204')
             ->assertSee('Pemasar Buah Sdn. Bhd.');
+    }
+
+    public function test_split_rejects_an_upstream_or_unranked_recipient(): void
+    {
+        $service = app(LotSplitService::class);
+        $exporter = User::query()->findOrFail('user_eksport_pisang');
+        $before = QrCode::query()->findOrFail('qr_pisang_exp_600')->quantity_remaining;
+
+        try {
+            $service->split('qr_pisang_exp_600', $exporter, [[
+                'quantity' => 10,
+                'recipient_company_id' => 'co_supplier_pisang',
+            ]]);
+            $this->fail('Expected an upstream recipient to be rejected.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString('ke hilir', $e->getMessage());
+            $this->assertStringContainsString('Pengeluar', $e->getMessage());
+        }
+
+        Company::query()->findOrFail('co_demo_utara')->update([
+            'party_type' => PartyType::Other,
+            'party_label' => 'Pengumpul',
+        ]);
+
+        try {
+            $service->split('qr_pisang_exp_600', $exporter, [[
+                'quantity' => 10,
+                'recipient_company_id' => 'co_demo_utara',
+            ]]);
+            $this->fail('Expected an unranked recipient to be rejected.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString('ke hilir', $e->getMessage());
+        }
+
+        $this->assertSame($before, QrCode::query()->findOrFail('qr_pisang_exp_600')->quantity_remaining);
+
+        $sameRank = $service->split('qr_pisang_exp_600', $exporter, [[
+            'quantity' => 10,
+            'recipient_company_id' => 'co_mts',
+        ]]);
+        $this->assertSame('co_mts', $sameRank[0]->pending_holder_company_id);
+
+        $this->actingAs(User::query()->findOrFail('user_pemasar_pisang'))
+            ->get(route('exporter.lots.show', 'qr_pisang_mkt_250'))
+            ->assertOk()
+            ->assertSee('Peruncit · Runcit Segar Sdn. Bhd.')
+            ->assertDontSee('Pengeksport · Eksport Pisang Sdn. Bhd.')
+            ->assertDontSee('Pengeluar · Ladang Pisang Pontian');
     }
 
     public function test_registration_stores_party_type_on_the_company(): void

@@ -85,11 +85,11 @@ Status: **Prototype demo photos added from Wikimedia Commons**
 ```text
 File: design/assets/products/produce-durian-demo-01.jpg
       public/products/produce-durian-demo-01.jpg
-Source: https://commons.wikimedia.org/wiki/File:Buka_buah_durian.jpg
-Owner: Astari28
-License/permission: CC BY-SA 4.0
-Used for: seeded usahawan display image / gallery BUAH (Durian); Wikimedia is not the live default hero
-Final or placeholder: licensed demo photo
+Source: photo supplied for the Durian Musang King hero, 2026-10-22
+Owner: supplied for this prototype
+License/permission: supplied for this prototype; not a photograph of a specific batch
+Used for: durian display image and gallery BUAH
+Final or placeholder: studio product image
 ```
 
 ```text

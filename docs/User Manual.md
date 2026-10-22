@@ -104,11 +104,12 @@ Enter the user’s identity card number and name. The sample text already in the
 
 | Choice | Meaning on the chain |
 |---|---|
-| Pembekal | Supplier |
-| Pengeksport | Exporter |
-| Pemasar | Marketer |
-| Peruncit | Retailer |
-| Lain-lain | A custom layer. **Nama lapisan** is required, for example Pengumpul |
+| Pengeluar | Producer. First role. |
+| Pengeksport | Exporter. Same role or after Pengeluar. |
+| Pemborong | Wholesaler. Same role or after Pengeksport. |
+| Pengimport | Importer. Same role or after Pemborong. |
+| Peruncit | Retailer. Same role or after Pengimport. |
+| Lain-lain | A custom layer. **Nama lapisan** is required, for example Pengumpul. This role cannot send or receive a pecahan. |
 
 ![Usahawan details and chain role](manual/screenshots/44-register-usahawan-user.png)
 
