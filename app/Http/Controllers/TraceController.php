@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\QrStatus;
+use App\Models\Certificate;
 use App\Models\ExportApplication;
 use App\Services\JejakService;
 use App\Services\LotSplitService;
@@ -27,7 +28,15 @@ class TraceController extends Controller
         $application = $applicationId
             ? ExportApplication::query()->with(['company.gallery', 'company.certificates', 'produceType'])->find($applicationId)
             : null;
-        $certificates = $application?->company?->certificates ?? collect();
+        $certificateCompanyIds = collect([$application?->company_id]);
+        if ($qr) {
+            $certificateCompanyIds = $certificateCompanyIds->merge(
+                $qr->lineage()->pluck('holder_company_id'),
+            );
+        }
+        $certificates = Certificate::query()
+            ->whereIn('company_id', $certificateCompanyIds->filter()->unique()->values())
+            ->get();
         $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
         $gallery = $application?->company?->gallery ?? collect();
         $photo = $application?->display_image_path

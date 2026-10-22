@@ -191,6 +191,26 @@ Used for: public QR / exporter sijil grid
 Final or placeholder: clearly marked CONTOH SIJIL
 ```
 
+```text
+File: public/certificates/durian-queen-haccp-demo.jpg
+      design/assets/certificates/durian-queen-haccp-demo.jpg
+Source: supplied HACCP sheet for Durian Queen Sdn Bhd, 2026-10-22
+Owner: supplied for this prototype
+License/permission: supplied demo sheet; certificate number and dates are covered on the page
+Used for: Durian Queen HACCP record
+Final or placeholder: marked DEMO on the sheet, shown as a sample
+```
+
+```text
+File: public/certificates/tan-so-tiok-coc-demo.jpg
+      design/assets/certificates/tan-so-tiok-coc-demo.jpg
+Source: supplied demo CoC sheet for Tan So Tiok & Sons Sdn Bhd, 2026-10-22
+Owner: supplied for this prototype
+License/permission: supplied demo sheet; marked CONTOH / DEMO and not an official certificate
+Used for: Tan So Tiok CoC record
+Final or placeholder: marked CONTOH / DEMO on the sheet, shown as a sample
+```
+
 Do not present a sample certificate as genuine production verification.
 
 ### QR labels

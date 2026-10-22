@@ -263,6 +263,17 @@ A pecahan may still skip a role. Pemborong may pass straight to Peruncit. Pengek
 
 **Consequences:** Profile and registration list Pengimport. Existing Pemborong → Peruncit lots stay valid.
 
+## ADR-025 — Public trace lists sijil from companies on the lot
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-22
+
+The public QR page lists certificates that belong to the root application company and to every company that holds a lot on that chain.
+
+**Reason:** Durian Queen’s HACCP sheet belongs to the exporter, while the durian application company is the pengeluar. The sheet would otherwise stay off the public durian record.
+
+**Consequences:** A scanned child lot can show a sijil uploaded by an earlier holder on the same chain. Sample sheets stay marked CONTOH. A covered certificate number is stored as DEMO, and a covered issue date is left blank.
+
 ## Adding a decision
 
 ```text

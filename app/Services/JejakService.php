@@ -58,7 +58,8 @@ class JejakService
 
         return $path === ''
             || str_contains($path, '/placeholders/')
-            || str_contains($path, '/certificates/sijil-');
+            || str_contains($path, '/certificates/sijil-')
+            || str_contains($path, '-demo.');
     }
 
     public static function produceImagePath(?string $produceTypeId): ?string

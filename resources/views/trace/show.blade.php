@@ -116,11 +116,14 @@
     }
     $pushDetail($t['destination'], $destination);
     $certCards = ($certificates ?? collect())->map(function ($certificate) use ($t, $lang) {
+        $preview = JejakService::certificatePreviewPath($certificate->type, $certificate->document_path);
+
         return [
             'title' => trim($t['certWord'].' '.$certificate->type),
             'ref' => (string) $certificate->certificate_no,
             'sample' => JejakService::certificateIsSample($certificate->document_path),
-            'href' => JejakService::certificatePreviewPath($certificate->type, $certificate->document_path),
+            'href' => $preview,
+            'image' => (bool) preg_match('/\.(jpe?g|png|webp)(\?|$)/i', $preview),
             'issued' => TraceCopy::formatDate($certificate->issue_date, $lang),
             'expires' => TraceCopy::formatDate($certificate->expiry_date, $lang),
         ];
@@ -362,7 +365,11 @@
                                         aria-haspopup="dialog"
                                     >
                                         <span class="cert-corner"><x-trace-icon name="arrow-up-right" style="width:13px;height:13px" /></span>
-                                        <span class="cert-file-icon"><x-trace-icon name="file-check-2" /></span>
+                                        @if ($card['image'])
+                                            <img src="{{ $card['href'] }}" alt="" style="display:block;width:100%;height:96px;object-fit:cover;object-position:top;border-radius:8px;margin-bottom:10px">
+                                        @else
+                                            <span class="cert-file-icon"><x-trace-icon name="file-check-2" /></span>
+                                        @endif
                                         <span class="cert-type">{{ $card['title'] }}</span>
                                         <span class="cert-sub">{{ $card['sample'] ? $t['viewSample'] : $t['viewDocument'] }}</span>
                                         @if ($card['ref'] !== '')
@@ -535,7 +542,10 @@
                         <span class="sample-tag" id="gpl-certificate-sample" hidden>{{ $t['sampleOnly'] }}</span>
                         <button type="button" class="dialog-close" data-close aria-label="{{ $t['close'] }}"><x-trace-icon name="x" /></button>
                     </div>
-                    <div class="cert-preview"><x-trace-icon name="file-check-2" style="width:52px;height:52px;stroke-width:1.2" /></div>
+                    <div class="cert-preview" id="gpl-certificate-preview">
+                        <img id="gpl-certificate-image" alt="" hidden style="display:none;width:100%;max-height:70vh;object-fit:contain;border-radius:8px;background:#fff">
+                        <span id="gpl-certificate-icon"><x-trace-icon name="file-check-2" style="width:52px;height:52px;stroke-width:1.2" /></span>
+                    </div>
                     <h2 class="dialog-title" id="gpl-certificate-title"></h2>
                     <p class="dialog-text" id="gpl-certificate-body"></p>
                     <p class="font-mono text-[11px] text-forest-700 mt-4" id="gpl-certificate-reference"></p>
@@ -615,7 +625,24 @@
             const badge = root.querySelector('#gpl-certificate-sample');
             if (badge) badge.hidden = !sample;
             const link = root.querySelector('#gpl-certificate-link');
-            link.href = button.dataset.certHref || '#';
+            const href = button.dataset.certHref || '#';
+            link.href = href;
+            const preview = root.querySelector('#gpl-certificate-preview');
+            const image = root.querySelector('#gpl-certificate-image');
+            const icon = root.querySelector('#gpl-certificate-icon');
+            const showImage = /\.(jpe?g|png|webp)(\?|$)/i.test(href);
+            if (preview) {
+                preview.style.height = showImage ? 'auto' : '';
+                preview.style.background = showImage ? 'transparent' : '';
+            }
+            if (image) {
+                image.hidden = !showImage;
+                image.style.display = showImage ? 'block' : 'none';
+                image.alt = button.dataset.certTitle || '';
+                if (showImage) image.src = href;
+                else image.removeAttribute('src');
+            }
+            if (icon) icon.style.display = showImage ? 'none' : '';
             const linkLabel = root.querySelector('#gpl-certificate-link-label');
             if (linkLabel) linkLabel.textContent = sample ? viewSample : viewDocument;
             openDialog(certDialog);
