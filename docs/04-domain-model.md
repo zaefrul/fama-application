@@ -129,6 +129,7 @@ Observed categories:
 - size
 - quantity
 - quantityUnit
+- market: `DOMESTIC` or `EXPORT` (ADR-028). Existing rows are `EXPORT`
 - destinationCountry
 - cocCertificateId / cocNumber
 - exportDate (nullable)

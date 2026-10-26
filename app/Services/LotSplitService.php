@@ -29,13 +29,13 @@ class LotSplitService
             $this->assertOpen($parent);
 
             if ($chunks === []) {
-                throw new RuntimeException('Masukkan sekurang-kurangnya satu pecahan');
+                throw new RuntimeException('Masukkan sekurang-kurangnya satu jualan');
             }
 
             $parent->loadMissing('holder');
             $source = $parent->holder?->chainParty() ?? PartyType::Exporter;
             if ($source->rank() === null) {
-                throw new RuntimeException('Jenis pemegang tidak berada dalam rantaian. Kemas kini jenis syarikat sebelum membuat pecahan.');
+                throw new RuntimeException('Jenis pemegang tidak berada dalam rantaian. Kemas kini jenis syarikat sebelum membuat jualan.');
             }
 
             $sum = 0;
@@ -43,7 +43,7 @@ class LotSplitService
                 $quantity = (int) ($chunk['quantity'] ?? 0);
                 $recipientId = trim((string) ($chunk['recipient_company_id'] ?? ''));
                 if ($quantity < 1) {
-                    throw new RuntimeException('Kuantiti pecahan mestilah sekurang-kurangnya 1');
+                    throw new RuntimeException('Kuantiti jualan mestilah sekurang-kurangnya 1');
                 }
                 $recipient = Company::query()->find($recipientId);
                 if ($recipient === null) {
@@ -54,7 +54,7 @@ class LotSplitService
             }
 
             if ($sum > (int) $parent->quantity_remaining) {
-                throw new RuntimeException('Jumlah pecahan melebihi baki kuantiti');
+                throw new RuntimeException('Jumlah jualan melebihi baki kuantiti');
             }
 
             $before = (int) $parent->quantity_remaining;

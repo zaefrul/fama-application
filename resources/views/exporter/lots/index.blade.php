@@ -1,6 +1,6 @@
-<x-layouts.exporter title="Pecahan lot">
+<x-layouts.exporter title="Jualan lot">
     <div class="space-y-4">
-        <x-page-title title="Pecahan lot" subtitle="Lot yang dipegang syarikat aktif" />
+        <x-page-title title="Jualan lot" subtitle="Lot yang dipegang syarikat aktif" />
         @if (session('status'))
             <x-card><p class="text-sm font-semibold text-brand">{{ session('status') }}</p></x-card>
         @endif
@@ -10,10 +10,10 @@
 
         <section class="space-y-2">
             <h2 class="text-sm font-semibold">Menunggu penerimaan</h2>
-            <p class="text-xs text-muted">Pecahan yang dihantar kepada syarikat ini. Tekan Diterima untuk menerima lot dan mengaktifkan QR.</p>
+            <p class="text-xs text-muted">Jualan yang dihantar kepada syarikat ini. Tekan Diterima untuk menerima lot dan mengaktifkan QR.</p>
             @if ($incoming->isEmpty())
                 <x-card>
-                    <p class="text-sm text-muted">Tiada pecahan menunggu penerimaan.</p>
+                    <p class="text-sm text-muted">Tiada jualan menunggu penerimaan.</p>
                 </x-card>
             @else
                 <ul class="space-y-2">

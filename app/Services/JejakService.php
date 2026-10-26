@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Domain\ApplicationStatus;
 use App\Domain\Ids;
 use App\Domain\LotDisposition;
+use App\Domain\Market;
 use App\Domain\PartyType;
 use App\Domain\ProductKind;
 use App\Domain\QrStatus;
@@ -412,6 +413,7 @@ class JejakService
             ?? (ProductKind::tryFrom((string) ($input['product_kind'] ?? '')) ?? ProductKind::Produce);
         $input['product_kind'] = $kind->value;
         $input['produce_category'] = $kind->value;
+        $input = $this->applyMarket($input);
         $input = $this->withResolvedProduceType($input, $current !== null);
 
         if ($kind === ProductKind::Livestock) {
@@ -433,6 +435,36 @@ class JejakService
         $input['slaughter_date'] = null;
         $input['abattoir_name'] = null;
         $input['vet_certificate_no'] = null;
+
+        return $input;
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     * @return array<string, mixed>
+     */
+    private function applyMarket(array $input): array
+    {
+        $market = Market::fromInput(isset($input['market']) ? (string) $input['market'] : null);
+        $input['market'] = $market->value;
+        if ($market === Market::Domestic) {
+            $input['destination_country'] = '';
+            $input['export_date'] = null;
+            $input['importer_name'] = '';
+            $input['importer_address'] = '';
+
+            return $input;
+        }
+
+        if (trim((string) ($input['destination_country'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi destinasi');
+        }
+        if (trim((string) ($input['importer_name'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi pengimport');
+        }
+        if (trim((string) ($input['importer_address'] ?? '')) === '') {
+            throw new RuntimeException('Sila isi alamat pengimport');
+        }
 
         return $input;
     }
@@ -473,6 +505,7 @@ class JejakService
             'company_id' => $input['company_id'],
             'produce_type_id' => $input['produce_type_id'],
             'product_kind' => $input['product_kind'],
+            'market' => $input['market'],
             'variety' => $input['variety'],
             'grade' => $input['grade'],
             'size' => $input['size'],
@@ -1065,6 +1098,7 @@ class JejakService
         $application->fill([
             'produce_type_id' => $patch['produce_type_id'] ?? $application->produce_type_id,
             'product_kind' => $application->product_kind,
+            'market' => $patch['market'] ?? $application->market,
             'variety' => $patch['variety'] ?? $application->variety,
             'grade' => $patch['grade'] ?? $application->grade,
             'size' => $patch['size'] ?? $application->size,

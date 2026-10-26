@@ -142,3 +142,25 @@ Public farm map: OpenStreetMap embed when coordinates exist. No paid Maps API.
 **Reason:** SA review of the public QR pamphlet (2026-08-27).
 
 **Assumption:** Official FAMA contact beyond the public website URL is not specified. Farm location on the public page is shown because SA asked for it; commercial-sensitivity of farm coordinates remains an open question. EN public label for the actor is “Entrepreneur”; ZH is “业者”. This does not close the approved logo-pack open question.
+
+## DD-014 — Usahawan dashboard pecahan charts
+
+**Decision:** Utama for the active company shows pecahan aggregates of existing lot records:
+
+- Menunggu penerimaan, Dipegang (baki lebih daripada 0), Lot dijual bulan ini (bilangan lot);
+- Baki setiap lot — up to six held lots, baki against quantity already moved;
+- Status jualan — lot counts for Dipegang, Menunggu penerimaan, Habis dipecah, Dijual;
+- Ke mana kuantiti pergi — child quantity by recipient role;
+- Kuantiti mengikut produk — held baki against quantity already moved;
+- Jualan mengikut minggu — last 8 calendar weeks (Monday start, Asia/Kuala_Lumpur) of quantity split and sold;
+- Didapat lawan dilepaskan — the same 8 weeks as two lines. Didapat is quantity accepted from another company. Dilepaskan is quantity sent onward or sold. A company’s own root batch is not didapat.
+
+A company with no held, incoming, or outgoing lot sees one empty card. KPI counts keep status colours. Chart fills use a pastel palette scoped to this section, so the FAMA DD-011 palette stays unchanged. Layout chrome stays FAMA green.
+
+**Amended:** Pastel fills are mint (baki, didapat), sky (keluar, dilepaskan, dipecahkan), butter (dijual), peach (menunggu penerimaan) and lilac (habis dipecah). The line chart adds a soft area under each stroke. Strokes and summary figures use a deeper sister of the same hue so the pastel stays readable. Destination bars use the same local pastel set.
+
+**Reason:** The usahawan dashboard previously counted QR and permohonan only. Pecahan stock and downstream flow were visible only on the lot list.
+
+**Assumption:** Quantities stay inside one `quantity_unit` and are not added together. A sell-entire amount is the lot quantity minus its child quantities, because that sold amount is not stored on the lot. The dashboard calls a sold endpoint **Pengguna**, matching “Jual kepada pengguna”. The public trace label stays **Consumer**.
+
+The menu, lot screens, dashboard headings, and public jejak say **Jualan**. Passing quantity to the next company and selling to a buyer stay separate actions.

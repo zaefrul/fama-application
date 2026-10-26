@@ -46,14 +46,16 @@ class GovernmentChromeTest extends TestCase
             ->assertSee('Profil Keluaran Pertanian')
             ->assertSee('trace-page')
             ->assertDontSee('Imej ilustrasi konsep')
-            ->assertSee('/certificates/sijil-haccp-demo.svg')
-            ->assertSee('/certificates/sijil-coc-demo.svg')
-            ->assertSee('CONTOH')
+            ->assertDontSee('Dokumen & sijil')
+            ->assertDontSee('/certificates/sijil-haccp-demo.svg', false)
+            ->assertDontSee('/certificates/sijil-coc-demo.svg', false)
+            ->assertDontSee('CONTOH')
+            ->assertDontSee('No. sijil CoC rekod')
             ->assertSee('/logos/logo-jata-negara.png')
             ->assertSee('/logos/logo-fama.png')
             ->assertSee('Hak cipta terpelihara')
             ->assertSee('900')
-            ->assertDontSee('Pecahan kod ini');
+            ->assertDontSee('Jualan kod ini');
         $this->assertStringContainsString('no-cache', (string) $response->headers->get('Cache-Control'));
     }
 

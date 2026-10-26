@@ -6,7 +6,9 @@
             <x-qr-preview :value="$publicUrl" />
             <p class="text-sm">Produk: {{ $application?->produceType?->name }} {{ $application?->variety }}</p>
             <p class="text-sm">Gred: {{ $application?->grade }}</p>
-            <p class="text-sm">Pengimport: {{ $application?->importer_name }}</p>
+            @if ($application?->isExport() && filled($application->importer_name))
+                <p class="text-sm">Pengimport: {{ $application->importer_name }}</p>
+            @endif
             <a href="{{ route('exporter.qr.download', $qr) }}"><x-button type="button" class="w-full">Muat Turun QR</x-button></a>
         </x-card>
     </div>

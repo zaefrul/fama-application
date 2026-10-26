@@ -227,7 +227,7 @@ A verified export application still has one root QR. After that QR is `ACTIVE`, 
 
 The holder is the active company on the user (`users.company_id`). External logins stay `EXPORTER`. Each company has a chain role on `companies.party_type`: Pengeluar, Pemborong, Peruncit, or a named Lain-lain. The public checkpoint line prints those roles in order, and a consumer sale ends the line with Consumer. There is no required sequence of parties. Depth is not fixed.
 
-Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAMA does not approve each chunk. The receiving company activates that QR with **Diterima** on Pecahan (ADR-026). Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder to a consumer creates a terminal child QR immediately, with no company login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors after the QR is active. Downstream buyers stay on the holder screen and the FAMA application tree.
+Child QR codes assigned to another company are created `GENERATED_INACTIVE`. FAMA does not approve each chunk. The receiving company activates that QR with **Diterima** on Jualan (ADR-026). Selling the whole remainder marks that lot `SOLD` and blocks further splits. Selling part of the remainder to a consumer creates a terminal child QR immediately, with no company login. Every node uses the root quantity unit as an integer. The public page shows this chunk and its ancestors after the QR is active. Downstream buyers stay on the holder screen and the FAMA application tree.
 
 **Reason:** A single trunk, such as a banana lot, is broken into smaller lots as it moves along the chain, and each piece must stay traceable.
 
@@ -279,11 +279,33 @@ The public QR page lists certificates that belong to the root application compan
 **Status:** Temporary prototype decision
 **Date:** 2026-10-22
 
-A company pecahan stays **Belum Aktif** until the receiving company presses **Diterima** on **Pecahan** or **Kod QR**. Opening the public trace while signed in does not accept the lot.
+A company jualan stays **Belum Aktif** until the receiving company presses **Diterima** on **Jualan** or **Kod QR**. Opening the public trace while signed in does not accept the lot.
 
 **Reason:** Receipt needs a visible step. A scan was accepting the lot before the company could see that it was waiting.
 
 **Consequences:** The public page keeps showing **QR Menunggu Penerimaan** until **Diterima**. That button sets the holder and status `ACTIVE`, and writes `LOT_ACCEPTED`.
+
+## ADR-027 — Public trace hides codes, quantities, and sijil on the journey
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-26
+
+On the public QR page, each stop under **Dari sumber ke tangan anda** shows the chain role and the holder name only. That line does not show the QR ID, the quantity, or a **Kod ini** badge. The public page does not list sijil, including the CoC number and the veterinary certificate number.
+
+**Reason:** A buyer should see who held the lot. The internal code, the kilogram figure, and uploaded certificates stay off that public page.
+
+**Consequences:** Supersedes the public display in ADR-025. Sijil remain on the usahawan **Sijil** screen. The side panel still shows the QR that was opened. The public JSON payload is unchanged.
+
+## ADR-028 — A QR application is Domestik or Eksport
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-26
+
+Each QR application has a market: **Domestik** or **Eksport**. Eksport keeps Destinasi, Tarikh Eksport, Pengimport, and Alamat Pengimport. Domestik does not collect or show those fields. Nama ladang, lot, lokasi, and livestock premises stay on both.
+
+**Reason:** A domestic lot has no importer and no export record. The source of the produce is still part of the application.
+
+**Consequences:** Existing applications stay Eksport. The Permohonan and Kelulusan QR lists are split into the two markets. A domestic public page does not show an export destination.
 
 ## Adding a decision
 

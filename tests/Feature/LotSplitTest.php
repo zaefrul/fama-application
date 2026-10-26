@@ -62,7 +62,7 @@ class LotSplitTest extends TestCase
         $this->get('/trace/'.$child->qr_code)
             ->assertOk()
             ->assertSee('QR Menunggu Penerimaan')
-            ->assertDontSee('Jejak pecahan');
+            ->assertDontSee('Jejak jualan');
 
         $this->assertSame(QrStatus::GeneratedInactive, $child->fresh()->status);
 
@@ -76,7 +76,7 @@ class LotSplitTest extends TestCase
         $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
             ->get(route('exporter.qr'))
             ->assertOk()
-            ->assertSee('QR pecahan')
+            ->assertSee('QR jualan')
             ->assertSee('Menunggu penerimaan')
             ->assertSee($child->qr_code);
 
@@ -109,13 +109,15 @@ class LotSplitTest extends TestCase
             ->get('/trace/'.$child->qr_code)
             ->assertOk()
             ->assertSee('Pisang')
-            ->assertSee('Kod ini')
+            ->assertSee('Runcit Segar Sdn. Bhd.')
+            ->assertSee('Peruncit')
+            ->assertDontSee('Kod ini')
             ->assertDontSee('QR Menunggu Penerimaan');
 
         $this->actingAs(User::query()->findOrFail('user_peruncit_pisang'))
             ->get(route('exporter.qr'))
             ->assertOk()
-            ->assertSee('QR pecahan')
+            ->assertSee('QR jualan')
             ->assertDontSee('Menunggu penerimaan');
 
         $this->assertNotNull(AuditLog::query()->where('action', 'LOT_ACCEPTED')->where('object_id', $child->id)->first());
@@ -132,7 +134,7 @@ class LotSplitTest extends TestCase
             ]]);
             $this->fail('Expected the split to be rejected.');
         } catch (RuntimeException $e) {
-            $this->assertSame('Jumlah pecahan melebihi baki kuantiti', $e->getMessage());
+            $this->assertSame('Jumlah jualan melebihi baki kuantiti', $e->getMessage());
         }
 
         $this->assertSame(600, $lot->fresh()->quantity_remaining);
@@ -166,25 +168,31 @@ class LotSplitTest extends TestCase
         $this->get('/trace/GPL-QR-000204')
             ->assertOk()
             ->assertSee('Pisang')
-            ->assertSee('Jejak pecahan')
-            ->assertSee('Kod ini')
-            ->assertSee('Pecahan kod ini')
-            ->assertSee('GPL-QR-000201')
-            ->assertSee('GPL-QR-000202')
+            ->assertSee('Dari sumber ke tangan anda')
+            ->assertSee('Pengeluar')
+            ->assertSee('Pengeksport')
+            ->assertSee('Pemborong')
+            ->assertSee('Ladang Pisang Pontian')
+            ->assertSee('Eksport Pisang Sdn. Bhd.')
+            ->assertSee('Pemasar Buah Sdn. Bhd.')
+            ->assertDontSee('GPL-QR-000201')
+            ->assertDontSee('GPL-QR-000202')
             ->assertSee('GPL-QR-000204')
-            ->assertSee('1,000')
+            ->assertDontSee('1,000')
             ->assertSee('400')
             ->assertSee('250')
-            ->assertSee('Ladang Pisang Pontian')
             ->assertSee('Pontian, Johor')
-            ->assertDontSee('trace-checkpoint');
+            ->assertDontSee('trace-checkpoint')
+            ->assertDontSee('Dokumen & sijil');
 
         $this->get('/trace/GPL-QR-000201')
             ->assertOk()
             ->assertSee('GPL-QR-000201')
-            ->assertSee('Kod ini')
+            ->assertSee('Pengeluar')
+            ->assertSee('Ladang Pisang Pontian')
+            ->assertDontSee('Kod ini')
             ->assertSee('1,000')
-            ->assertDontSee('Pecahan kod ini');
+            ->assertDontSee('Jualan kod ini');
 
         $this->getJson('/api/public/trace/GPL-QR-000204')
             ->assertOk()
@@ -201,7 +209,7 @@ class LotSplitTest extends TestCase
         $this->get('/trace/GPL-QR-000109')
             ->assertOk()
             ->assertSee('Tembikai')
-            ->assertSee('Jejak pecahan')
+            ->assertSee('Jejak jualan')
             ->assertSee('GPL-QR-000109');
 
         $this->getJson('/api/public/trace/GPL-QR-000109')
@@ -268,7 +276,7 @@ class LotSplitTest extends TestCase
             ->get(route('exporter.lots.show', 'qr_pisang_exp_400'))
             ->assertOk()
             ->assertSee('GPL-QR-000204')
-            ->assertSee('Jejak pecahan')
+            ->assertSee('Jejak jualan')
             ->assertSee('Pemborong · Pemasar Buah Sdn. Bhd.')
             ->assertSee('Peruncit · Runcit Segar Sdn. Bhd.')
             ->assertSee('Pengeksport · MTS Fruits Sdn. Bhd.')
@@ -283,7 +291,7 @@ class LotSplitTest extends TestCase
         $this->actingAs(User::query()->findOrFail('user_fama'))
             ->get(route('fama.applications.show', 'app_pisang'))
             ->assertOk()
-            ->assertSee('Pecahan lot')
+            ->assertSee('Jualan lot')
             ->assertSee('trace-checkpoint', false)
             ->assertSee('GPL-QR-000201')
             ->assertSee('GPL-QR-000204')

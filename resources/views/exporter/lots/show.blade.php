@@ -29,7 +29,7 @@
         </x-card>
 
         <x-card>
-            <h2 class="font-semibold">Jejak pecahan</h2>
+            <h2 class="font-semibold">Jejak jualan</h2>
             <x-lot-timeline
                 class="is-inset"
                 :nodes="$lineage"
@@ -43,7 +43,7 @@
 
         @if ($open)
             <x-card class="space-y-3">
-                <h2 class="font-semibold">Pecahkan kepada syarikat</h2>
+                <h2 class="font-semibold">Jualan kepada syarikat</h2>
                 <p class="text-xs text-muted">Jumlah kuantiti tidak boleh melebihi baki. Unit kekal {{ $unit }}. Penerima mestilah jenis yang sama atau ke hilir: Pengeluar, Pengeksport, Pemborong, Pengimport, Peruncit.</p>
                 @if ($companies->isEmpty())
                     <p class="text-sm">Tiada syarikat pada jenis yang sama atau ke hilir.</p>
@@ -65,8 +65,8 @@
                             </x-field>
                         </div>
                     </div>
-                    <x-button type="button" variant="secondary" onclick="addChunkRow()">Tambah pecahan</x-button>
-                    <x-button type="submit" class="w-full">Simpan pecahan</x-button>
+                    <x-button type="button" variant="secondary" onclick="addChunkRow()">Tambah jualan</x-button>
+                    <x-button type="submit" class="w-full">Simpan jualan</x-button>
                 </form>
                 @endif
             </x-card>

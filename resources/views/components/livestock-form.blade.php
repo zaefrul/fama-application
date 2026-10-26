@@ -11,6 +11,8 @@
 @php
     $readOnly = $editable ? false : ($application ? $application->status->value !== 'DRAFT' : false);
     $displayCompany = $companyName ?? $application?->company?->name;
+    $marketValue = old('market', $application?->market?->value ?? \App\Domain\Market::Export->value);
+    $isExport = $marketValue !== \App\Domain\Market::Domestic->value;
 @endphp
 <div class="space-y-4">
     <x-breadcrumb :items="['Senarai QR', 'Maklumat Ternakan']" />
@@ -19,6 +21,7 @@
         <form action="{{ $action }}" method="post" enctype="multipart/form-data" class="grid gap-4">
             @csrf
             <input type="hidden" name="productKind" value="LIVESTOCK">
+            <x-market-choice :value="$marketValue" :read-only="$readOnly" />
             @if ($choiceUrl)
                 <a href="{{ $choiceUrl }}" class="text-sm font-semibold text-brand">Tukar jenis</a>
             @endif
@@ -53,9 +56,6 @@
                         <x-input name="quantity" type="number" min="1" :value="$application?->quantity" :readonly="$readOnly" required />
                     </x-field>
                 </div>
-                <x-field label="Destinasi" required>
-                    <x-input name="destinationCountry" :value="$application?->destination_country" :readonly="$readOnly" required />
-                </x-field>
                 <x-field label="No. Sijil Veterinar" required>
                     <x-input name="vetCertificateNo" :value="$application?->vet_certificate_no" :readonly="$readOnly" required />
                 </x-field>
@@ -73,10 +73,7 @@
                 </x-field>
             </section>
             <section class="grid gap-3 border-t border-border pt-4">
-                <h2 class="text-sm font-bold text-brand">Maklumat Eksport</h2>
-                <x-field label="Tarikh Eksport">
-                    <x-input name="exportDate" type="date" :value="$application?->export_date?->toDateString()" :readonly="$readOnly" />
-                </x-field>
+                <h2 class="text-sm font-bold text-brand">Maklumat Premis</h2>
                 <x-field label="Tarikh Sembelih">
                     <x-input name="slaughterDate" type="date" :value="$application?->slaughter_date?->toDateString()" :readonly="$readOnly" />
                 </x-field>
@@ -106,13 +103,23 @@
                         marker-hint="Klik peta untuk menanda lokasi premis. Medan latitud dan longitud dikemaskini secara automatik."
                     />
                 @endif
-                <x-field label="Pengimport" required>
-                    <x-input name="importerName" :value="$application?->importer_name" :readonly="$readOnly" required />
+            </section>
+            <section class="grid gap-3 border-t border-border pt-4" data-export-section @unless ($isExport) hidden @endunless>
+                <h2 class="text-sm font-bold text-brand">Maklumat Eksport</h2>
+                <x-field label="Destinasi" :required="$isExport">
+                    <x-input name="destinationCountry" :value="$application?->destination_country" :readonly="$readOnly" :required="$isExport" :disabled="! $isExport && ! $readOnly" data-export-required />
                 </x-field>
-                <x-field label="Alamat Pengimport" required>
-                    <x-textarea name="importerAddress" :readonly="$readOnly" required>{{ $application?->importer_address }}</x-textarea>
+                <x-field label="Tarikh Eksport">
+                    <x-input name="exportDate" type="date" :value="$application?->export_date?->toDateString()" :readonly="$readOnly" :disabled="! $isExport && ! $readOnly" />
+                </x-field>
+                <x-field label="Pengimport" :required="$isExport">
+                    <x-input name="importerName" :value="$application?->importer_name" :readonly="$readOnly" :required="$isExport" :disabled="! $isExport && ! $readOnly" data-export-required />
+                </x-field>
+                <x-field label="Alamat Pengimport" :required="$isExport">
+                    <x-textarea name="importerAddress" :readonly="$readOnly" :required="$isExport" :disabled="! $isExport && ! $readOnly" data-export-required>{{ $application?->importer_address }}</x-textarea>
                 </x-field>
             </section>
+            <x-market-toggle :read-only="$readOnly" />
             @if (! $readOnly)
                 <div class="sticky bottom-20 flex gap-2 bg-white/90 py-2 md:bottom-0">
                     @unless ($hideSecondary)

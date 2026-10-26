@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Domain\Market;
 use App\Domain\ProductKind;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ final class ApplicationInput
         return [
             'company_id' => $companyId,
             'product_kind' => $kind->value,
+            'market' => Market::fromInput($request->input('market'))->value,
             'produce_type_id' => (string) $request->input('produceTypeId', ''),
             'new_produce_name' => trim((string) $request->input('newProduceName', '')),
             'variety' => (string) $request->input('variety', ''),

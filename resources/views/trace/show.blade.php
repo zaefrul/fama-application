@@ -1,7 +1,5 @@
 @php
     use App\Domain\LotDisposition;
-    use App\Services\JejakService;
-    use App\Support\PublicFile;
     use App\Support\TraceCopy;
 
     $t = TraceCopy::forPage($lang, (bool) $application?->isLivestock());
@@ -33,16 +31,6 @@
             ?? $node->pendingHolder?->displayName()
             ?? $t['soldToPublic'];
     };
-    $qtyOf = function ($node) use ($application): ?int {
-        if ($node->quantity !== null) {
-            return (int) $node->quantity;
-        }
-        if ($node->parent_id === null && $application?->quantity !== null) {
-            return (int) $application->quantity;
-        }
-
-        return null;
-    };
     $labelRole = fn (string $role): string => $lang === 'bm' ? mb_strtolower($role, 'UTF-8') : $role;
     $withLabel = function (?string $value, string $label): ?string {
         $value = trim((string) $value);
@@ -61,13 +49,6 @@
     $relatedLabel = ($journey ?? collect())->count() === 1
         ? $t['relatedCountOne']
         : str_replace(':count', (string) ($journey ?? collect())->count(), $t['relatedCount']);
-    $portionNote = $showSplit
-        ? str_replace(
-            [':current', ':parent', ':unit', ':role'],
-            [$fmt($currentQty), $fmt($parentQty), $unit, $labelRole($parentRole)],
-            $t['portionNote'],
-        )
-        : '';
     $farmName = trim((string) ($application?->farm_name ?? ''));
     $farmLocation = trim((string) ($application?->farm_location ?? ''));
     $farmOrigin = $farmLocation !== '' ? $farmLocation : $farmName;
@@ -102,7 +83,6 @@
         $pushDetail($t['breed'], $application->variety);
         $pushDetail($t['headCount'], $application->head_count ? $application->head_count.' '.$t['headUnit'] : null);
         $pushDetail($t['weight'], $currentQty !== null ? trim($fmt($currentQty).' '.$unit) : null);
-        $pushDetail($t['vetCertificate'], $application->vet_certificate_no, true);
         $pushDetail($t['abattoir'], $application->abattoir_name);
     } elseif ($gradeSize !== '') {
         $pushDetail($t['gradeSize'], $gradeSize);
@@ -112,25 +92,7 @@
         $pushDetail($t['currentHolder'], $holderName);
     }
     $pushDetail($t['lot'], $application?->lot_no, true);
-    if (! $application?->isLivestock()) {
-        $pushDetail($t['cocRecord'], $application?->coc_number, true);
-    }
     $pushDetail($t['destination'], $destination);
-    $certCards = ($certificates ?? collect())->map(function ($certificate) use ($t, $lang) {
-        $preview = JejakService::certificatePreviewPath($certificate->type, $certificate->document_path);
-
-        return [
-            'title' => trim($t['certWord'].' '.$certificate->type),
-            'ref' => (string) $certificate->certificate_no,
-            'sample' => JejakService::certificateIsSample($certificate->document_path),
-            'href' => PublicFile::url($preview),
-            'image' => (bool) preg_match('/\.(jpe?g|png|webp)(\?|$)/i', $preview),
-            'issued' => TraceCopy::formatDate($certificate->issue_date, $lang),
-            'expires' => TraceCopy::formatDate($certificate->expiry_date, $lang),
-        ];
-    });
-    $anySample = $certCards->contains(fn (array $card) => $card['sample']);
-    $allSamples = $certCards->isNotEmpty() && $certCards->every(fn (array $card) => $card['sample']);
     $qrSrc = $publicUrl !== '' ? url('/api/qr').'?data='.urlencode($publicUrl).'&size=360&v=3' : '';
     $showOrigin = $farmName !== '' || $farmLocation !== '' || $mapUrl || $destination !== '' || $exportDate !== '' || $address !== '' || $slaughterDate !== '';
 @endphp
@@ -270,9 +232,6 @@
             <nav class="section-nav" aria-label="{{ $t['sectionsLabel'] }}">
                 <a href="#gpl-overview" class="active"><x-trace-icon name="layout-grid" style="width:14px;height:14px" /> {{ $t['navSummary'] }}</a>
                 <a href="#gpl-journey"><x-trace-icon name="route" style="width:14px;height:14px" /> {{ $t['navJourney'] }}</a>
-                @if ($certCards->isNotEmpty())
-                    <a href="#gpl-certificates"><x-trace-icon name="files" style="width:14px;height:14px" /> {{ $t['navDocs'] }}</a>
-                @endif
                 <a href="#gpl-details"><x-trace-icon name="list-filter" style="width:14px;height:14px" /> {{ $t['navMore'] }}</a>
             </nav>
 
@@ -294,32 +253,14 @@
                                     @endif
                                     @php
                                         $nodeCurrent = (string) $node->id === (string) $qr->id;
-                                        $nodeSold = $node->disposition === LotDisposition::Sold;
-                                        $nodeQty = $qtyOf($node);
                                     @endphp
                                     <li class="journey-node {{ $nodeCurrent ? 'current' : '' }}" @if ($nodeCurrent) aria-current="step" @endif>
-                                        <div class="node-top">
-                                            <span class="node-role {{ $nodeCurrent ? 'text-forest-700' : '' }}">{{ $roleOf($node) }}</span>
-                                            @if ($nodeCurrent)
-                                                <span class="pill current-badge bg-forest-700 text-white">{{ $t['currentStop'] }}</span>
-                                            @elseif ($nodeSold)
-                                                <span class="pill current-badge bg-gold-50 text-gold-600">{{ $t['sold'] }}</span>
-                                            @else
-                                                <x-trace-icon name="package" class="icon text-forest-500" />
-                                            @endif
-                                        </div>
+                                        <p class="node-role {{ $nodeCurrent ? 'text-forest-700' : '' }}">{{ $roleOf($node) }}</p>
                                         <p class="node-name">{{ $nameOf($node) }}</p>
-                                        <p class="node-id">{{ $node->qr_code }}</p>
-                                        @if ($nodeQty !== null)
-                                            <p class="node-weight">{{ $fmt($nodeQty) }} @if ($unit !== '')<span class="text-[11px] font-medium text-gpl-muted">{{ $unit }}</span>@endif</p>
-                                        @endif
                                     </li>
                                 @endforeach
                             </ol>
                         </div>
-                        @if ($portionNote !== '')
-                            <p class="journey-footnote"><x-trace-icon name="git-branch" style="width:13px;height:13px;margin-top:2px" /> {{ $portionNote }}</p>
-                        @endif
                     </section>
 
                     <section class="product-panel" id="gpl-details" aria-labelledby="gpl-details-title">
@@ -339,54 +280,6 @@
                             @endforeach
                         </dl>
                     </section>
-
-                    @if ($certCards->isNotEmpty())
-                        <section class="product-panel" id="gpl-certificates" aria-labelledby="gpl-certificates-title">
-                            <div class="section-heading">
-                                <div>
-                                    <h2 id="gpl-certificates-title">{{ $t['docsTitle'] }}</h2>
-                                    <p>{{ $t['docsSubtitle'] }}</p>
-                                </div>
-                                @if ($allSamples)
-                                    <span class="sample-tag">{{ $t['sample'] }}</span>
-                                @endif
-                            </div>
-                            <div class="certificate-grid">
-                                @foreach ($certCards as $card)
-                                    <button
-                                        class="cert-button"
-                                        type="button"
-                                        data-certificate
-                                        data-cert-title="{{ $card['title'] }}"
-                                        data-cert-ref="{{ $card['ref'] }}"
-                                        data-cert-sample="{{ $card['sample'] ? '1' : '0' }}"
-                                        data-cert-href="{{ $card['href'] }}"
-                                        data-cert-issued="{{ $card['issued'] }}"
-                                        data-cert-expires="{{ $card['expires'] }}"
-                                        aria-haspopup="dialog"
-                                    >
-                                        <span class="cert-corner"><x-trace-icon name="arrow-up-right" style="width:13px;height:13px" /></span>
-                                        @if ($card['image'])
-                                            <img src="{{ $card['href'] }}" alt="" style="display:block;width:100%;height:96px;object-fit:cover;object-position:top;border-radius:8px;margin-bottom:10px">
-                                        @else
-                                            <span class="cert-file-icon"><x-trace-icon name="file-check-2" /></span>
-                                        @endif
-                                        <span class="cert-type">{{ $card['title'] }}</span>
-                                        <span class="cert-sub">{{ $card['sample'] ? $t['viewSample'] : $t['viewDocument'] }}</span>
-                                        @if ($card['ref'] !== '')
-                                            <span class="cert-sub font-mono">{{ $card['ref'] }}</span>
-                                        @endif
-                                        @if ($card['sample'] && ! $allSamples)
-                                            <span class="sample-tag" style="margin-top:8px">{{ $t['sample'] }}</span>
-                                        @endif
-                                    </button>
-                                @endforeach
-                            </div>
-                            @if ($anySample)
-                                <p class="journey-footnote"><x-trace-icon name="circle-info" style="width:13px;height:13px;margin-top:2px" /> {{ $t['certsNote'] }}</p>
-                            @endif
-                        </section>
-                    @endif
 
                     @if (count($nutrition))
                         <details class="product-panel nutrition" id="gpl-nutrition">
@@ -418,7 +311,7 @@
                     @if ($showOrigin)
                         <section class="product-panel origin-panel" aria-labelledby="gpl-origin-title">
                             <div class="origin-heading">
-                                <h2 id="gpl-origin-title">{{ $t['originTitle'] }}</h2>
+                                <h2 id="gpl-origin-title">{{ $application?->isDomestic() ? $t['originOnly'] : $t['originTitle'] }}</h2>
                                 <x-trace-icon name="sprout" class="icon text-forest-500" style="width:22px;height:22px" />
                             </div>
                             @if ($farmName !== '' || $farmLocation !== '')
@@ -535,29 +428,6 @@
                 <p id="gpl-copy-status" role="status" class="text-[11px] text-forest-700 mt-3"></p>
             </div>
         </dialog>
-
-        @if ($certCards->isNotEmpty())
-            <dialog class="gpl-dialog" id="gpl-certificate-dialog" aria-labelledby="gpl-certificate-title">
-                <div class="dialog-inner">
-                    <div class="dialog-top">
-                        <span class="sample-tag" id="gpl-certificate-sample" hidden>{{ $t['sampleOnly'] }}</span>
-                        <button type="button" class="dialog-close" data-close aria-label="{{ $t['close'] }}"><x-trace-icon name="x" /></button>
-                    </div>
-                    <div class="cert-preview" id="gpl-certificate-preview">
-                        <img id="gpl-certificate-image" alt="" hidden style="display:none;width:100%;max-height:70vh;object-fit:contain;border-radius:8px;background:#fff">
-                        <span id="gpl-certificate-icon"><x-trace-icon name="file-check-2" style="width:52px;height:52px;stroke-width:1.2" /></span>
-                    </div>
-                    <h2 class="dialog-title" id="gpl-certificate-title"></h2>
-                    <p class="dialog-text" id="gpl-certificate-body"></p>
-                    <p class="font-mono text-[11px] text-forest-700 mt-4" id="gpl-certificate-reference"></p>
-                    <p class="text-[11px] text-gpl-muted mt-2" id="gpl-certificate-dates"></p>
-                    <a class="primary-action mt-6 w-full" id="gpl-certificate-link" href="#" target="_blank" rel="noopener noreferrer">
-                        <span id="gpl-certificate-link-label">{{ $t['viewDocument'] }}</span>
-                        <x-trace-icon name="arrow-up-right" />
-                    </a>
-                </div>
-            </dialog>
-        @endif
     @endif
 
     <footer class="gpl-footer">
@@ -604,50 +474,6 @@
         } catch (error) {
             status.textContent = url;
         }
-    });
-    const certDialog = root.querySelector('#gpl-certificate-dialog');
-    const sampleBody = @json($anySample ? $t['certsNote'] : '');
-    const realBody = @json($t['certDialogReal']);
-    const issuedLabel = @json($t['issued']);
-    const expiresLabel = @json($t['expires']);
-    const viewSample = @json($t['viewSample']);
-    const viewDocument = @json($t['viewDocument']);
-    root.querySelectorAll('[data-certificate]').forEach((button) => {
-        button.addEventListener('click', () => {
-            if (!certDialog) return;
-            const sample = button.dataset.certSample === '1';
-            root.querySelector('#gpl-certificate-title').textContent = button.dataset.certTitle || '';
-            root.querySelector('#gpl-certificate-body').textContent = sample ? sampleBody : realBody;
-            root.querySelector('#gpl-certificate-reference').textContent = button.dataset.certRef || '';
-            const dates = [];
-            if (button.dataset.certIssued) dates.push(issuedLabel + ': ' + button.dataset.certIssued);
-            if (button.dataset.certExpires) dates.push(expiresLabel + ': ' + button.dataset.certExpires);
-            root.querySelector('#gpl-certificate-dates').textContent = dates.join(' · ');
-            const badge = root.querySelector('#gpl-certificate-sample');
-            if (badge) badge.hidden = !sample;
-            const link = root.querySelector('#gpl-certificate-link');
-            const href = button.dataset.certHref || '#';
-            link.href = href;
-            const preview = root.querySelector('#gpl-certificate-preview');
-            const image = root.querySelector('#gpl-certificate-image');
-            const icon = root.querySelector('#gpl-certificate-icon');
-            const showImage = /\.(jpe?g|png|webp)(\?|$)/i.test(href);
-            if (preview) {
-                preview.style.height = showImage ? 'auto' : '';
-                preview.style.background = showImage ? 'transparent' : '';
-            }
-            if (image) {
-                image.hidden = !showImage;
-                image.style.display = showImage ? 'block' : 'none';
-                image.alt = button.dataset.certTitle || '';
-                if (showImage) image.src = href;
-                else image.removeAttribute('src');
-            }
-            if (icon) icon.style.display = showImage ? 'none' : '';
-            const linkLabel = root.querySelector('#gpl-certificate-link-label');
-            if (linkLabel) linkLabel.textContent = sample ? viewSample : viewDocument;
-            openDialog(certDialog);
-        });
     });
     const nav = root.querySelector('.section-nav');
     if (nav) {

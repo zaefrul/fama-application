@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\ApplicationStatus;
+use App\Domain\Market;
 use App\Domain\ProductKind;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,7 @@ class ExportApplication extends Model
         'company_id',
         'produce_type_id',
         'product_kind',
+        'market',
         'variety',
         'grade',
         'size',
@@ -52,6 +54,7 @@ class ExportApplication extends Model
         return [
             'status' => ApplicationStatus::class,
             'product_kind' => ProductKind::class,
+            'market' => Market::class,
             'export_date' => 'date',
             'slaughter_date' => 'date',
             'head_count' => 'integer',
@@ -66,6 +69,16 @@ class ExportApplication extends Model
     public function isLivestock(): bool
     {
         return $this->product_kind === ProductKind::Livestock;
+    }
+
+    public function isDomestic(): bool
+    {
+        return $this->market === Market::Domestic;
+    }
+
+    public function isExport(): bool
+    {
+        return ! $this->isDomestic();
     }
 
     public function hasFarmCoordinates(): bool

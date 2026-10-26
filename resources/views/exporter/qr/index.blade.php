@@ -26,7 +26,7 @@
         </section>
 
         <section class="space-y-2">
-            <h2 class="text-sm font-semibold">QR pecahan</h2>
+            <h2 class="text-sm font-semibold">QR jualan</h2>
             @if ($receivedQrs->isEmpty())
                 <x-card><p class="text-sm text-muted">Tiada QR yang dipecahkan kepada syarikat ini.</p></x-card>
             @else

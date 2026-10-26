@@ -14,7 +14,7 @@ An **usahawan** records an export. **Pegawai FAMA** reviews it. After FAMA appro
 
 A QR can exist before approval. Until FAMA approves, the public page says **QR Belum Diaktifkan** and shows only the QR ID. Approval turns that same QR **Aktif** and opens the traceability page. Rejection leaves the QR inactive.
 
-After a QR is active, the company holding the lot can split the remaining quantity into smaller lots. Each piece gets its own QR, linked back to the original batch. The public page shows those stops under **Jejak pecahan**.
+After a QR is active, the company holding the lot can split the remaining quantity into smaller lots. Each piece gets its own QR, linked back to the original batch. The public page shows those stops under **Jejak jualan**.
 
 DagangNet and iFAMA in this version are lookup lists inside the prototype. Certificate files are copies the company uploads. There is no live check with a certificate authority, and there is no connection to a label printer.
 
@@ -100,7 +100,7 @@ The lookup returns the company name, account number, email, and status. Check th
 
 Enter the user’s identity card number and name. The sample text already in the boxes is placeholder text. Replace it with the real user.
 
-**Peranan dalam rantaian** is stored on the company and later appears on **Jejak pecahan**:
+**Peranan dalam rantaian** is stored on the company and later appears on **Jejak jualan**:
 
 | Choice | Meaning on the chain |
 |---|---|
@@ -109,7 +109,7 @@ Enter the user’s identity card number and name. The sample text already in the
 | Pemborong | Wholesaler. Same role or after Pengeksport. |
 | Pengimport | Importer. Same role or after Pemborong. |
 | Peruncit | Retailer. Same role or after Pengimport. |
-| Lain-lain | A custom layer. **Nama lapisan** is required, for example Pengumpul. This role cannot send or receive a pecahan. |
+| Lain-lain | A custom layer. **Nama lapisan** is required, for example Pengumpul. This role cannot send or receive a jualan. |
 
 ![Usahawan details and chain role](manual/screenshots/44-register-usahawan-user.png)
 
@@ -164,7 +164,7 @@ The left menu on a computer:
 - **Utama**
 - **Permohonan**
 - **Kod QR**
-- **Pecahan**
+- **Jualan**
 - **Sijil**
 - **Profil**
 
@@ -255,20 +255,26 @@ The page says an inactive QR is generated when the draft is saved.
 | Varieti | Yes | |
 | Gred | Yes | |
 | Saiz | No | |
+| Pasaran | Yes | **Domestik** or **Eksport**. Domestik hides the export section |
 | Bilangan Eksport / Berat (kg) | Yes | This quantity is the lot you can split later |
-| Destinasi | Yes | Destination country |
 | No Sijil CoC | Yes | Pick a CoC already uploaded under **Sijil** |
 | Gambar paparan QR | No | JPG, PNG, or WEBP, maximum 50MB. This image is the one on the public page |
 
-**Maklumat Eksport**
+**Maklumat Ladang**
 
 | Field | Required | Notes |
 |---|---|---|
-| Tarikh Eksport | No | |
 | Nama Ladang | Yes | |
 | No. Lot | No | |
 | Lokasi ladang | No | |
 | Latitud / Longitud | No | When both are saved, a map is shown. Click the map to move the pin. The coordinates update with the pin |
+
+**Maklumat Eksport** — only when Pasaran is **Eksport**
+
+| Field | Required | Notes |
+|---|---|---|
+| Destinasi | Yes | Destination country |
+| Tarikh Eksport | No | |
 | Pengimport | Yes | |
 | Alamat Pengimport | Yes | |
 
@@ -278,9 +284,13 @@ The page says an inactive QR is generated when the draft is saved.
 
 ![Borang ternakan](manual/screenshots/25-application-livestock-form.png)
 
-**Maklumat Ternakan:** Jenis Ternakan, Baka, Bilangan (ekor), Berat (kg), Destinasi, No. Sijil Veterinar, and an optional display image.
+**Pasaran** is **Domestik** or **Eksport**, same as a produce application.
 
-**Maklumat Eksport:** Tarikh Eksport, Tarikh Sembelih, Nama Premis, Rumah Sembelih, Lokasi premis, coordinates, Pengimport, and Alamat Pengimport.
+**Maklumat Ternakan:** Jenis Ternakan, Baka, Bilangan (ekor), Berat (kg), No. Sijil Veterinar, and an optional display image.
+
+**Maklumat Premis:** Tarikh Sembelih, Nama Premis, Rumah Sembelih, Lokasi premis, and coordinates.
+
+**Maklumat Eksport**, only for **Eksport:** Destinasi, Tarikh Eksport, Pengimport, and Alamat Pengimport.
 
 ### After the draft is saved
 
@@ -339,38 +349,38 @@ You can download a QR that is still **Belum Aktif**. Scanning it before approval
 
 ## 8. Usahawan — split a lot
 
-The first QR is the whole shipment. **Pecahan** is where that shipment is broken into smaller lots. You do not file a new application for each box.
+The first QR is the whole shipment. **Jualan** is where that shipment is broken into smaller lots. You do not file a new application for each box.
 
-Open **Pecahan**.
+Open **Jualan**.
 
-![Senarai pecahan](manual/screenshots/29-lots.png)
+![Senarai jualan](manual/screenshots/29-lots.png)
 
 A row shows the QR, the produce, **Baki** (what is left) against the original quantity, and whether it is the **Lot asal** or came from another company. **Dipegang** means the company still holds it. A QR that is **Belum Aktif** is listed, and it cannot be split until FAMA has approved it.
 
 Open an active lot.
 
-![Pecahan satu lot](manual/screenshots/30-lot-detail.png)
+![Jualan satu lot](manual/screenshots/30-lot-detail.png)
 
-The card shows the holder, the chain role, the original quantity, the balance, and **Status lot**. **Jejak pecahan** is the line of companies. **Kod ini** marks the lot you are looking at. In the picture, ABC Fruits still holds the mango batch, and 100 kg has already moved to a retailer and been sold.
+The card shows the holder, the chain role, the original quantity, the balance, and **Status lot**. **Jejak jualan** is the line of companies. **Kod ini** marks the lot you are looking at. In the picture, ABC Fruits still holds the mango batch, and 100 kg has already moved to a retailer and been sold.
 
 ### Give a quantity to another company
 
-Under **Pecahkan kepada syarikat**:
+Under **Jualan kepada syarikat**:
 
 1. **Kuantiti** — kilograms, or the unit of that lot. The pieces together cannot exceed **Baki**.
 2. **Penerima** — the company that should hold the next stop. The list shows that company’s chain role and name.
-3. **Tambah pecahan** adds another row, so one save can create several pieces.
-4. **Simpan pecahan**.
+3. **Tambah jualan** adds another row, so one save can create several pieces.
+4. **Simpan jualan**.
 
-The page confirms the split. Your balance drops. Each new QR is **Belum Aktif** and labelled **Menunggu penerimaan** until that company accepts it. You can still **Muat turun** the new QR and hand the label over. The new code is not in the recipient’s **Pecahan** list until they accept it.
+The page confirms the split. Your balance drops. Each new QR is **Belum Aktif** and labelled **Menunggu penerimaan** until that company accepts it. You can still **Muat turun** the new QR and hand the label over. The new code is not in the recipient’s **Jualan** list until they accept it.
 
 ### The recipient accepts
 
 1. The recipient signs in as **USAHAWAN**.
-2. Open **Pecahan**. The waiting piece is under **Menunggu penerimaan**. The same row is also under **Kod QR → QR pecahan**.
+2. Open **Jualan**. The waiting piece is under **Menunggu penerimaan**. The same row is also under **Kod QR → QR jualan**.
 3. Press **Diterima**.
 
-That button accepts the lot. The page says **Lot diterima. QR kini Aktif.** The code moves into the held list, with its balance. **Jejak pecahan** marks their stop as **Kod ini**. They can split only the quantity they accepted.
+That button accepts the lot. The page says **Lot diterima. QR kini Aktif.** The code moves into the held list, with its balance. **Jejak jualan** marks their stop as **Kod ini**. They can split only the quantity they accepted.
 
 Before **Diterima**, a visitor sees **QR Menunggu Penerimaan**. The product page stays hidden.
 
@@ -474,7 +484,7 @@ A rejected record, with the officer’s note:
 
 ![Ringkasan ditolak](manual/screenshots/36-fama-rejected.png)
 
-**Pecahan lot** on the same page uses the same chain as the usahawan’s lot screen: the original batch, then each piece, with the balance. Before the next company accepts, that piece says **Menunggu penerimaan**. FAMA can see where the batch went. The officer does not accept the lot for the holder.
+**Jualan lot** on the same page uses the same chain as the usahawan’s lot screen: the original batch, then each piece, with the balance. Before the next company accepts, that piece says **Menunggu penerimaan**. FAMA can see where the batch went. The officer does not accept the lot for the holder.
 
 ---
 
@@ -560,21 +570,22 @@ You will see:
 
 - Product and variety, grade, and origin
 - Company, farm, lot, and destination
-- The official QR and the scan count
-- **Maklumat Keluaran Pertanian** and **Maklumat Eksport**
-- **Jejak pecahan** — the chain of holders. **Kod ini** is the code you opened
+- The official QR for the code you opened
+- **Maklumat Keluaran Pertanian**
+- **Dari sumber ke tangan anda** — each stop shows the role and the holder name, for example **Pengeluar** and the farm or company name
 - A map when the farm has coordinates
-- Certificates the company uploaded, with a note that they are copies the entrepreneur displayed, not a fresh check with an authority
 - Nutrition, when that produce has it
 - The agency strip and contact line
+
+Uploaded sijil stay on the usahawan **Sijil** screen. They are not on this public page.
 
 **BM**, **中文**, and **EN** at the top right switch the language of the same record.
 
 ![Public page in English](manual/screenshots/10-trace-active-en.png)
 
-When the lot has been split, **Jejak pecahan** shows each stop, the role, the quantity, and which code you are holding.
+When the lot has been split, **Dari sumber ke tangan anda** shows each stop as a role and a holder name.
 
-![Jejak pecahan with two stops](manual/screenshots/12-trace-chain.png)
+![Jejak jualan with two stops](manual/screenshots/12-trace-chain.png)
 
 ### Waiting for the next company
 
@@ -584,7 +595,7 @@ If a split has been saved and the receiving company has not pressed **Diterima**
 
 ## 14. Phone layout
 
-On a phone, the usahawan menu moves to the bottom of the screen: **Utama**, **Permohonan**, **Kod QR**, **Pecahan**, **Sijil**, **Profil**.
+On a phone, the usahawan menu moves to the bottom of the screen: **Utama**, **Permohonan**, **Kod QR**, **Jualan**, **Sijil**, **Profil**.
 
 ![Usahawan home on a phone](manual/screenshots/14-usahawan-home-mobile.png)
 
@@ -632,7 +643,14 @@ These accounts are on the live demonstration site. The role switch must match th
 |---|---|---|---|
 | Ali bin Abu, ABC Fruits Sdn. Bhd. | USAHAWAN | `ali@abcfruits.example` | `Exporter123!` |
 | Siti Aminah, MTS Fruits | USAHAWAN | `siti@mtsfruits.example` | `Exporter123!` |
+| Aminah Contoh, Ladang Contoh Hijau (Pengeluar) | USAHAWAN | `aminah.contoh@example.com` | `Exporter123!` |
+| Farid Contoh, Niaga Contoh Eksport (Pengeksport) | USAHAWAN | `farid.contoh@example.com` | `Exporter123!` |
+| Lina Contoh, Borong Contoh Segar (Pemborong) | USAHAWAN | `lina.contoh@example.com` | `Exporter123!` |
+| Hafiz Contoh, Import Contoh Niaga (Pengimport) | USAHAWAN | `hafiz.contoh@example.com` | `Exporter123!` |
+| Suri Contoh, Kedai Contoh Runcit (Peruncit) | USAHAWAN | `suri.contoh@example.com` | `Exporter123!` |
 | Ali bin Abu Ghani, Pegawai FAMA | FAMA | `aliabu@fama.gov.my` | `Fama123!` |
+
+Use the five **Contoh** logins for a chain. They are invented companies. Do not log in as a real business such as Durian Queen, or open the Sawi records held by Tan So Tiok & Sons.
 
 The site already holds many real demonstration records, including approved QR codes such as `GPL-QR-000015` (Mangga Harumanis, active) and `GPL-QR-000011` (Mangga Chokanan, rejected and inactive). Creating an application, approving one, splitting a lot, or finishing **Daftar** for a company that already has a login writes into this shared site.
 
@@ -640,6 +658,9 @@ Useful public links:
 
 | Link | What you see |
 |---|---|
+| `/trace/GPL-QR-000901` | Contoh nangka chain: Ladang Contoh Hijau through the later Contoh companies |
+| `/trace/GPL-QR-000915` | Contoh tembikai chain, ending at Kedai Contoh Runcit |
+| `/trace/GPL-QR-000925` | Contoh mangga chain, ending at Kedai Contoh Runcit |
 | `/trace/GPL-QR-000015` | Active mango page |
 | `/trace/GPL-QR-000011` | QR Belum Diaktifkan |
 | `/trace/GPL-QR-999999` | Kod QR tidak sah |
@@ -667,7 +688,7 @@ Useful public links:
 | Tiada rekod dijumpai | The account number or identity card is not in the prototype list |
 | Catatan penolakan diperlukan. | Type a reason, then click **Tolak** again |
 | Permohonan ini bukan draf dan tidak boleh dikemaskini. | The application has been sent. File a new one if the details must change |
-| Jumlah pecahan melebihi baki kuantiti | The pieces add up to more than the remaining quantity. Lower the quantity and save again |
+| Jumlah jualan melebihi baki kuantiti | The pieces add up to more than the remaining quantity. Lower the quantity and save again |
 | Hanya pemegang lot semasa boleh memecahkan atau menjual lot ini | Sign in as the company that currently holds that row |
 | Lot belum aktif | That QR is not approved yet. Split it after **Sahkan** |
 | QR Belum Diaktifkan | The public link is real, and FAMA has not approved it, or the application was rejected |

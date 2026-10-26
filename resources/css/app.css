@@ -342,6 +342,57 @@ svg {
   color: var(--text-secondary);
 }
 
+/* Usahawan pecahan charts only. FAMA Utama keeps the DD-011 palette. */
+.pecahan-charts {
+  --chart-1: #6bb6f8;
+  --chart-2: #f0c14a;
+  --chart-3: #c5b4f8;
+  --chart-4: #5cdbb0;
+  --chart-5: #f4a6c8;
+  --chart-6: #ffb08a;
+  --chart-7: #7ed4c4;
+  --chart-8: #9aabff;
+  --chart-9: #ffb3b8;
+  --chart-10: #d4c2ea;
+  --pecahan-hold: #5cdbb0;
+  --pecahan-hold-ink: #0f8a62;
+  --pecahan-out: #6bb6f8;
+  --pecahan-out-ink: #2b78c9;
+  --pecahan-sold: #f0c14a;
+  --pecahan-sold-ink: #8f620c;
+  --pecahan-wait: #ffb08a;
+  --pecahan-done: #c5b4f8;
+}
+
+.pecahan-charts .pecahan-track {
+  background: #e7eef2;
+}
+
+.pecahan-charts .pecahan-track > div + div {
+  box-shadow: -1px 0 0 #fff;
+}
+
+.pecahan-charts .pecahan-col {
+  box-shadow: 0 8px 14px -10px rgba(43, 90, 130, 0.55);
+}
+
+.pecahan-charts .pecahan-col > div + div {
+  box-shadow: 0 -1px 0 #fff;
+}
+
+.pecahan-charts .pecahan-split {
+  background: linear-gradient(180deg, #d7ecff 0%, var(--pecahan-out) 72%);
+}
+
+.pecahan-charts .pecahan-sold-fill {
+  background: linear-gradient(180deg, #ffe7a8 0%, var(--pecahan-sold) 72%);
+}
+
+.pecahan-charts .rank-track {
+  height: 0.625rem;
+  background: #e7eef2;
+}
+
 input,
 select,
 textarea,

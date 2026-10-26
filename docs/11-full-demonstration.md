@@ -10,7 +10,7 @@ Sistem Jejak GPL lets an **usahawan** record an export, lets **Pegawai FAMA** re
 
 A QR can exist before approval. Until FAMA approves, the public page says **QR Belum Diaktifkan**. Approval turns that same QR **Aktif** and opens the traceability page.
 
-That first QR is the whole batch. After it is active, the company holding it can break the remaining quantity into smaller lots. Each chunk gets its own QR, already active, linked back to the batch. The public page shows those stops as a checkpoint line under **Jejak pecahan**.
+That first QR is the whole batch. After it is active, the company holding it can break the remaining quantity into smaller lots. Each chunk gets its own QR, already active, linked back to the batch. The public page shows those stops as a checkpoint line under **Jejak jualan**.
 
 DagangNet and iFAMA in this prototype are **mock lookups**, not the live government systems. Certificate files are uploaded copies. There is no live check with a certificate authority, and there is no hardware label printer.
 
@@ -47,6 +47,16 @@ On the login screen, the role toggle must match the account. The wrong role show
 | Pegawai FAMA Ali bin Abu Ghani | **FAMA** | `aliabu@fama.gov.my` | `Fama123!` |
 
 A second usahawan exists for the lot split in Part 10: Siti Aminah, MTS Fruits, `siti@mtsfruits.example` / `Exporter123!`. You do not need her before that.
+
+Five invented companies cover the chain. Password for each is `Exporter123!`. Use these instead of a real business such as Durian Queen or the Sawi holder.
+
+| Who | Role toggle | Email |
+|---|---|---|
+| Aminah Contoh, Ladang Contoh Hijau (Pengeluar) | **USAHAWAN** | `aminah.contoh@example.com` |
+| Farid Contoh, Niaga Contoh Eksport (Pengeksport) | **USAHAWAN** | `farid.contoh@example.com` |
+| Lina Contoh, Borong Contoh Segar (Pemborong) | **USAHAWAN** | `lina.contoh@example.com` |
+| Hafiz Contoh, Import Contoh Niaga (Pengimport) | **USAHAWAN** | `hafiz.contoh@example.com` |
+| Suri Contoh, Kedai Contoh Runcit (Peruncit) | **USAHAWAN** | `suri.contoh@example.com` |
 
 ### Records already on screen
 
@@ -111,11 +121,11 @@ Left menu (desktop) or bottom menu (phone):
 - **Utama**
 - **Permohonan**
 - **Kod QR**
-- **Pecahan**
+- **Jualan**
 - **Sijil**
 - **Profil**
 
-**Pecahan** is the lot list. You use it in Part 10. On the home screen, leave it.
+**Jualan** is the lot list. You use it in Part 10. On the home screen, leave it.
 
 ## Part 2 — Company profile
 
@@ -165,8 +175,9 @@ Left menu (desktop) or bottom menu (phone):
 ## Part 4 — Create a new application in the room
 
 1. On **Permohonan**, click **+ Tambah**.
-2. The page says a inactive QR is generated when the draft is saved.
-3. Fill **Maklumat Keluaran**:
+2. Choose **Keluaran Pertanian**. The page says an inactive QR is generated when the draft is saved.
+3. Leave **Pasaran** on **Eksport**. **Domestik** hides Destinasi, Tarikh Eksport, Pengimport, and Alamat Pengimport.
+4. Fill **Maklumat Keluaran**:
 
 | Field | Type this |
 |---|---|
@@ -175,26 +186,31 @@ Left menu (desktop) or bottom menu (phone):
 | Gred | A |
 | Saiz | M |
 | Bilangan Eksport / Berat (kg) | 500 |
-| Destinasi | China |
 | No Sijil CoC | STB181019EJ100436 |
 | Gambar paparan QR | optional; skip if you have no image ready |
 
-4. Fill **Maklumat Eksport**:
+5. Fill **Maklumat Ladang**:
 
 | Field | Type this |
 |---|---|
-| Tarikh Eksport | a date about two weeks ahead |
 | Nama Ladang | Ladang Pisang Raub |
 | No. Lot | LOT-P01 |
 | Lokasi ladang | Raub, Pahang |
 | Latitud | 3.793 |
 | Longitud | 101.857 |
+
+6. Fill **Maklumat Eksport**:
+
+| Field | Type this |
+|---|---|
+| Destinasi | China |
+| Tarikh Eksport | a date about two weeks ahead |
 | Pengimport | South China Fresh Co. |
 | Alamat Pengimport | No. 18, Tianhe, Guangzhou, China |
 
-5. Click **Seterusnya**. **Simpan** does the same thing on this screen: it stores the draft and generates the QR.
-6. You land on the new application, status **Draf**, with a **Kod QR** card status **Belum Aktif**.
-7. Write down the new QR ID (it looks like `GPL-QR-000125` or the next free number). You need it for the public page.
+7. Click **Seterusnya**. **Simpan** does the same thing on this screen: it stores the draft and generates the QR.
+8. You land on the new application, status **Draf**, with a **Kod QR** card status **Belum Aktif**.
+9. Write down the new QR ID (it looks like `GPL-QR-000125` or the next free number). You need it for the public page.
 
 Say: “The QR exists now, but it is not a public certificate of approval. FAMA has not reviewed it.”
 
@@ -301,8 +317,7 @@ Otherwise, show the prepared rejection **FAMA-2026-000011** and move on.
    - company, farm, lot, destination
    - scan count
    - product details, export details
-   - **Jejak pecahan**: one checkpoint, this batch, labelled **Kod ini**. There is no line yet, because the lot has not been split
-   - certificates (MyGAP, HACCP, CoC, and the others on ABC Fruits)
+   - **Dari sumber ke tangan anda**: one stop, the role and the holder name. There is no line yet, because the lot has not been split
    - nutrition, when the produce has it
    - agency strip
 5. Click **BM**, **中文**, and **EN** at the top right. The same record switches language.
@@ -335,17 +350,17 @@ Say: “The first QR is the whole shipment. A new code is created only for the c
 ### Ali splits 100 kg to MTS
 
 1. Still logged in as Ali (**USAHAWAN**).
-2. Open **Pecahan**.
+2. Open **Jualan**.
 3. Open the new Pisang row. It says **Lot asal**, quantity **500 kg**, baki **500**.
-4. Under **Jejak pecahan**, the line starts with the company role, for example **Pengeluar → Pengeksport**. The current stop says **Kod ini**.
-5. Under **Pecahkan kepada syarikat**:
+4. Under **Jejak jualan**, the line starts with the company role, for example **Pengeluar → Pengeksport**. The current stop says **Kod ini**.
+5. Under **Jualan kepada syarikat**:
    - **Kuantiti**: `100`
-   - **Penerima**: the company whose role should appear next, for example **Peruncit · Tan So Tiok & Sons Sdn Bhd** if that account is set to Peruncit under **Profil**
-6. Click **Simpan pecahan**.
+   - **Penerima**: the company whose role should appear next, for example **Peruncit · Kedai Contoh Runcit Sdn. Bhd.**
+6. Click **Simpan jualan**.
 7. The page says **Lot dipecahkan.** Baki is **400**. A second checkpoint appears for MTS Fruits, **100 kg**, labelled **Menunggu penerimaan**, status **Belum Aktif**. Ali can still **Muat turun** that QR and hand the label over.
-8. Open **Pecahan** as a check: the new code is not Siti’s yet.
+8. Open **Jualan** as a check: the new code is not Siti’s yet.
 
-Set each company’s role under **Profil → Jenis dalam rantaian** before the split: Pengeluar, Pengeksport, Pemborong, Pengimport, or Peruncit. The recipient list shows only the same role or a later one. A pecahan cannot go back upstream. A sale to a buyer with no login ends the line with **Consumer**.
+Set each company’s role under **Profil → Jenis dalam rantaian** before the split: Pengeluar, Pengeksport, Pemborong, Pengimport, or Peruncit. The recipient list shows only the same role or a later one. A jualan cannot go back upstream. A sale to a buyer with no login ends the line with **Consumer**.
 
 Do not click **Jual semua baki**. That marks this whole QR sold and blocks further splits. **Jual pek** is the other sale: it creates a consumer QR for the quantity you type, with no login on that code. A consumer sale is active immediately. A company assignment waits until that company presses **Diterima**.
 
@@ -353,10 +368,10 @@ Do not click **Jual semua baki**. That marks this whole QR sold and blocks furth
 
 1. In the **incognito** window, open the new child QR first. The page says **QR Menunggu Penerimaan**. The product page is not shown yet. Close that tab or leave it.
 2. In the normal window, log out. Log in as Siti (**USAHAWAN**): `siti@mtsfruits.example` / `Exporter123!`.
-3. Open **Pecahan**. The new code is under **Menunggu penerimaan**, with a **Diterima** button. **Kod QR** lists the same code as **Belum Aktif**.
+3. Open **Jualan**. The new code is under **Menunggu penerimaan**, with a **Diterima** button. **Kod QR** lists the same code as **Belum Aktif**.
 4. Press **Diterima**. The page says **Lot diterima. QR kini Aktif.**
-5. Open **Jejak awam**. The product page is now shown. **Jejak pecahan** shows ABC Fruits, then MTS Fruits marked **Kod ini**.
-6. Go back to **Pecahan** and **Kod QR**. The chunk is in both: **Pecahan** shows baki **100 / 100 kg**, and **Kod QR** lists it under **QR pecahan** as **Aktif**.
+5. Open **Jejak awam**. The product page is now shown. **Dari sumber ke tangan anda** shows ABC Fruits, then MTS Fruits, each as a role and a company name.
+6. Go back to **Jualan** and **Kod QR**. The chunk is in both: **Jualan** shows baki **100 / 100 kg**, and **Kod QR** lists it under **QR jualan** as **Aktif**.
 
 Say: “Siti presses Diterima. Only then is the QR active for her. She can split only this 100 kg.”
 
@@ -364,7 +379,7 @@ Say: “Siti presses Diterima. Only then is the QR active for her. She can split
 
 1. Log in as Pegawai FAMA.
 2. Open **Kelulusan QR** and the Pisang application you approved.
-3. **Pecahan lot** uses the same line: the batch, then the 100 kg chunk, each with **baki**. Before Siti presses **Diterima**, the chunk says **Menunggu penerimaan**.
+3. **Jualan lot** uses the same line: the batch, then the 100 kg chunk, each with **baki**. Before Siti presses **Diterima**, the chunk says **Menunggu penerimaan**.
 
 Say: “FAMA can see where the batch went. The officer does not accept it for the holder.”
 
@@ -422,7 +437,7 @@ If the room is short on time, do only this:
 4. Log in as FAMA. Show **Utama FAMA**, then open Durian under **Kelulusan QR** and stop on the summary. Do not click **Sahkan**.
 5. As Ali, open **Kod QR**, open **GPL-QR-000015**, and download a PNG.
 
-Skip registration, the lot split, and vendor capture. If someone asks where a box goes after approval, open **Pecahan** on Ali’s approved Mangga (**GPL-QR-000015**) and show the single checkpoint. Do not click **Simpan pecahan**.
+Skip registration, the lot split, and vendor capture. If someone asks where a box goes after approval, open **Jualan** on Ali’s approved Mangga (**GPL-QR-000015**) and show the single checkpoint. Do not click **Simpan jualan**.
 
 ## If something goes wrong
 
@@ -435,14 +450,14 @@ Skip registration, the lot split, and vendor capture. If someone asks where a bo
 | Catatan penolakan diperlukan. | Type a reason, then click **Tolak** again. |
 | Public page has no product after you clicked Sahkan | Refresh the incognito tab. Confirm the URL is the new QR, not GPL-QR-000123. |
 | You approved FAMA-2026-000123 by mistake | Tell the room that record is now the live approved example. Use GPL-QR-000011 for the inactive story, and create a new draft if you still need **Dalam Semakan**. Do not wipe the database. |
-| Jumlah pecahan melebihi baki kuantiti | The chunks add up to more than the remaining kg. Lower the quantity and click **Simpan pecahan** again. |
-| Hanya pemegang lot semasa boleh memecahkan atau menjual lot ini | You are logged in as the other company. Open **Pecahan** as the holder of that row. |
+| Jumlah jualan melebihi baki kuantiti | The chunks add up to more than the remaining kg. Lower the quantity and click **Simpan jualan** again. |
+| Hanya pemegang lot semasa boleh memecahkan atau menjual lot ini | You are logged in as the other company. Open **Jualan** as the holder of that row. |
 | Lot belum aktif | That QR is not approved yet. Split the Pisang only after **Sahkan**. |
 
 ## Rehearse tonight
 
 - [ ] Log in as Ali and as the FAMA officer, then log out.
 - [ ] Open `/trace/GPL-QR-000015`, `/trace/GPL-QR-000123`, and `/trace/GPL-QR-999999` in a private window.
-- [ ] Create one Pisang application, submit it, approve it, refresh the public page, and download the PNG. Then split 100 kg to MTS Fruits, open the child public page, and open **Pecahan lot** as FAMA. Tell the audience tomorrow’s Pisang is a second run, or delete nothing and just use a different variety such as `Berangan`.
+- [ ] Create one Pisang application, submit it, approve it, refresh the public page, and download the PNG. Then split 100 kg to MTS Fruits, open the child public page, and open **Jualan lot** as FAMA. Tell the audience tomorrow’s Pisang is a second run, or delete nothing and just use a different variety such as `Berangan`.
 - [ ] Confirm the projector can show the left menu. If the window is narrow, use the bottom menu (usahawan) or the header menu (FAMA).
 - [ ] Keep this file open on a second screen.

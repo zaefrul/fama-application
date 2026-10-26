@@ -8,13 +8,14 @@ use App\Models\Company;
 use App\Models\ExportApplication;
 use App\Models\GalleryItem;
 use App\Services\JejakService;
+use App\Services\PecahanDashboard;
 use App\Services\QrImageService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request, JejakService $jejak, QrImageService $qrImage): View
+    public function __invoke(Request $request, JejakService $jejak, QrImageService $qrImage, PecahanDashboard $pecahan): View
     {
         $user = $request->user();
         $companyId = $user->company_id;
@@ -40,6 +41,7 @@ class DashboardController extends Controller
             'featuredApp' => $featuredApp,
             'gallery' => $gallery,
             'publicUrl' => $featuredQr ? $qrImage->traceUrl($featuredQr->qr_code) : '',
+            'pecahan' => $pecahan->forCompany($companyId),
         ]);
     }
 }

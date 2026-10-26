@@ -5,7 +5,7 @@
         ['href' => '/exporter', 'label' => 'Utama', 'icon' => 'home'],
         ['href' => '/exporter/applications', 'label' => 'Permohonan', 'icon' => 'applications'],
         ['href' => '/exporter/qr', 'label' => 'Kod QR', 'icon' => 'qr'],
-        ['href' => '/exporter/lots', 'label' => 'Pecahan', 'icon' => 'layers'],
+        ['href' => '/exporter/lots', 'label' => 'Jualan', 'icon' => 'layers'],
         ['href' => '/exporter/company/certificates', 'label' => 'Sijil', 'icon' => 'certificate'],
         ['href' => '/exporter/company', 'label' => 'Profil', 'icon' => 'user'],
     ];

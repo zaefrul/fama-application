@@ -27,6 +27,7 @@
                 <a href="{{ route('exporter.qr') }}"><x-button type="button" variant="secondary" class="w-full">Cetak QR</x-button></a>
             </div>
         </x-card>
+        <x-pecahan-charts :stats="$pecahan" />
         <div class="grid gap-4 md:grid-cols-2">
             <x-card>
                 <div class="mb-3 flex items-center justify-between">
@@ -39,7 +40,7 @@
                             <x-application-card
                                 :href="route('exporter.applications.show', $application)"
                                 :title="$application->application_no.' · '.($application->produceType?->name).' '.$application->variety"
-                                :subtitle="'Dihantar pada '.($application->submitted_at?->locale('ms')->translatedFormat('d F Y') ?? '—')"
+                                :subtitle="($application->market?->label() ?? 'Eksport').' · Dihantar pada '.($application->submitted_at?->locale('ms')->translatedFormat('d F Y') ?? '—')"
                                 :status="$application->status"
                             />
                         </li>

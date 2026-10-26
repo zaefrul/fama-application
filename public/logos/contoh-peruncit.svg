@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#f3eaf8"/>
+  <circle cx="64" cy="52" r="28" fill="#6b3fa0"/>
+  <path d="M52 58h24l-3 12H55l-3-12zm4-8h16l2 8H54l2-8z" fill="#fff"/>
+  <text x="64" y="104" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="700" fill="#6b3fa0">KCR</text>
+</svg>

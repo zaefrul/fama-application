@@ -71,6 +71,10 @@ Used for:
 
 Horizontal ranked bars for categorical dashboard lists (top fruits, destinations, negeri). Each row uses the next chart-palette token (`--chart-1` … `--chart-10`).
 
+## PecahanCharts
+
+Usahawan Utama section for the active company’s lots. KPI counts use existing status colours. Chart fills use a pastel palette scoped to `.pecahan-charts`: mint for baki and didapat, sky for keluar, dilepaskan and dipecahkan, butter for dijual, peach and lilac for the other sale statuses. Ranked destination bars reuse that local palette. Line strokes and summary figures use a deeper sister of each pastel. Quantities are never summed across `quantity_unit`.
+
 ## QrAccessChart
 
 FAMA dashboard comparison:

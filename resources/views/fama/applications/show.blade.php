@@ -44,7 +44,7 @@
         @endif
         @if ($lotRoot)
             <x-card>
-                <h2 class="font-semibold">Pecahan lot</h2>
+                <h2 class="font-semibold">Jualan lot</h2>
                 <x-lot-timeline
                     class="is-inset"
                     :nodes="collect([$lotRoot])"
