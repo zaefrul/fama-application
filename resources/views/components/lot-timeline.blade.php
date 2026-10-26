@@ -34,7 +34,7 @@
             $current = (string) $node->id === (string) $currentId;
             $children = $nested && $node->relationLoaded('children') ? $node->children : collect();
         @endphp
-        <li class="trace-checkpoint {{ $current ? 'is-current' : '' }} {{ $children->isNotEmpty() ? 'has-children' : '' }}">
+        <li class="trace-checkpoint {{ $current ? 'is-current' : '' }} {{ $children->count() === 1 ? 'has-children' : '' }} {{ $children->count() > 1 ? 'has-fork' : '' }}">
             <span class="trace-checkpoint-mark" aria-hidden="true"></span>
             <div class="min-w-0">
                 <p class="trace-checkpoint-kicker">
@@ -69,7 +69,28 @@
                     </div>
                 @endif
             </div>
-            @if ($children->isNotEmpty())
+            @if ($children->count() > 1)
+                <div class="trace-fork">
+                    @foreach ($children as $child)
+                        <div class="trace-fork-chain">
+                            <x-lot-timeline
+                                :nodes="collect([$child])"
+                                :current-id="$currentId"
+                                :unit="$unit"
+                                :nested="true"
+                                :show-balance="$showBalance"
+                                :show-links="$childLinks"
+                                :child-links="$childLinks"
+                                :current-label="$currentLabel"
+                                :sold-label="$soldLabel"
+                                :public-label="$publicLabel"
+                                :show-path="false"
+                                class="is-inset"
+                            />
+                        </div>
+                    @endforeach
+                </div>
+            @elseif ($children->isNotEmpty())
                 <x-lot-timeline
                     :nodes="$children"
                     :current-id="$currentId"

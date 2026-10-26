@@ -209,6 +209,41 @@ svg {
   padding: 0.35rem 0 0;
 }
 
+.trace-checkpoint.has-fork::before {
+  bottom: auto;
+  height: 1.35rem;
+}
+
+.trace-fork {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0.15rem 0 0.85rem;
+}
+
+.trace-fork-chain {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface-muted);
+}
+
+.trace-fork-chain::before {
+  content: "";
+  position: absolute;
+  top: -0.7rem;
+  left: 1.15rem;
+  width: 2px;
+  height: 0.7rem;
+  background: color-mix(in srgb, var(--brand-primary) 45%, var(--status-warning));
+}
+
+.trace-fork-chain > .trace-checkpoints {
+  padding: 0.7rem 0.85rem 0.45rem;
+}
+
 .trace-checkpoint-mark {
   position: relative;
   z-index: 1;

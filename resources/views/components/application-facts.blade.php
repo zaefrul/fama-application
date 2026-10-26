@@ -26,7 +26,7 @@
         <x-data-row label="Varieti" :value="$application->variety" />
         <x-data-row label="Gred" :value="$application->grade" />
         <x-data-row label="Saiz" :value="$application->size" />
-        <x-data-row label="Kuantiti" :value="$application->quantity.' '.$application->quantity_unit" />
+        <x-data-row label="Kuantiti Bilangan" :value="$application->quantity.' '.$application->quantity_unit" />
         @if ($application->isExport())
             <x-data-row label="Destinasi" :value="$application->destination_country" />
             @if ($application->export_date)

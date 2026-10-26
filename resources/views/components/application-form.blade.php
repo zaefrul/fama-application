@@ -56,7 +56,7 @@
                         <x-input name="size" :value="$application?->size" :readonly="$readOnly" />
                     </x-field>
                 </div>
-                <x-field label="Bilangan Eksport / Berat (kg)" required>
+                <x-field label="Kuantiti Bilangan" required>
                     <x-input name="quantity" type="number" :value="$application?->quantity" :readonly="$readOnly" required />
                 </x-field>
                 <x-field label="Gambar paparan QR" hint="JPG/PNG/WEBP, maksimum {{ \App\Services\UploadService::maxLabel() }}. Gambar ini dipaparkan pada halaman awam QR.">

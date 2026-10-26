@@ -53,11 +53,12 @@ class LotController extends Controller
 
         $rootId = $lot->root_application_id ?: $lot->application_id;
         $root = $rootId ? QrCode::treeForApplication($rootId) : null;
+        $tree = $root?->focusedTree($lot->id);
         $source = $lot->holder?->chainParty() ?? PartyType::Exporter;
 
         return view('exporter.lots.show', [
             'lot' => $lot,
-            'lineage' => $root ? collect([$root]) : $lot->lineage(),
+            'lineage' => $tree ? collect([$tree]) : $lot->lineage(),
             'companies' => Company::query()
                 ->where('id', '!=', $lot->holder_company_id)
                 ->orderBy('name')

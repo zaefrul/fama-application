@@ -363,4 +363,34 @@ class LotSplitTest extends TestCase
         $this->assertSame('Pengumpul', $company->party_label);
         $this->assertSame('Pengumpul', $company->partyLabel());
     }
+
+    public function test_splitter_sees_each_sale_as_its_own_chain_and_receiver_sees_one_source(): void
+    {
+        $this->actingAs(User::query()->findOrFail('user_contoh_pemborong'))
+            ->get(route('exporter.lots.show', 'qr_contoh_mangga_borong'))
+            ->assertOk()
+            ->assertSee('GPL-QR-000923')
+            ->assertSee('GPL-QR-000925')
+            ->assertSee('GPL-QR-000927')
+            ->assertSee('trace-fork', false)
+            ->assertDontSee('GPL-QR-000924');
+
+        $this->actingAs(User::query()->findOrFail('user_contoh_peruncit'))
+            ->get(route('exporter.lots.show', 'qr_contoh_mangga_runcit'))
+            ->assertOk()
+            ->assertSee('GPL-QR-000921')
+            ->assertSee('GPL-QR-000925')
+            ->assertSee('GPL-QR-000926')
+            ->assertDontSee('GPL-QR-000927')
+            ->assertDontSee('GPL-QR-000924')
+            ->assertDontSee('Import Contoh Niaga')
+            ->assertDontSee('trace-fork', false);
+
+        $this->get('/trace/GPL-QR-000925')
+            ->assertOk()
+            ->assertSee('Kedai Contoh Runcit')
+            ->assertSee('Borong Contoh Segar')
+            ->assertDontSee('Import Contoh Niaga')
+            ->assertDontSee('trace-fork', false);
+    }
 }

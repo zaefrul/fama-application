@@ -190,7 +190,12 @@ class QrCode extends Model
 
         $grouped = $nodes->groupBy(fn (self $qr) => $qr->parent_id ?? '');
         $attach = function (self $node) use (&$attach, $grouped): void {
-            $children = $grouped->get($node->id, collect())->values();
+            $children = $grouped->get($node->id, collect())
+                ->sortBy([
+                    ['generated_at', 'asc'],
+                    ['qr_code', 'asc'],
+                ])
+                ->values();
             $node->setRelation('children', $children);
             foreach ($children as $child) {
                 $attach($child);
@@ -201,5 +206,28 @@ class QrCode extends Model
         $attach($root);
 
         return $root;
+    }
+
+    /**
+     * Keep the path from this node to $focusId, and the full subtree under the focus.
+     * Sibling sales along the path are dropped, so a receiver sees one source.
+     */
+    public function focusedTree(string $focusId): ?self
+    {
+        if ((string) $this->id === (string) $focusId) {
+            return $this;
+        }
+
+        $children = $this->relationLoaded('children') ? $this->children : collect();
+        foreach ($children as $child) {
+            $kept = $child->focusedTree($focusId);
+            if ($kept instanceof self) {
+                $this->setRelation('children', collect([$kept]));
+
+                return $this;
+            }
+        }
+
+        return null;
     }
 }
