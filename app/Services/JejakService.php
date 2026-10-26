@@ -493,6 +493,8 @@ class JejakService
             $input['export_date'] = null;
             $input['importer_name'] = '';
             $input['importer_address'] = '';
+            $input['coc_certificate_id'] = null;
+            $input['coc_number'] = '';
 
             return $input;
         }

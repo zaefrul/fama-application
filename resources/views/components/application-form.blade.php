@@ -59,15 +59,6 @@
                 <x-field label="Bilangan Eksport / Berat (kg)" required>
                     <x-input name="quantity" type="number" :value="$application?->quantity" :readonly="$readOnly" required />
                 </x-field>
-                <x-field label="No Sijil CoC" required>
-                    <x-select name="cocCertificateId" :disabled="$readOnly">
-                        <option value="">—</option>
-                        @foreach ($cocCertificates as $certificate)
-                            <option value="{{ $certificate->id }}" @selected($application?->coc_certificate_id === $certificate->id)>{{ $certificate->certificate_no }}</option>
-                        @endforeach
-                    </x-select>
-                </x-field>
-                <input type="hidden" name="cocNumber" value="{{ $application?->coc_number }}">
                 <x-field label="Gambar paparan QR" hint="JPG/PNG/WEBP, maksimum {{ \App\Services\UploadService::maxLabel() }}. Gambar ini dipaparkan pada halaman awam QR.">
                     @if ($application?->display_image_path)
                         <img
@@ -90,7 +81,7 @@
                     <x-input name="lotNo" :value="$application?->lot_no" :readonly="$readOnly" />
                 </x-field>
                 <x-field label="Lokasi ladang">
-                    <x-input name="farmLocation" :value="$application?->farm_location" :readonly="$readOnly" />
+                    <x-input name="farmLocation" :value="$application?->farm_location" :readonly="$readOnly" placeholder="Cari ladang atau alamat" autocomplete="off" />
                 </x-field>
                 <div class="grid grid-cols-2 gap-3">
                     <x-field label="Latitud">
@@ -100,16 +91,30 @@
                         <x-input name="farmLng" type="number" step="any" :value="$application?->farm_lng" :readonly="$readOnly" />
                     </x-field>
                 </div>
-                @if ($application?->hasFarmCoordinates())
+                @unless ($readOnly)
+                    <x-farm-map
+                        :lat="$application?->farm_lat"
+                        :lng="$application?->farm_lng"
+                        :interactive="true"
+                    />
+                @elseif ($application?->hasFarmCoordinates())
                     <x-farm-map
                         :lat="$application->farm_lat"
                         :lng="$application->farm_lng"
-                        :interactive="! $readOnly"
                     />
-                @endif
+                @endunless
             </section>
             <section class="grid gap-3 border-t border-border pt-4" data-export-section @unless ($isExport) hidden @endunless>
                 <h2 class="text-sm font-bold text-brand">Maklumat Eksport</h2>
+                <x-field label="No Sijil CoC" :required="$isExport">
+                    <x-select name="cocCertificateId" :disabled="$readOnly || ! $isExport">
+                        <option value="">—</option>
+                        @foreach ($cocCertificates as $certificate)
+                            <option value="{{ $certificate->id }}" @selected($application?->coc_certificate_id === $certificate->id)>{{ $certificate->certificate_no }}</option>
+                        @endforeach
+                    </x-select>
+                </x-field>
+                <input type="hidden" name="cocNumber" value="{{ $application?->coc_number }}" @disabled(! $isExport && ! $readOnly)>
                 <x-field label="Destinasi" :required="$isExport">
                     <x-input name="destinationCountry" :value="$application?->destination_country" :readonly="$readOnly" :required="$isExport" :disabled="! $isExport && ! $readOnly" data-export-required />
                 </x-field>

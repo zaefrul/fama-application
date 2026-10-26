@@ -84,7 +84,7 @@
                     <x-input name="abattoirName" :value="$application?->abattoir_name" :readonly="$readOnly" required />
                 </x-field>
                 <x-field label="Lokasi premis">
-                    <x-input name="farmLocation" :value="$application?->farm_location" :readonly="$readOnly" />
+                    <x-input name="farmLocation" :value="$application?->farm_location" :readonly="$readOnly" placeholder="Cari premis atau alamat" autocomplete="off" />
                 </x-field>
                 <div class="grid grid-cols-2 gap-3">
                     <x-field label="Latitud">
@@ -94,15 +94,21 @@
                         <x-input name="farmLng" type="number" step="any" :value="$application?->farm_lng" :readonly="$readOnly" />
                     </x-field>
                 </div>
-                @if ($application?->hasFarmCoordinates())
+                @unless ($readOnly)
+                    <x-farm-map
+                        :lat="$application?->farm_lat"
+                        :lng="$application?->farm_lng"
+                        :interactive="true"
+                        map-title="Lokasi premis"
+                        marker-hint="Cari alamat atau klik peta. Latitud dan longitud diisi secara automatik."
+                    />
+                @elseif ($application?->hasFarmCoordinates())
                     <x-farm-map
                         :lat="$application->farm_lat"
                         :lng="$application->farm_lng"
-                        :interactive="! $readOnly"
                         map-title="Lokasi premis"
-                        marker-hint="Klik peta untuk menanda lokasi premis. Medan latitud dan longitud dikemaskini secara automatik."
                     />
-                @endif
+                @endunless
             </section>
             <section class="grid gap-3 border-t border-border pt-4" data-export-section @unless ($isExport) hidden @endunless>
                 <h2 class="text-sm font-bold text-brand">Maklumat Eksport</h2>

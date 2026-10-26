@@ -305,7 +305,18 @@ Each QR application has a market: **Domestik** or **Eksport**. Eksport keeps Des
 
 **Reason:** A domestic lot has no importer and no export record. The source of the produce is still part of the application.
 
-**Consequences:** Existing applications stay Eksport. The Permohonan and Kelulusan QR lists are split into the two markets. A domestic public page does not show an export destination.
+**Consequences:** Existing applications stay Eksport. The Permohonan and Kelulusan QR lists are split into the two markets. A domestic public page does not show an export destination. No. Sijil CoC is export-only: the domestic form hides it and a domestic save clears the certificate link and number.
+
+## ADR-030 — Permohonan farm picker uses OpenStreetMap
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-26
+
+On an editable permohonan, Lokasi ladang uses a Leaflet map with OpenStreetMap tiles. Nominatim searches Malaysia and fills latitude and longitude when a result is chosen. A click or a dragged pin does the same, and writes the address back into Lokasi ladang. No API key is required. The public QR map stays the OpenStreetMap embed.
+
+**Reason:** The usahawan should pick the farm on a map without a paid maps account.
+
+**Consequences:** Nominatim is for light use, about one search a second. The picker does not call Google Maps.
 
 ## ADR-029 — Produce nutrition is editable demo data per 100 g
 

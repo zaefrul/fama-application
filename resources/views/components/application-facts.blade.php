@@ -36,10 +36,10 @@
         <x-data-row label="Ladang" :value="$application->farm_name" />
         <x-data-row label="No. Lot" :value="$application->lot_no" />
         <x-data-row label="Lokasi ladang" :value="$application->farm_location" />
-        <x-data-row label="No. Sijil CoC" :value="$application->coc_number" />
-    @endif
-    @if ($application->isExport())
-        <x-data-row label="Pengimport" :value="$application->importer_name" />
-        <x-data-row label="Alamat pengimport" :value="$application->importer_address" />
+        @if ($application->isExport())
+            <x-data-row label="No. Sijil CoC" :value="$application->coc_number" />
+            <x-data-row label="Pengimport" :value="$application->importer_name" />
+            <x-data-row label="Alamat pengimport" :value="$application->importer_address" />
+        @endif
     @endif
 </dl>

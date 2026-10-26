@@ -25,6 +25,8 @@ class MarketApplicationTest extends TestCase
             ->assertSee('Domestik')
             ->assertSee('Eksport')
             ->assertSee('Maklumat Ladang')
+            ->assertSee('data-farm-picker', false)
+            ->assertDontSee('maps.googleapis.com', false)
             ->assertSee('Maklumat Eksport')
             ->assertSee('Pengimport')
             ->assertSee('Alamat Pengimport');
@@ -43,6 +45,8 @@ class MarketApplicationTest extends TestCase
                 'grade' => 'A',
                 'quantity' => 40,
                 'farmName' => 'Ladang Dalam Negeri',
+                'cocCertificateId' => 'cert_abc_coc',
+                'cocNumber' => 'STB181019EJ100436',
             ])
             ->assertRedirect();
 
@@ -53,6 +57,8 @@ class MarketApplicationTest extends TestCase
         $this->assertSame('', $application->importer_name);
         $this->assertSame('', $application->importer_address);
         $this->assertNull($application->export_date);
+        $this->assertNull($application->coc_certificate_id);
+        $this->assertSame('', $application->coc_number);
         $this->assertSame('Ladang Dalam Negeri', $application->farm_name);
 
         $application->update(['status' => ApplicationStatus::Submitted]);
@@ -64,6 +70,7 @@ class MarketApplicationTest extends TestCase
             ->assertSee('Ladang Dalam Negeri')
             ->assertDontSee('Pengimport')
             ->assertDontSee('Alamat pengimport')
+            ->assertDontSee('No. Sijil CoC')
             ->assertDontSee('>Destinasi<', false);
     }
 
@@ -132,5 +139,17 @@ class MarketApplicationTest extends TestCase
             ->assertOk()
             ->assertSee('Domestik')
             ->assertSee('Eksport');
+    }
+
+    public function test_farm_picker_uses_openstreetmap(): void
+    {
+        $this->seed();
+
+        $this->actingAs(User::query()->findOrFail('user_ali'))
+            ->get(route('exporter.applications.create', ['kind' => 'produce']))
+            ->assertOk()
+            ->assertSee('leaflet.js', false)
+            ->assertSee('nominatim.openstreetmap.org', false)
+            ->assertDontSee('maps.googleapis.com', false);
     }
 }
