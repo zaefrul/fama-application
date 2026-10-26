@@ -23,6 +23,7 @@ use App\Models\ProduceType;
 use App\Models\QrAccess;
 use App\Models\QrCode;
 use App\Models\User;
+use App\Support\ProduceNutrition;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
@@ -75,23 +76,63 @@ class JejakService
     }
 
     /**
-     * @return array<string, list<array{name: string, amount: string, dailyPercent: string}>>
+     * @param  list<array{name?: string, amount?: string, dailyPercent?: string}>  $rows
+     * @return list<array{name: string, amount: string, dailyPercent: string}>
      */
-    public static function nutritionByProduce(): array
+    public function updateProduceNutrition(string $companyId, string $produceTypeId, array $rows): ProduceType
     {
-        return [
-            'pt_durian' => [
-                ['name' => 'Kalori', 'amount' => '147 kcal', 'dailyPercent' => '7%'],
-                ['name' => 'Lemak jumlah', 'amount' => '5.3 g', 'dailyPercent' => '8%'],
-                ['name' => 'Kolesterol', 'amount' => '0 mg', 'dailyPercent' => '0%'],
-                ['name' => 'Natrium', 'amount' => '1 mg', 'dailyPercent' => '0%'],
-                ['name' => 'Kalium', 'amount' => '436 mg', 'dailyPercent' => '12%'],
-                ['name' => 'Karbohidrat', 'amount' => '27.1 g', 'dailyPercent' => '9%'],
-                ['name' => 'Serat', 'amount' => '3.8 g', 'dailyPercent' => '15%'],
-                ['name' => 'Protein', 'amount' => '1.5 g', 'dailyPercent' => '3%'],
-                ['name' => 'Vitamin C', 'amount' => '19.7 mg', 'dailyPercent' => '33%'],
-            ],
-        ];
+        $linked = CompanyProduce::query()
+            ->where('company_id', $companyId)
+            ->where('produce_type_id', $produceTypeId)
+            ->exists();
+        if (! $linked) {
+            throw new RuntimeException('Keluaran ini tiada pada syarikat');
+        }
+
+        $type = ProduceType::query()->find($produceTypeId);
+        if (! $type || ($type->category ?? ProductKind::Produce->value) !== ProductKind::Produce->value) {
+            throw new RuntimeException('Nutrisi hanya untuk keluaran pertanian');
+        }
+
+        $allowed = ProduceNutrition::names();
+        $incoming = [];
+        foreach ($rows as $row) {
+            $name = (string) ($row['name'] ?? '');
+            if (! in_array($name, $allowed, true)) {
+                continue;
+            }
+            $amount = trim((string) ($row['amount'] ?? ''));
+            $percent = trim((string) ($row['dailyPercent'] ?? ''));
+            if ($amount === '' && $percent === '') {
+                continue;
+            }
+            if ($amount === '') {
+                throw new RuntimeException('Jumlah diperlukan untuk '.$name);
+            }
+            if (mb_strlen($amount) > 40) {
+                throw new RuntimeException('Jumlah terlalu panjang');
+            }
+            if ($percent !== '' && ! preg_match('/^\d{1,3}%$/', $percent)) {
+                throw new RuntimeException('% nilai harian untuk '.$name.' mesti seperti 12%');
+            }
+            $incoming[$name] = [
+                'name' => $name,
+                'amount' => $amount,
+                'dailyPercent' => $percent,
+            ];
+        }
+
+        $stored = [];
+        foreach ($allowed as $name) {
+            if (isset($incoming[$name])) {
+                $stored[] = $incoming[$name];
+            }
+        }
+
+        $type->nutrition = $stored === [] ? null : $stored;
+        $type->save();
+
+        return $type;
     }
 
     /**

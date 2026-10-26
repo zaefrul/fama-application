@@ -34,7 +34,7 @@ class TraceController extends Controller
         $certificates = Certificate::query()
             ->whereIn('company_id', $certificateCompanyIds->filter()->unique()->values())
             ->get();
-        $nutrition = $application ? (JejakService::nutritionByProduce()[$application->produce_type_id] ?? []) : [];
+        $nutrition = is_array($application?->produceType?->nutrition) ? $application->produceType->nutrition : [];
         $gallery = $application?->company?->gallery ?? collect();
         $photo = $application?->display_image_path
             ?: $gallery->firstWhere('category', 'BUAH')?->file_path

@@ -307,6 +307,17 @@ Each QR application has a market: **Domestik** or **Eksport**. Eksport keeps Des
 
 **Consequences:** Existing applications stay Eksport. The Permohonan and Kelulusan QR lists are split into the two markets. A domestic public page does not show an export destination.
 
+## ADR-029 — Produce nutrition is editable demo data per 100 g
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-26
+
+Each keluaran pertanian may store nine nutrition rows (kalori, lemak, kolesterol, natrium, kalium, karbohidrat, serat, protein, vitamin C) on `produce_types.nutrition`. Seeded fruits and the demo sayur types start with reference values per 100 g. The usahawan edits them on **Keluaran** for a type the company already lists. The public QR page shows the saved rows.
+
+**Reason:** The public page already had a Nutrisi panel, but only Durian was filled in code and there was no form.
+
+**Consequences:** Nutrition is shared by produce type, not by company or lot. Livestock has no nutrition form. Official ownership of the figures stays open.
+
 ## Adding a decision
 
 ```text

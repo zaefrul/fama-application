@@ -13,7 +13,14 @@ class ProduceType extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['id', 'name', 'category'];
+    protected $fillable = ['id', 'name', 'category', 'nutrition'];
+
+    protected function casts(): array
+    {
+        return [
+            'nutrition' => 'array',
+        ];
+    }
 
     public function companyRows(): HasMany
     {

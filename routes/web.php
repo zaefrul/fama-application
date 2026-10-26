@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:EXPORTER'])->group(function () {
     Route::post('/exporter/company', [ExporterCompanyController::class, 'update']);
     Route::get('/exporter/company/produce', [ExporterCompanyController::class, 'produce'])->name('exporter.produce');
     Route::post('/exporter/company/produce', [ExporterCompanyController::class, 'addProduce']);
+    Route::post('/exporter/company/produce/nutrition', [ExporterCompanyController::class, 'updateNutrition'])->name('exporter.produce.nutrition');
     Route::post('/exporter/company/produce/delete', [ExporterCompanyController::class, 'removeProduce']);
     Route::get('/exporter/company/certificates', [ExporterCompanyController::class, 'certificates'])->name('exporter.certificates');
     Route::post('/exporter/company/certificates', [ExporterCompanyController::class, 'addCertificate']);

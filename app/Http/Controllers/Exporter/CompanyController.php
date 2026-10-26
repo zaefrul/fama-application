@@ -111,6 +111,26 @@ class CompanyController extends Controller
         return redirect()->route('exporter.produce');
     }
 
+    public function updateNutrition(Request $request): RedirectResponse
+    {
+        $rows = $request->input('nutrients', []);
+        if (! is_array($rows)) {
+            return redirect()->route('exporter.produce')->with('error', 'Nutrisi tidak sah.');
+        }
+
+        try {
+            $this->jejak->updateProduceNutrition(
+                (string) $request->user()->company_id,
+                (string) $request->input('produceTypeId', ''),
+                $rows,
+            );
+        } catch (RuntimeException $e) {
+            return redirect()->route('exporter.produce')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('exporter.produce')->with('status', 'Nutrisi disimpan.');
+    }
+
     public function removeProduce(Request $request): RedirectResponse
     {
         CompanyProduce::query()->where('id', $request->input('id'))->delete();

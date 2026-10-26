@@ -64,7 +64,7 @@ This file is intentionally authoritative. The agent MUST NOT silently choose ans
 - Who maintains variety?
 - Who maintains grade?
 - Are sizes standardized?
-- Where does nutrition data come from?
+- Where does nutrition data come from? *(Prototype assumption ADR-029: demo values per 100 g are stored on the produce type and edited from Keluaran. Official source is not decided.)*
 
 ## Farm
 
