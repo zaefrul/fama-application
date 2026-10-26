@@ -264,6 +264,7 @@ class DatabaseSeeder extends Seeder
         $this->seedBananaLots();
         $this->seedContohAccounts();
         $this->seedContohSample();
+        $this->call(PresentationJourneySeeder::class);
 
         $this->call(QrAccessSeeder::class);
     }
