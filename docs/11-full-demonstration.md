@@ -360,7 +360,7 @@ Say: “The first QR is the whole shipment. A new code is created only for the c
 7. The page says **Lot dipecahkan.** Baki is **400**. A second checkpoint appears for MTS Fruits, **100 kg**, labelled **Menunggu penerimaan**, status **Belum Aktif**. Ali can still **Muat turun** that QR and hand the label over.
 8. Open **Jualan** as a check: the new code is not Siti’s yet.
 
-Set each company’s role under **Profil → Jenis dalam rantaian** before the split: Pengeluar, Pengeksport, Pemborong, Pengimport, or Peruncit. The recipient list shows only the same role or a later one. A jualan cannot go back upstream. A sale to a buyer with no login ends the line with **Consumer**.
+Set each company’s role under **Profil → Jenis dalam rantaian** before the split. A jualan may continue only along one of these lines, and it may stop early: Pengeluar → Pemborong → Pengeksport → Pengimport → Peruncit, Pengeluar → Pengeksport → Pengimport → Pemborong → Peruncit, Pengeksport → Pengimport → Pemborong → Peruncit, Pengeksport → Pengimport → Peruncit, Pengeluar → Pemborong → Peruncit, or Pengeluar → Peruncit. A sale to a buyer with no login ends the line with **Consumer**.
 
 Do not click **Jual semua baki**. That marks this whole QR sold and blocks further splits. **Jual pek** is the other sale: it creates a consumer QR for the quantity you type, with no login on that code. A consumer sale is active immediately. A company assignment waits until that company presses **Diterima**.
 

@@ -17,7 +17,7 @@ use Illuminate\Database\Seeder;
 
 /**
  * Six produce photos, each with one straight lot line:
- * Pengeluar → Pengeksport → Pemborong → Pengimport → Peruncit.
+ * Pengeluar → Pengeksport → Pengimport → Pemborong → Peruncit.
  */
 class PresentationJourneySeeder extends Seeder
 {
@@ -26,8 +26,8 @@ class PresentationJourneySeeder extends Seeder
         $stops = [
             'co_contoh_pengeluar',
             'co_contoh_pengeksport',
-            'co_contoh_pemborong',
             'co_contoh_pengimport',
+            'co_contoh_pemborong',
             'co_contoh_peruncit',
         ];
 

@@ -48,7 +48,7 @@ class ContohDemoAccountTest extends TestCase
         $this->assertSame(1, $stats['waiting']);
         $this->assertGreaterThan(0, $stats['soldThisMonth']);
         $labels = collect($stats['destinations'])->flatMap(fn (array $group) => collect($group['items'])->pluck('label'));
-        $this->assertTrue($labels->contains('Pemborong'));
+        $this->assertTrue($labels->contains('Pengimport'));
         $this->assertTrue($labels->contains('Pengguna'));
 
         $this->actingAs(User::query()->where('email', 'aminah.contoh@example.com')->firstOrFail())

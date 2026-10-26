@@ -44,9 +44,9 @@
         @if ($open)
             <x-card class="space-y-3">
                 <h2 class="font-semibold">Jualan kepada syarikat</h2>
-                <p class="text-xs text-muted">Jumlah kuantiti tidak boleh melebihi baki. Unit kekal {{ $unit }}. Penerima mestilah jenis yang sama atau ke hilir: Pengeluar, Pengeksport, Pemborong, Pengimport, Peruncit.</p>
+                <p class="text-xs text-muted">Jumlah kuantiti tidak boleh melebihi baki. Unit kekal {{ $unit }}. Penerima mestilah peranan seterusnya pada satu perjalanan yang dibenarkan.</p>
                 @if ($companies->isEmpty())
-                    <p class="text-sm">Tiada syarikat pada jenis yang sama atau ke hilir.</p>
+                    <p class="text-sm">Tiada syarikat untuk peranan seterusnya.</p>
                 @else
                 <form method="post" action="{{ route('exporter.lots.split', $lot) }}" class="space-y-3">
                     @csrf

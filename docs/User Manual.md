@@ -106,8 +106,8 @@ Enter the user’s identity card number and name. The sample text already in the
 |---|---|
 | Pengeluar | Producer. First role. |
 | Pengeksport | Exporter. Same role or after Pengeluar. |
-| Pemborong | Wholesaler. Same role or after Pengeksport. |
-| Pengimport | Importer. Same role or after Pemborong. |
+| Pemborong | Wholesaler. |
+| Pengimport | Importer. |
 | Peruncit | Retailer. Same role or after Pengimport. |
 | Lain-lain | A custom layer. **Nama lapisan** is required, for example Pengumpul. This role cannot send or receive a jualan. |
 
@@ -368,7 +368,14 @@ The card shows the holder, the chain role, the original quantity, the balance, a
 Under **Jualan kepada syarikat**:
 
 1. **Kuantiti** — kilograms, or the unit of that lot. The pieces together cannot exceed **Baki**.
-2. **Penerima** — the company that should hold the next stop. The list shows that company’s chain role and name.
+2. **Penerima** — the company that should hold the next stop. The list shows that company’s chain role and name. The line must follow one of these orders, and it may stop before the end:
+
+Pengeluar → Pemborong → Pengeksport → Pengimport → Peruncit  
+Pengeluar → Pengeksport → Pengimport → Pemborong → Peruncit  
+Pengeksport → Pengimport → Pemborong → Peruncit  
+Pengeksport → Pengimport → Peruncit  
+Pengeluar → Pemborong → Peruncit  
+Pengeluar → Peruncit
 3. **Tambah jualan** adds another row, so one save can create several pieces.
 4. **Simpan jualan**.
 

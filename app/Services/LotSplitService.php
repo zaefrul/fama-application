@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Domain\Ids;
+use App\Domain\JourneyOrder;
 use App\Domain\LotDisposition;
 use App\Domain\PartyType;
 use App\Domain\QrStatus;
@@ -49,7 +50,7 @@ class LotSplitService
                 if ($recipient === null) {
                     throw new RuntimeException('Syarikat penerima tidak dijumpai');
                 }
-                $this->assertDownstream($source, $recipient);
+                $this->assertJourney($parent, $recipient);
                 $sum += $quantity;
             }
 
@@ -212,16 +213,32 @@ class LotSplitService
         }
     }
 
-    private function assertDownstream(PartyType $source, Company $recipient): void
+    private function assertJourney(QrCode $parent, Company $recipient): void
     {
-        if ($source->canPassTo($recipient->chainParty())) {
-            return;
+        $recipientParty = $recipient->chainParty();
+        if ($recipientParty->rank() === null || ! JourneyOrder::allows([...$this->rolePath($parent), $recipientParty])) {
+            throw new RuntimeException(
+                'Penerima tidak mengikut susunan perjalanan. '
+                .$recipient->name.' ('.$recipientParty->label().') tidak dibenarkan.'
+            );
+        }
+    }
+
+    /**
+     * @return list<PartyType>
+     */
+    private function rolePath(QrCode $lot): array
+    {
+        $roles = [];
+        foreach ($lot->lineage() as $node) {
+            $party = $node->holder?->chainParty() ?? $node->pendingHolder?->chainParty();
+            if ($party === null || $party->rank() === null) {
+                continue;
+            }
+            $roles[] = $party;
         }
 
-        throw new RuntimeException(
-            'Penerima mestilah '.$source->label().' atau ke hilir. '
-            .$recipient->name.' ('.$recipient->chainParty()->label().') tidak dibenarkan.'
-        );
+        return $roles;
     }
 
     private function assertOpen(QrCode $lot): void

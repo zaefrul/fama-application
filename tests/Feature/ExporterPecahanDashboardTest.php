@@ -34,7 +34,7 @@ class ExporterPecahanDashboardTest extends TestCase
         $this->assertSame(2, $stats['holding']);
         $this->assertSame(0, $stats['soldThisMonth']);
         $this->assertSame(2, $stats['statusMix'][0]['count']);
-        $this->assertSame('Pemborong', $stats['destinations'][0]['items'][0]['label']);
+        $this->assertSame('Pengimport', $stats['destinations'][0]['items'][0]['label']);
         $this->assertSame(250, $stats['destinations'][0]['items'][0]['count']);
         $this->assertSame('kg', $stats['destinations'][0]['unit']);
         $this->assertSame('GPL-QR-000203', $stats['balances'][0]['qrCode']);
@@ -53,7 +53,7 @@ class ExporterPecahanDashboardTest extends TestCase
         $lots = app(LotSplitService::class);
         $lots->split('qr_pisang_exp_600', $holder, [[
             'quantity' => 10,
-            'recipient_company_id' => 'co_retailer_pisang',
+            'recipient_company_id' => 'co_contoh_pengimport',
         ]]);
         $lots->sellPortions('qr_pisang_exp_600', $holder, [20]);
         QrCode::query()->whereKey('qr_pisang_exp_400')->update(['accepted_at' => now()]);
@@ -95,8 +95,7 @@ class ExporterPecahanDashboardTest extends TestCase
 
         $this->assertSame(1, $stats['soldThisMonth']);
         $this->assertSame(1, $stats['statusMix'][3]['count']);
-        $this->assertSame(250, $roles['Pemborong']);
-        $this->assertSame(10, $roles['Peruncit']);
+        $this->assertSame(260, $roles['Pengimport']);
         $this->assertSame(20, $roles['Pengguna']);
         $this->assertSame(['kg'], array_column($stats['destinations'], 'unit'));
         $this->assertSame(10, $stats['weeks'][0]['splitTotal']);
@@ -126,7 +125,7 @@ class ExporterPecahanDashboardTest extends TestCase
             ->assertSee('Jualan mengikut minggu')
             ->assertSee('Didapat lawan dilepaskan')
             ->assertSee('Tiada kuantiti didapat atau dilepaskan dalam 8 minggu ini.')
-            ->assertSee('Pemborong')
+            ->assertSee('Pengimport')
             ->assertSee('GPL-QR-000203')
             ->assertSee('Pisang')
             ->assertSee('Tiada jualan dalam 8 minggu ini.');

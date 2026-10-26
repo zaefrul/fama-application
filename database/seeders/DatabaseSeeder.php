@@ -678,10 +678,10 @@ class DatabaseSeeder extends Seeder
                 'qr_code' => 'GPL-QR-000904',
                 'application_id' => null,
                 'parent_id' => 'qr_contoh_eksport',
-                'holder_company_id' => 'co_contoh_pemborong',
-                'pending_holder_company_id' => 'co_contoh_pemborong',
+                'holder_company_id' => 'co_contoh_pengimport',
+                'pending_holder_company_id' => 'co_contoh_pengimport',
                 'quantity' => 180,
-                'quantity_remaining' => 50,
+                'quantity_remaining' => 100,
                 'disposition' => LotDisposition::Holding,
                 'status' => QrStatus::Active,
                 'generated_at' => '2026-09-22 09:00:00',
@@ -710,10 +710,10 @@ class DatabaseSeeder extends Seeder
                 'qr_code' => 'GPL-QR-000906',
                 'application_id' => null,
                 'parent_id' => 'qr_contoh_borong',
-                'holder_company_id' => 'co_contoh_pengimport',
-                'pending_holder_company_id' => 'co_contoh_pengimport',
+                'holder_company_id' => 'co_contoh_pemborong',
+                'pending_holder_company_id' => 'co_contoh_pemborong',
                 'quantity' => 80,
-                'quantity_remaining' => 80,
+                'quantity_remaining' => 30,
                 'disposition' => LotDisposition::Holding,
                 'status' => QrStatus::Active,
                 'generated_at' => '2026-10-06 09:00:00',
@@ -725,7 +725,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 'qr_contoh_runcit_wait',
                 'qr_code' => 'GPL-QR-000907',
                 'application_id' => null,
-                'parent_id' => 'qr_contoh_borong',
+                'parent_id' => 'qr_contoh_import',
                 'holder_company_id' => null,
                 'pending_holder_company_id' => 'co_contoh_peruncit',
                 'quantity' => 50,
@@ -764,7 +764,7 @@ class DatabaseSeeder extends Seeder
             $this->contohLot('qr_contoh_tembikai_borong', 'GPL-QR-000913', null, 'qr_contoh_tembikai_root', 'co_contoh_pemborong', 'co_contoh_pemborong', 300, 40, '2026-09-28 09:00:00', '2026-09-29 09:00:00', '2026-09-29 09:00:00'),
             $this->contohLot('qr_contoh_tembikai_sold', 'GPL-QR-000914', null, 'qr_contoh_tembikai_eksport', null, null, 250, 0, '2026-10-13 11:00:00', '2026-10-13 11:00:00', null, '2026-10-13 11:00:00', LotDisposition::Sold),
             $this->contohLot('qr_contoh_tembikai_runcit', 'GPL-QR-000915', null, 'qr_contoh_tembikai_borong', 'co_contoh_peruncit', 'co_contoh_peruncit', 180, 180, '2026-10-14 09:00:00', '2026-10-15 09:00:00', '2026-10-15 09:00:00'),
-            $this->contohLot('qr_contoh_tembikai_import_wait', 'GPL-QR-000916', null, 'qr_contoh_tembikai_borong', null, 'co_contoh_pengimport', 80, 80, '2026-10-22 09:00:00', null, null, null, LotDisposition::Holding, QrStatus::GeneratedInactive),
+            $this->contohLot('qr_contoh_tembikai_import_wait', 'GPL-QR-000916', null, 'qr_contoh_tembikai_borong', null, 'co_contoh_peruncit', 80, 80, '2026-10-22 09:00:00', null, null, null, LotDisposition::Holding, QrStatus::GeneratedInactive),
         ]);
 
         GalleryItem::query()->firstOrCreate(
@@ -800,11 +800,11 @@ class DatabaseSeeder extends Seeder
         $this->saveContohLots('app_contoh_mangga', [
             $this->contohLot('qr_contoh_mangga_root', 'GPL-QR-000921', 'app_contoh_mangga', null, 'co_contoh_pengeluar', null, 600, 0, '2026-09-16 09:00:00', '2026-09-16 09:00:00'),
             $this->contohLot('qr_contoh_mangga_eksport', 'GPL-QR-000922', null, 'qr_contoh_mangga_root', 'co_contoh_pengeksport', 'co_contoh_pengeksport', 600, 100, '2026-09-16 10:00:00', '2026-09-18 10:00:00', '2026-09-18 10:00:00'),
-            $this->contohLot('qr_contoh_mangga_borong', 'GPL-QR-000923', null, 'qr_contoh_mangga_eksport', 'co_contoh_pemborong', 'co_contoh_pemborong', 350, 50, '2026-09-30 09:00:00', '2026-10-01 09:00:00', '2026-10-01 09:00:00'),
+            $this->contohLot('qr_contoh_mangga_borong', 'GPL-QR-000923', null, 'qr_contoh_mangga_eksport', 'co_contoh_pengimport', 'co_contoh_pengimport', 350, 100, '2026-09-30 09:00:00', '2026-10-01 09:00:00', '2026-10-01 09:00:00'),
             $this->contohLot('qr_contoh_mangga_sold', 'GPL-QR-000924', null, 'qr_contoh_mangga_eksport', null, null, 150, 0, '2026-10-18 11:00:00', '2026-10-18 11:00:00', null, '2026-10-18 11:00:00', LotDisposition::Sold),
-            $this->contohLot('qr_contoh_mangga_runcit', 'GPL-QR-000925', null, 'qr_contoh_mangga_borong', 'co_contoh_peruncit', 'co_contoh_peruncit', 200, 120, '2026-10-15 09:00:00', '2026-10-16 09:00:00', '2026-10-16 09:00:00'),
+            $this->contohLot('qr_contoh_mangga_import_wait', 'GPL-QR-000927', null, 'qr_contoh_mangga_borong', 'co_contoh_pemborong', 'co_contoh_pemborong', 250, 50, '2026-10-22 15:00:00', '2026-10-22 15:00:00', '2026-10-22 15:00:00'),
+            $this->contohLot('qr_contoh_mangga_runcit', 'GPL-QR-000925', null, 'qr_contoh_mangga_import_wait', 'co_contoh_peruncit', 'co_contoh_peruncit', 200, 120, '2026-10-15 09:00:00', '2026-10-16 09:00:00', '2026-10-16 09:00:00'),
             $this->contohLot('qr_contoh_mangga_runcit_sold', 'GPL-QR-000926', null, 'qr_contoh_mangga_runcit', null, null, 80, 0, '2026-10-21 11:00:00', '2026-10-21 11:00:00', null, '2026-10-21 11:00:00', LotDisposition::Sold),
-            $this->contohLot('qr_contoh_mangga_import_wait', 'GPL-QR-000927', null, 'qr_contoh_mangga_borong', null, 'co_contoh_pengimport', 100, 100, '2026-10-22 15:00:00', null, null, null, LotDisposition::Holding, QrStatus::GeneratedInactive),
         ]);
 
         GalleryItem::query()->firstOrCreate(
@@ -818,6 +818,11 @@ class DatabaseSeeder extends Seeder
                 'uploaded_at' => '2026-09-16 00:00:00',
             ],
         );
+
+        QrCode::query()->where('id', 'qr_pisang_mkt_250')->update([
+            'holder_company_id' => 'co_contoh_pengimport',
+            'pending_holder_company_id' => 'co_contoh_pengimport',
+        ]);
     }
 
     /**

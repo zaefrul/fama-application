@@ -329,6 +329,26 @@ Each keluaran pertanian may store nine nutrition rows (kalori, lemak, kolesterol
 
 **Consequences:** Nutrition is shared by produce type, not by company or lot. Livestock has no nutrition form. Official ownership of the figures stays open.
 
+## ADR-029 — Perjalanan follows one of six lines
+
+**Status:** Temporary prototype decision
+**Date:** 2026-10-27
+
+A lot’s role sequence must match the start of one of these lines. It may stop before the last role. Consumer is not a role in the line.
+
+Pengeluar → Pemborong → Pengeksport → Pengimport → Peruncit  
+Pengeluar → Pengeksport → Pengimport → Pemborong → Peruncit  
+Pengeksport → Pengimport → Pemborong → Peruncit  
+Pengeksport → Pengimport → Peruncit  
+Pengeluar → Pemborong → Peruncit  
+Pengeluar → Peruncit
+
+The recipient list and the server both use that rule. This replaces the single downstream rank in ADR-023 and ADR-024 for pecahan.
+
+**Reason:** The prototype needs more than one legal order. Pemborong can sit before Pengeksport, and Pengimport can sit before Pemborong, but only on the lines above.
+
+**Consequences:** A same-role repeat is not a legal next step. Stored lots that used Pengeluar → Pengeksport → Pemborong → Pengimport → Peruncit were reordered onto Pengeluar → Pengeksport → Pengimport → Pemborong → Peruncit where that was the matching line.
+
 ## Adding a decision
 
 ```text

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Exporter;
 
+use App\Domain\JourneyOrder;
 use App\Domain\PartyType;
 use App\Domain\QrStatus;
 use App\Http\Controllers\Controller;
@@ -54,7 +55,14 @@ class LotController extends Controller
         $rootId = $lot->root_application_id ?: $lot->application_id;
         $root = $rootId ? QrCode::treeForApplication($rootId) : null;
         $tree = $root?->focusedTree($lot->id);
-        $source = $lot->holder?->chainParty() ?? PartyType::Exporter;
+        $roles = [];
+        foreach ($lot->lineage() as $node) {
+            $party = $node->holder?->chainParty() ?? $node->pendingHolder?->chainParty();
+            if ($party !== null && $party->rank() !== null) {
+                $roles[] = $party;
+            }
+        }
+        $next = array_map(fn (PartyType $party) => $party->value, JourneyOrder::nextRoles($roles));
 
         return view('exporter.lots.show', [
             'lot' => $lot,
@@ -63,8 +71,8 @@ class LotController extends Controller
                 ->where('id', '!=', $lot->holder_company_id)
                 ->orderBy('name')
                 ->get()
-                ->filter(fn (Company $company) => $source->canPassTo($company->chainParty()))
-                ->sortBy(fn (Company $company) => sprintf('%d-%s', $company->chainParty()->rank(), $company->name))
+                ->filter(fn (Company $company) => in_array($company->chainParty()->value, $next, true))
+                ->sortBy(fn (Company $company) => $company->partyLabel().' '.$company->name)
                 ->values(),
             'publicUrl' => $qrImage->traceUrl($lot->qr_code),
             'unit' => $lot->rootApplication?->quantity_unit ?? $lot->application?->quantity_unit ?? '',
