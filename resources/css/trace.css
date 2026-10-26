@@ -939,28 +939,52 @@ body.trace-root {
   font-weight: 600;
 }
 
-.trace-page .gpl-dialog {
+body.trace-root .gpl-dialog {
+  position: fixed;
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  margin: 0;
   padding: 0;
   border: 1px solid #d5dfd0;
   border-radius: 20px;
-  max-width: min(92vw, 440px);
-  width: 440px;
+  width: min(92vw, 520px);
+  max-width: min(92vw, 520px);
+  height: 70dvh;
+  max-height: 70dvh;
+  overflow: auto;
   color: #202c25;
   background: #fff;
   font-family: Manrope, Arial, sans-serif;
   box-shadow: 0 22px 80px #102e2129;
 }
 
-.trace-page .gpl-dialog::backdrop {
+body.trace-root .gpl-dialog[open] {
+  display: flex;
+}
+
+body.trace-root .gpl-dialog::backdrop {
   background: #102e2177;
   backdrop-filter: blur(3px);
 }
 
-.trace-page .dialog-inner {
+body.trace-root .gpl-dialog,
+body.trace-root .gpl-dialog * {
+  box-sizing: border-box;
+}
+
+body.trace-root .dialog-inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
   padding: 28px;
 }
 
-.trace-page .dialog-title {
+body.trace-root .dialog-title {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.6px;
@@ -969,13 +993,14 @@ body.trace-root {
   overflow-wrap: anywhere;
 }
 
-.trace-page .dialog-text {
+body.trace-root .dialog-text {
   font-size: 13px;
   color: #637067;
   line-height: 1.75;
+  margin: 0;
 }
 
-.trace-page .dialog-close {
+body.trace-root .dialog-close {
   border: 0;
   background: #f3f5ef;
   border-radius: 8px;
@@ -986,20 +1011,81 @@ body.trace-root {
   place-items: center;
   margin-left: auto;
   flex: 0 0 auto;
+  cursor: pointer;
 }
 
-.trace-page .dialog-top {
+body.trace-root .dialog-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
 }
 
-.trace-page .dialog-actions {
+body.trace-root .dialog-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 24px;
+  margin-top: 16px;
+}
+
+body.trace-root .gpl-dialog .eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  color: #637067;
+  text-transform: uppercase;
+}
+
+body.trace-root .gpl-dialog .primary-action,
+body.trace-root .gpl-dialog .secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 16px;
+  border-radius: 9px;
+  font: 700 11px Manrope, Arial, sans-serif;
+  text-decoration: none;
+  border: 1px solid #214e31;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+body.trace-root .gpl-dialog .primary-action {
+  flex: 1;
+  background: #214e31;
+  color: #fff;
+}
+
+body.trace-root .gpl-dialog .secondary-action {
+  background: #fff;
+  color: #3d5543;
+  border-color: #dce4d8;
+}
+
+body.trace-root .gpl-dialog .icon {
+  width: 17px;
+  height: 17px;
+  max-width: none;
+  flex: 0 0 auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+body.trace-root .share-code {
+  margin: 0;
+  text-align: center;
+  font-family: Consolas, "SFMono-Regular", ui-monospace, monospace;
+  font-size: 12px;
+  color: #214e31;
+}
+
+body.trace-root .share-status {
+  min-height: 16px;
+  margin: 12px 0 0;
+  font-size: 11px;
+  color: #214e31;
 }
 
 .trace-page .cert-preview {
@@ -1012,11 +1098,21 @@ body.trace-root {
   color: #49754f;
 }
 
-.trace-page .share-qr {
-  width: 180px;
-  height: 180px;
-  max-width: 180px;
-  margin: 24px auto;
+body.trace-root .share-qr-frame {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 160px;
+  margin: 16px 0;
+}
+
+body.trace-root .share-qr {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
   display: block;
   object-fit: contain;
 }

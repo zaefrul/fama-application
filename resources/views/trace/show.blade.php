@@ -407,27 +407,6 @@
                 </aside>
             </div>
         </main>
-
-        <dialog class="gpl-dialog" id="gpl-share-dialog" aria-labelledby="gpl-share-title">
-            <div class="dialog-inner">
-                <div class="dialog-top">
-                    <span class="eyebrow">{{ $t['shareEyebrow'] }}</span>
-                    <button type="button" class="dialog-close" data-close aria-label="{{ $t['close'] }}"><x-trace-icon name="x" /></button>
-                </div>
-                <h2 class="dialog-title" id="gpl-share-title">{{ $t['shareTitle'] }}</h2>
-                <p class="dialog-text">{{ str_replace(':code', $qr->qr_code, $t['shareBody']) }}</p>
-                <img src="{{ $qrSrc }}" alt="{{ $t['qrTitle'] }} {{ $qr->qr_code }}" width="180" height="180" class="share-qr">
-                <p class="font-mono text-center text-[12px] text-forest-700">{{ $qr->qr_code }}</p>
-                <div class="dialog-actions">
-                    <button type="button" class="primary-action flex-1" id="gpl-copy-link" data-url="{{ $publicUrl }}" data-copied="{{ $t['copied'] }}">
-                        <x-trace-icon name="copy" />
-                        {{ $t['copyLink'] }}
-                    </button>
-                    <a href="{{ $publicUrl }}" class="secondary-action" target="_blank" rel="noopener noreferrer">{{ $t['openRecord'] }} <x-trace-icon name="arrow-up-right" /></a>
-                </div>
-                <p id="gpl-copy-status" role="status" class="text-[11px] text-forest-700 mt-3"></p>
-            </div>
-        </dialog>
     @endif
 
     <footer class="gpl-footer">
@@ -446,33 +425,54 @@
     </footer>
 </div>
 @if ($active)
+<dialog class="gpl-dialog" id="gpl-share-dialog" aria-labelledby="gpl-share-title">
+    <div class="dialog-inner">
+        <div class="dialog-top">
+            <span class="eyebrow">{{ $t['shareEyebrow'] }}</span>
+            <button type="button" class="dialog-close" data-close aria-label="{{ $t['close'] }}"><x-trace-icon name="x" /></button>
+        </div>
+        <h2 class="dialog-title" id="gpl-share-title">{{ $t['shareTitle'] }}</h2>
+        <p class="dialog-text">{{ str_replace(':code', $qr->qr_code, $t['shareBody']) }}</p>
+        <div class="share-qr-frame">
+            <img src="{{ $qrSrc }}" alt="{{ $t['qrTitle'] }} {{ $qr->qr_code }}" width="360" height="360" class="share-qr">
+        </div>
+        <p class="share-code">{{ $qr->qr_code }}</p>
+        <div class="dialog-actions">
+            <button type="button" class="primary-action" id="gpl-copy-link" data-url="{{ $publicUrl }}" data-copied="{{ $t['copied'] }}">
+                <x-trace-icon name="copy" />
+                {{ $t['copyLink'] }}
+            </button>
+            <a href="{{ $publicUrl }}" class="secondary-action" target="_blank" rel="noopener noreferrer">{{ $t['openRecord'] }} <x-trace-icon name="arrow-up-right" /></a>
+        </div>
+        <p id="gpl-copy-status" role="status" class="share-status"></p>
+    </div>
+</dialog>
 <script>
 (() => {
     const root = document.querySelector('.trace-page');
     if (!root) return;
+    const shareDialog = document.getElementById('gpl-share-dialog');
     const openDialog = (dialog) => { if (dialog && typeof dialog.showModal === 'function' && !dialog.open) dialog.showModal(); };
     root.querySelectorAll('[data-open="share"]').forEach((button) => {
-        button.addEventListener('click', () => openDialog(root.querySelector('#gpl-share-dialog')));
+        button.addEventListener('click', () => openDialog(shareDialog));
     });
-    root.querySelectorAll('[data-close]').forEach((button) => {
+    shareDialog?.querySelectorAll('[data-close]').forEach((button) => {
         button.addEventListener('click', () => button.closest('dialog')?.close());
     });
-    root.querySelectorAll('dialog').forEach((dialog) => {
-        dialog.addEventListener('click', (event) => {
-            if (event.target !== dialog) return;
-            const rect = dialog.getBoundingClientRect();
-            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-        });
+    shareDialog?.addEventListener('click', (event) => {
+        if (event.target !== shareDialog) return;
+        const rect = shareDialog.getBoundingClientRect();
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) shareDialog.close();
     });
-    const copyButton = root.querySelector('#gpl-copy-link');
+    const copyButton = shareDialog?.querySelector('#gpl-copy-link');
     copyButton?.addEventListener('click', async () => {
-        const status = root.querySelector('#gpl-copy-status');
+        const status = shareDialog?.querySelector('#gpl-copy-status');
         const url = copyButton.dataset.url || '';
         try {
             await navigator.clipboard.writeText(url);
-            status.textContent = copyButton.dataset.copied || '';
+            if (status) status.textContent = copyButton.dataset.copied || '';
         } catch (error) {
-            status.textContent = url;
+            if (status) status.textContent = url;
         }
     });
     const nav = root.querySelector('.section-nav');
